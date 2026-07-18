@@ -1,0 +1,234 @@
+---
+title: "Feldheer 1918 · Storm Troops — Theme Thunder"
+---
+{%- set art = collections.articles | articleBySlug("storm-troops-1918") -%}
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ title }} — {{ site.name }}</title>
+<meta name="description" content="{{ art.data.dek }}">
+<meta property="og:site_name" content="{{ site.name }}">
+<meta property="og:title" content="{{ art.data.title }} — Theme Thunder edition">
+<meta property="og:description" content="Theme Thunder: the stormtrooper story printed as a 1918 German assault manual — Fraktur, field grey and aged trench paper.">
+<meta property="og:type" content="article">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23e7d9b8'/%3E%3Cpath d='M6.5 2h3v4.5H14v3H9.5V14h-3V9.5H2v-3h4.5z' fill='%232e2717'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   THEME THUNDER № 4 — "FELDHEER 1918"
+   A German assault manual from the last spring of the Great
+   War: Fraktur display, aged field paper, a censor's stamp.
+   ============================================================ */
+:root {
+  --table:   #3a352b;   /* dugout table the paper lies on */
+  --paper:   #e7d9b8;
+  --paper-2: #ddcda6;
+  --ink:     #2e2717;
+  --ink-2:   #6d5f43;
+  --feldgrau:#4c5347;
+  --stamp:   #9c2b1e;
+  --measure: 38.5rem;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--table); color: var(--ink);
+  font-family: "EB Garamond", Garamond, Georgia, serif;
+  font-size: 1.12rem; line-height: 1.62;
+}
+a { color: var(--stamp); }
+a:hover { background: var(--stamp); color: var(--paper); text-decoration: none; }
+::selection { background: var(--feldgrau); color: var(--paper); }
+
+.sheet {
+  position: relative; max-width: 50rem; margin: 2.2rem auto 3rem;
+  padding: 3rem 3.4rem 3.2rem;
+  background:
+    radial-gradient(ellipse 26rem 18rem at 84% 6%, rgba(140, 105, 44, 0.16), transparent 60%),
+    radial-gradient(ellipse 20rem 14rem at 4% 88%, rgba(120, 90, 40, 0.18), transparent 60%),
+    radial-gradient(ellipse 9rem 7rem at 12% 14%, rgba(122, 89, 35, 0.12), transparent 70%),
+    radial-gradient(ellipse 130% 110% at 50% 45%, var(--paper) 55%, #d3bf95 100%);
+  box-shadow: 0 22px 55px rgba(0, 0, 0, 0.5);
+  border: 1px solid #c6b183;
+}
+.sheet::after { /* fold line */
+  content: ""; position: absolute; left: 0; right: 0; top: 46%; height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(90, 70, 30, 0.22), transparent);
+  pointer-events: none;
+}
+@media (max-width: 46rem) { .sheet { margin: 0; padding: 1.8rem 1.25rem 2.2rem; } }
+
+/* --- exchange strip ---------------------------------------- */
+.exch {
+  display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.3rem 1.4rem;
+  font-size: 0.78rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-2);
+  border-bottom: 1px solid var(--ink-2); padding-bottom: 0.5rem; margin-bottom: 2rem;
+}
+.exch a { color: var(--ink); font-weight: 600; }
+
+/* --- document head ----------------------------------------- */
+.dochead { text-align: center; }
+.issuer { font-size: 0.95rem; letter-spacing: 0.26em; text-transform: uppercase; margin: 0 0 0.3rem; color: var(--ink-2); }
+.issuer b { color: var(--ink); font-weight: 600; }
+.docno { font-size: 0.85rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-2); margin: 0 0 2rem; }
+.fraktur { font-family: "UnifrakturMaguntia", "EB Garamond", serif; font-weight: 400; }
+h1.dertitel {
+  font-family: "UnifrakturMaguntia", serif; font-weight: 400;
+  font-size: clamp(2.5rem, 7.5vw, 4.3rem); line-height: 1.08; margin: 0 0 0.5rem;
+}
+.uebersetzung { font-size: 1.02rem; font-style: italic; color: var(--ink-2); margin: 0 0 1.7rem; }
+.dienst {
+  display: inline-block; border: 2px solid var(--ink); padding: 0.35rem 1.2rem;
+  font-variant: small-caps; letter-spacing: 0.22em; font-size: 0.95rem; margin-bottom: 1.7rem;
+}
+.dek-lead { max-width: 34rem; margin: 0 auto; font-size: 1.02rem; font-style: italic; line-height: 1.55; }
+.byrow {
+  display: flex; justify-content: center; flex-wrap: wrap; gap: 0.3rem 2.2rem;
+  font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-2);
+  margin: 1.6rem 0 0; padding-bottom: 0.4rem;
+}
+.stamp {
+  position: absolute; top: 6.4rem; right: 2.6rem; transform: rotate(-11deg);
+  font-family: "UnifrakturMaguntia", serif; font-size: 2rem; color: var(--stamp);
+  border: 3px double var(--stamp); border-radius: 4px; padding: 0.05em 0.45em 0.12em;
+  opacity: 0.68; pointer-events: none;
+  mask-image: radial-gradient(circle at 40% 60%, black 55%, rgba(0,0,0,0.45) 100%);
+}
+@media (max-width: 52rem) { .stamp { position: static; display: inline-block; margin: 0 0 1.2rem; transform: rotate(-4deg); font-size: 1.5rem; } }
+
+/* --- manual body ------------------------------------------- */
+.kern { max-width: var(--measure); margin: 2.8rem auto 0; counter-reset: abschnitt; }
+.kern > p { margin: 0 0 1.1em; text-align: justify; hyphens: auto; }
+.kern > p:first-of-type::first-letter {
+  font-family: "UnifrakturMaguntia", serif; float: left; font-size: 3.6em;
+  line-height: 0.78; padding: 0.08em 0.14em 0 0; color: var(--feldgrau);
+}
+.kern h2 {
+  font-family: "UnifrakturMaguntia", serif; font-weight: 400; font-size: 1.95rem;
+  text-align: center; margin: 2.1em 0 0.75em; counter-increment: abschnitt; line-height: 1.15;
+}
+.kern h2::before {
+  content: "Abschnitt " counter(abschnitt) ".";
+  display: block; font-family: "EB Garamond", serif; font-variant: small-caps;
+  font-size: 0.85rem; letter-spacing: 0.34em; color: var(--ink-2); margin-bottom: 0.35rem;
+}
+.kern h2::after { content: "✠"; display: block; font-family: "EB Garamond", serif; font-size: 0.8rem; color: var(--ink-2); margin-top: 0.5rem; }
+.kern em { font-style: italic; }
+.kern .dinkus { text-align: center; color: var(--ink-2); letter-spacing: 1.2em; padding-left: 1.2em; margin: 2em 0; }
+/* factbox → Merkblatt */
+.kern .factbox { border: 3px double var(--ink); padding: 1.1rem 1.3rem 0.9rem; margin: 2.2em 0; background: rgba(221, 205, 166, 0.55); }
+.kern .factbox-title { margin: 0 0 0.6rem; font-family: "UnifrakturMaguntia", serif; font-weight: 400; font-size: 1.45rem; text-align: center; }
+.kern .factbox-title::before { content: "Merkblatt — "; }
+.kern .factbox dl { margin: 0; }
+.kern .factbox .row { display: flex; justify-content: space-between; gap: 1.4rem; padding: 0.42rem 0; border-bottom: 1px solid rgba(109, 95, 67, 0.45); }
+.kern .factbox .row:last-child { border-bottom: 0; }
+.kern .factbox dt { font-variant: small-caps; letter-spacing: 0.08em; color: var(--ink-2); }
+.kern .factbox dd { margin: 0; text-align: right; font-weight: 600; font-size: 0.98rem; }
+/* pullquote → doctrine sentence */
+.kern .pullquote { margin: 2.2em 0; padding: 0.4rem 0 0.6rem 1.4rem; border-left: 4px solid var(--feldgrau); }
+.kern .pullquote p { margin: 0; font-size: 1.32rem; line-height: 1.45; font-style: italic; }
+.kern .pullquote p::before { content: "„"; font-family: "UnifrakturMaguntia", serif; font-style: normal; color: var(--feldgrau); padding-right: 0.1em; }
+.kern .pullquote p::after { content: "“"; font-family: "UnifrakturMaguntia", serif; font-style: normal; color: var(--feldgrau); padding-left: 0.1em; }
+.kern .pullquote cite { display: block; margin-top: 0.55rem; font-style: normal; font-variant: small-caps; letter-spacing: 0.14em; font-size: 0.88rem; color: var(--ink-2); }
+.kern .pullquote cite::before { content: "— "; }
+
+/* --- Zeittafel (timeline) ---------------------------------- */
+.zeittafel { max-width: var(--measure); margin: 3.2rem auto 0; }
+.zt-head { font-family: "UnifrakturMaguntia", serif; font-weight: 400; font-size: 2rem; text-align: center; margin: 0 0 0.2rem; }
+.zt-sub { text-align: center; font-variant: small-caps; letter-spacing: 0.22em; font-size: 0.85rem; color: var(--ink-2); margin: 0 0 1.4rem; }
+.zeittafel ol { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--ink); }
+.zeittafel li { display: grid; grid-template-columns: 8.5rem 1fr; gap: 0.15rem 1.5rem; padding: 0.85rem 0.4rem; border-bottom: 1px solid rgba(109, 95, 67, 0.5); }
+.zeittafel li.key { background: rgba(76, 83, 71, 0.13); border-left: 4px solid var(--feldgrau); padding-left: 0.8rem; }
+.zeittafel .d { font-variant: small-caps; letter-spacing: 0.06em; font-weight: 600; padding-top: 0.1em; }
+.zeittafel h3 { grid-column: 2; margin: 0; font-size: 1.08rem; font-weight: 600; font-style: italic; }
+.zeittafel .d + h3 { grid-column: auto; }
+.zeittafel p { grid-column: 2; margin: 0.2rem 0 0; font-size: 0.98rem; color: #453b26; }
+@media (max-width: 40rem) {
+  .zeittafel li { grid-template-columns: 1fr; }
+  .zeittafel h3, .zeittafel p { grid-column: 1; }
+}
+
+/* --- sources + colophon ------------------------------------ */
+.quellen { max-width: var(--measure); margin: 3rem auto 0; font-size: 0.95rem; }
+.quellen h2 { font-family: "UnifrakturMaguntia", serif; font-weight: 400; font-size: 1.6rem; text-align: center; margin: 0 0 0.8rem; }
+.quellen ol { margin: 0; padding-left: 1.6rem; color: #453b26; }
+.quellen li { margin-bottom: 0.4rem; }
+.kolophon {
+  max-width: var(--measure); margin: 3rem auto 0; border-top: 3px double var(--ink);
+  padding-top: 1.2rem; text-align: center; font-size: 0.9rem; color: var(--ink-2);
+}
+.kolophon .de { font-style: italic; }
+.kolophon ul { list-style: none; margin: 1rem 0 0; padding: 0; display: flex; justify-content: center; flex-wrap: wrap; gap: 0.5rem 2.2rem; font-variant: small-caps; letter-spacing: 0.14em; font-size: 0.9rem; }
+.kolophon a { color: var(--ink); }
+.kolophon a:hover { background: var(--ink); color: var(--paper); }
+</style>
+</head>
+<body>
+
+<div class="sheet">
+  <span class="stamp" aria-hidden="true">Geheim!</span>
+
+  <div class="exch">
+    <span>{{ site.name }} // Theme Thunder № 4</span>
+    <a href="{{ art.url }}">Standard edition →</a>
+  </div>
+
+  <header class="dochead">
+    <p class="issuer"><b>Chef des Generalstabes des Feldheeres</b></p>
+    <p class="docno">Ausgabe {{ art.data.fileNo }} · Großes Hauptquartier, Januar 1918</p>
+    <h1 class="dertitel" lang="de">Der Angriff im Stellungskrieg</h1>
+    <p class="uebersetzung">"The Attack in Position Warfare" — storm troops, 1918: the German army reinvents the infantry attack</p>
+    <p class="dienst">Nur für den Dienstgebrauch · For official use only</p>
+    <p class="dek-lead">{{ art.data.dek }}</p>
+    <p class="byrow">
+      <span>{{ art.data.byline }}</span>
+      <span>Posted {{ art.date | readableDate }}</span>
+    </p>
+  </header>
+
+  <article class="kern" aria-label="Article, field-manual edition">
+{{ art.templateContent | safe }}
+  </article>
+
+  {%- if art.data.timeline %}
+  <section class="zeittafel" aria-label="Chronology">
+    <h2 class="zt-head" lang="de">Zeittafel</h2>
+    <p class="zt-sub">{{ art.data.timeline.title }}</p>
+    <ol>
+      {%- for item in art.data.timeline.items %}
+      <li{% if item.key %} class="key"{% endif %}>
+        <span class="d">{{ item.date }}</span>
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.text }}</p>
+      </li>
+      {%- endfor %}
+    </ol>
+  </section>
+  {%- endif %}
+
+  {%- if art.data.sources %}
+  <section class="quellen" aria-label="Sources">
+    <h2 lang="de">Quellen</h2>
+    <ol>
+      {%- for s in art.data.sources %}
+      <li>{{ s | safe }}</li>
+      {%- endfor %}
+    </ol>
+  </section>
+  {%- endif %}
+
+  <footer class="kolophon">
+    <p><span class="de" lang="de">Gedruckt in der Feldbuchdruckerei.</span> — A Theme Thunder edition, set in the manner of a 1918 field printing; the text is the standard {{ site.name }} article, unaltered.</p>
+    <ul>
+      <li><a href="{{ art.url }}">Standard edition</a></li>
+      <li><a href="/thunder/">Theme Thunder index</a></li>
+      <li><a href="/">{{ site.name }} front page</a></li>
+    </ul>
+  </footer>
+</div>
+
+</body>
+</html>

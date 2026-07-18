@@ -1,0 +1,291 @@
+---
+title: "NATOPS 1974 · F-14A Tomcat — Theme Thunder"
+---
+{%- set art = collections.articles | articleBySlug("f14-tomcat-dossier") -%}
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ title }} — {{ site.name }}</title>
+<meta name="description" content="{{ art.data.dek }}">
+<meta property="og:site_name" content="{{ site.name }}">
+<meta property="og:title" content="{{ art.data.title }} — Theme Thunder edition">
+<meta property="og:description" content="Theme Thunder: the F-14 dossier re-set as a 1970s NATOPS flight manual — typewriter text, warning boxes and punch holes.">
+<meta property="og:type" content="article">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23f0ece0'/%3E%3Crect x='2' y='2' width='12' height='12' fill='none' stroke='%23191919' stroke-width='2'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Stardos+Stencil:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   THEME THUNDER № 2 — "NATOPS 1974"
+   A naval air training and operating procedures manual:
+   government paper, typewriter text, stencil headings,
+   warning boxes, punch holes, record of changes.
+   ============================================================ */
+:root {
+  --desk:   #4c4f45;   /* steel desk the manual lies on */
+  --paper:  #f0ece0;   /* government paper */
+  --paper-2:#e6e1d0;   /* recessed panels */
+  --ink:    #1c1c1a;
+  --ink-2:  #56564e;
+  --rule:   #1c1c1a;
+  --red:    #a8271b;   /* WARNING */
+  --amber:  #8a6d00;   /* CAUTION */
+  --measure: 40rem;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--desk); color: var(--ink);
+  font-family: "Courier Prime", "Courier New", monospace;
+  font-size: 1.02rem; line-height: 1.62;
+}
+a { color: inherit; }
+a:hover { background: var(--ink); color: var(--paper); }
+::selection { background: var(--ink); color: var(--paper); }
+
+/* --- the page ---------------------------------------------- */
+.page {
+  position: relative; max-width: 52rem; margin: 2.2rem auto 3rem;
+  background: var(--paper);
+  padding: 2.6rem 3.4rem 3rem 4.6rem;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.12) inset, 0 18px 45px rgba(0,0,0,0.45);
+}
+.page::before { /* binder punch holes */
+  content: ""; position: absolute; top: 0; bottom: 0; left: 1.35rem; width: 1.1rem;
+  background:
+    radial-gradient(circle 0.5rem at 50% 12%, var(--desk) 97%, transparent) ,
+    radial-gradient(circle 0.5rem at 50% 50%, var(--desk) 97%, transparent),
+    radial-gradient(circle 0.5rem at 50% 88%, var(--desk) 97%, transparent);
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,0.35));
+}
+@media (max-width: 46rem) { .page { margin: 0; padding: 1.6rem 1.2rem 2rem 2.6rem; } }
+
+/* --- top strip --------------------------------------------- */
+.pubstrip {
+  display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.3rem 1.4rem;
+  font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase;
+  border-bottom: 3px double var(--rule); padding-bottom: 0.5rem; margin-bottom: 1.8rem;
+  color: var(--ink-2);
+}
+.pubstrip a { font-weight: 700; color: var(--ink); }
+
+/* --- cover block ------------------------------------------- */
+.cover { border: 3px solid var(--rule); padding: 1.9rem 1.6rem 1.6rem; text-align: center; }
+.cover .pubno { font-size: 0.85rem; letter-spacing: 0.28em; margin: 0 0 1.4rem; }
+.cover h1 {
+  font-family: "Stardos Stencil", "Courier Prime", monospace;
+  font-weight: 700; font-size: clamp(2rem, 6vw, 3.3rem);
+  line-height: 1.02; letter-spacing: 0.04em; margin: 0 0 0.4rem; text-transform: uppercase;
+}
+.cover .model { font-size: 1.05rem; letter-spacing: 0.34em; text-transform: uppercase; margin: 0.8rem 0 1.6rem; }
+.cover .model b { display: block; font-size: 1.6rem; letter-spacing: 0.42em; margin-top: 0.3rem; }
+.cover .issue {
+  display: inline-block; border-top: 1px solid var(--rule); padding-top: 0.7rem;
+  font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-2);
+}
+.stamp {
+  position: absolute; right: 2.4rem; top: 5.4rem; transform: rotate(7deg);
+  border: 3px solid var(--red); color: var(--red); padding: 0.25rem 0.7rem;
+  font-weight: 700; font-size: 0.8rem; letter-spacing: 0.26em; text-transform: uppercase;
+  opacity: 0.82; pointer-events: none;
+}
+@media (max-width: 46rem) { .stamp { position: static; display: inline-block; margin-bottom: 1rem; transform: rotate(-2deg); } }
+
+/* --- editorial preface ------------------------------------- */
+.preface { margin: 1.8rem 0 0; font-size: 0.92rem; color: var(--ink-2); }
+.preface .dek { margin: 0 0 0.9rem; font-style: italic; }
+.preface .byrow { display: flex; flex-wrap: wrap; gap: 0.3rem 2rem; font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; }
+.preface b { color: var(--ink); }
+
+/* --- warning / caution / note ------------------------------ */
+.wbox { border: 2px solid var(--red); margin: 2rem 0; }
+.wbox .whead {
+  background: var(--red); color: var(--paper); text-align: center;
+  font-family: "Stardos Stencil", monospace; font-weight: 700;
+  font-size: 1rem; letter-spacing: 0.4em; padding: 0.3rem 0 0.25rem; text-transform: uppercase;
+}
+.wbox .wbody { padding: 0.9rem 1.1rem; font-size: 0.93rem; }
+.wbox .wbody p { margin: 0; }
+
+/* --- manual body ------------------------------------------- */
+.manual { max-width: var(--measure); margin: 2.6rem auto 0; counter-reset: section; }
+.manual > p { margin: 0 0 1.1em; }
+.manual h2 {
+  font-family: "Stardos Stencil", monospace; font-weight: 700;
+  font-size: 1.35rem; letter-spacing: 0.1em; text-transform: uppercase;
+  border-bottom: 2px solid var(--rule); padding-bottom: 0.3rem;
+  margin: 2.4em 0 0.8em; counter-increment: section;
+}
+.manual h2::before { content: "Section " counter(section) " — "; }
+.manual em { font-style: italic; }
+.manual .dinkus { text-align: center; letter-spacing: 1em; color: var(--ink-2); margin: 2em 0; }
+/* pullquote → NOTE box */
+.manual .pullquote { border: 2px solid var(--rule); margin: 2em 0; padding: 0; }
+.manual .pullquote::before {
+  content: "NOTE"; display: block; text-align: center;
+  font-family: "Stardos Stencil", monospace; font-weight: 700;
+  letter-spacing: 0.4em; padding: 0.28rem 0; text-transform: uppercase;
+  border-bottom: 2px solid var(--rule); background: var(--paper-2);
+}
+.manual .pullquote p { margin: 0; padding: 0.9rem 1.1rem 0.4rem; font-size: 0.97rem; }
+.manual .pullquote cite { display: block; padding: 0 1.1rem 0.9rem; font-style: normal; font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-2); }
+.manual .pullquote cite::before { content: "REF: "; }
+/* factbox (unused in this article but styled for safety) */
+.manual .factbox { border: 2px solid var(--rule); margin: 2em 0; font-size: 0.9rem; }
+.manual .factbox-title { margin: 0; padding: 0.4rem 0.9rem; border-bottom: 2px solid var(--rule); font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; }
+.manual .factbox dl { margin: 0; padding: 0.4rem 0.9rem 0.6rem; }
+.manual .factbox .row { display: flex; justify-content: space-between; gap: 1.4rem; padding: 0.3rem 0; border-bottom: 1px dotted var(--ink-2); }
+.manual .factbox .row:last-child { border-bottom: 0; }
+.manual .factbox dt { text-transform: uppercase; font-size: 0.78rem; letter-spacing: 0.08em; color: var(--ink-2); }
+.manual .factbox dd { margin: 0; font-weight: 700; text-align: right; }
+
+/* --- data tables ------------------------------------------- */
+.part { margin: 3rem auto 0; max-width: var(--measure); }
+.part-head {
+  font-family: "Stardos Stencil", monospace; font-weight: 700; font-size: 1.2rem;
+  letter-spacing: 0.12em; text-transform: uppercase; margin: 0 0 0.2rem;
+}
+.part-sub { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-2); margin: 0 0 1rem; }
+table.mil { width: 100%; border-collapse: collapse; font-size: 0.9rem; border: 2px solid var(--rule); }
+table.mil th, table.mil td { border: 1px solid var(--ink-2); padding: 0.45rem 0.7rem; text-align: left; vertical-align: top; }
+table.mil thead th { background: var(--paper-2); text-transform: uppercase; font-size: 0.78rem; letter-spacing: 0.1em; }
+table.mil th[scope="row"] { width: 34%; text-transform: uppercase; font-size: 0.78rem; letter-spacing: 0.06em; color: var(--ink-2); font-weight: 400; }
+.tab-foot { font-size: 0.78rem; color: var(--ink-2); margin-top: 0.5rem; }
+/* record of changes (timeline) */
+.changes li { margin: 0; padding: 0.75rem 0.2rem; border-bottom: 1px solid var(--ink-2); display: grid; grid-template-columns: 7.5rem 1fr; gap: 0.15rem 1.3rem; font-size: 0.92rem; }
+.changes { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--rule); }
+.changes .d { font-weight: 700; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.05em; padding-top: 0.15em; }
+.changes h3 { grid-column: 2; margin: 0; font-size: 0.95rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+.changes .d + h3 { grid-column: auto; }
+.changes p { grid-column: 2; margin: 0.2rem 0 0; color: #33332e; }
+.changes li.key { background: var(--paper-2); outline: 2px solid var(--rule); outline-offset: -2px; }
+.changes li.key .d::after { content: " ★"; color: var(--red); }
+@media (max-width: 40rem) {
+  .changes li { grid-template-columns: 1fr; }
+  .changes h3, .changes p { grid-column: 1; }
+}
+
+/* --- references / distribution ----------------------------- */
+.lref { max-width: var(--measure); margin: 3rem auto 0; font-size: 0.88rem; }
+.lref ol { margin: 0.6rem 0 0; padding-left: 1.5rem; }
+.lref li { margin-bottom: 0.35rem; }
+.distro {
+  max-width: var(--measure); margin: 3rem auto 0; border: 2px solid var(--rule);
+  padding: 1rem 1.2rem; font-size: 0.82rem; color: var(--ink-2);
+}
+.distro b { color: var(--ink); text-transform: uppercase; letter-spacing: 0.1em; }
+.distro ul { list-style: none; display: flex; flex-wrap: wrap; gap: 0.5rem 1.8rem; margin: 0.7rem 0 0; padding: 0; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.08em; }
+.distro a { font-weight: 700; color: var(--ink); }
+.pageno { text-align: center; font-size: 0.8rem; letter-spacing: 0.3em; color: var(--ink-2); margin-top: 2.6rem; }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <span class="stamp" aria-hidden="true">Open sources</span>
+
+  <div class="pubstrip">
+    <span>{{ site.name }} // Theme Thunder № 2</span>
+    <span><a href="{{ art.url }}">Standard edition →</a></span>
+  </div>
+
+  <header class="cover">
+    <p class="pubno">SITREP-01-F14AAA-1 · CHANGE 6</p>
+    <h1>NATOPS<br>Flight Manual</h1>
+    <p class="model">Navy model <b>F-14A</b> aircraft</p>
+    <p class="issue">Dossier edition · issued {{ art.date | readableDate }} · {{ art.data.fileNo }}</p>
+  </header>
+
+  <div class="preface">
+    <p class="dek">{{ art.data.dek }}</p>
+    <p class="byrow">
+      <span>Prepared by: <b>The Arsenal Desk</b></span>
+      <span>Authority: <b>Open sources only</b></span>
+    </p>
+  </div>
+
+  <div class="wbox" role="note" aria-label="Warning box, period styling">
+    <p class="whead">Warning</p>
+    <div class="wbody">
+      <p>TF30 engines are prone to compressor stall at high angle of attack — in exactly the corners of the envelope a fighter pilot lives in. This publication is a period-styled edition of an editorial dossier, not an operating document.</p>
+    </div>
+  </div>
+
+  <article class="manual" aria-label="Article, manual edition">
+{{ art.templateContent | safe }}
+  </article>
+
+  {%- if art.data.specs %}
+  <section class="part" aria-label="Technical data">
+    <h2 class="part-head">Part 2 — Technical Data</h2>
+    <p class="part-sub">{{ art.data.specs.title }}</p>
+    <table class="mil">
+      {%- for row in art.data.specs.rows %}
+      <tr><th scope="row">{{ row[0] }}</th><td>{{ row[1] | safe }}</td></tr>
+      {%- endfor %}
+    </table>
+    {%- if art.data.specs.foot %}<p class="tab-foot">{{ art.data.specs.foot }}</p>{%- endif %}
+  </section>
+  {%- endif %}
+
+  {%- if art.data.variants %}
+  <section class="part" aria-label="Variants">
+    <h2 class="part-head">Part 3 — Configurations</h2>
+    <p class="part-sub">{{ art.data.variants.caption }}</p>
+    <table class="mil">
+      <thead><tr>{% for h in art.data.variants.head %}<th>{{ h }}</th>{% endfor %}</tr></thead>
+      <tbody>
+        {%- for row in art.data.variants.rows %}
+        <tr>{% for cell in row %}<td>{{ cell | safe }}</td>{% endfor %}</tr>
+        {%- endfor %}
+        {%- if art.data.variants.totalLabel %}
+        <tr><td colspan="{{ art.data.variants.head.length - 1 }}"><b>{{ art.data.variants.totalLabel }}</b></td><td><b>{{ art.data.variants.totalValue }}</b></td></tr>
+        {%- endif %}
+      </tbody>
+    </table>
+  </section>
+  {%- endif %}
+
+  {%- if art.data.timeline %}
+  <section class="part" aria-label="Service record">
+    <h2 class="part-head">Part 4 — Record of Changes</h2>
+    <p class="part-sub">{{ art.data.timeline.title }} · entered in service log order</p>
+    <ol class="changes">
+      {%- for item in art.data.timeline.items %}
+      <li{% if item.key %} class="key"{% endif %}>
+        <span class="d">{{ item.date }}</span>
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.text }}</p>
+      </li>
+      {%- endfor %}
+    </ol>
+  </section>
+  {%- endif %}
+
+  {%- if art.data.sources %}
+  <section class="lref" aria-label="References">
+    <h2 class="part-head">Part 5 — List of References</h2>
+    <ol>
+      {%- for s in art.data.sources %}
+      <li>{{ s | safe }}</li>
+      {%- endfor %}
+    </ol>
+  </section>
+  {%- endif %}
+
+  <footer class="distro">
+    <b>Distribution statement</b> — Approved for public release; assembled from open sources; figures require verification before operational use of any kind, including pub quizzes.
+    <ul>
+      <li><a href="{{ art.url }}">Standard edition</a></li>
+      <li><a href="/thunder/">Theme Thunder index</a></li>
+      <li><a href="/">{{ site.name }} front page</a></li>
+    </ul>
+  </footer>
+
+  <p class="pageno">— 1-1 —</p>
+</div>
+
+</body>
+</html>

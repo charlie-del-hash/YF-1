@@ -6,6 +6,10 @@ kicker: ["Procurement", "Analysis"]
 byline: "By the Procurement Desk"
 tags: ["procurement"]
 topics: ["Procurement", "Artillery", "Defence Industry", "Ukraine", "Analysis"]
+thunder:
+  url: "/thunder/shell-game-155mm/"
+  label: "Read it as a war-production bulletin"
+  note: "poster gothics, scoreboard and slogans"
 hero:
   ratio: "wide"
   label: "Hero image · 21:9 · replace via front matter src"

@@ -1,0 +1,227 @@
+---
+title: "Agitprop 1949 · The Kalashnikov Century — Theme Thunder"
+---
+{%- set art = collections.articles | articleBySlug("kalashnikov-century") -%}
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ title }} — {{ site.name }}</title>
+<meta name="description" content="{{ art.data.dek }}">
+<meta property="og:site_name" content="{{ site.name }}">
+<meta property="og:title" content="{{ art.data.title }} — Theme Thunder edition">
+<meta property="og:description" content="Theme Thunder: the Kalashnikov story set as a Soviet constructivist poster — red wedges, worker's cream and heavy type.">
+<meta property="og:type" content="article">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23efe3cb'/%3E%3Cpath d='M0 16L16 0v6L6 16z' fill='%23c02418'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=PT+Sans:wght@400;700&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   THEME THUNDER № 5 — "AGITPROP 1949"
+   A constructivist production poster: red wedge, worker's
+   cream, heavy condensed capitals, one hundred million units.
+   ============================================================ */
+:root {
+  --cream: #efe3cb;
+  --cream-2:#e5d6b6;
+  --red:   #c02418;
+  --red-2: #99190f;
+  --black: #211d18;
+  --measure: 41rem;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--cream); color: var(--black);
+  font-family: "PT Serif", Georgia, serif; font-size: 1.05rem; line-height: 1.66;
+}
+a { color: var(--red); }
+a:hover { background: var(--red); color: var(--cream); text-decoration: none; }
+::selection { background: var(--red); color: var(--cream); }
+.bebas { font-family: "Bebas Neue", "Oswald", sans-serif; font-weight: 400; }
+
+/* --- top strip --------------------------------------------- */
+.strip {
+  background: var(--black); color: var(--cream);
+  font-family: "PT Sans", sans-serif; font-size: 0.78rem; letter-spacing: 0.22em; text-transform: uppercase;
+}
+.strip-in { max-width: 60rem; margin-inline: auto; padding: 0.5rem 1.25rem; display: flex; flex-wrap: wrap; gap: 0.3rem 1.6rem; justify-content: space-between; }
+.strip a { color: var(--cream); text-decoration: none; }
+.strip a:hover { background: var(--cream); color: var(--black); }
+
+/* --- poster head ------------------------------------------- */
+.plakat { background: var(--cream); border-bottom: 8px solid var(--black); }
+.plakat-in { max-width: 60rem; margin-inline: auto; position: relative; z-index: 1; }
+.plakat-bar {
+  position: relative; overflow: hidden;
+  background: var(--red); color: var(--cream);
+  padding: 2.4rem 1.25rem 1.8rem;
+}
+.plakat-bar::after {
+  content: ""; position: absolute; right: -5rem; top: -5rem;
+  width: 13rem; height: 13rem; background: var(--black);
+  transform: rotate(45deg);
+}
+.plakat-main { padding: 2.6rem 1.25rem 2.8rem; }
+.zvezda { color: var(--cream); font-size: 2.2rem; line-height: 1; margin: 0 0 0.4rem; }
+.gornyak {
+  font-family: "PT Sans", sans-serif; font-weight: 700; color: var(--cream);
+  letter-spacing: 0.34em; text-transform: uppercase; font-size: 0.85rem; margin: 0;
+}
+.gornyak .tr { display: block; color: rgba(239, 227, 203, 0.8); font-weight: 400; letter-spacing: 0.22em; font-size: 0.72rem; margin-top: 0.25rem; }
+h1.zag {
+  font-family: "Bebas Neue", sans-serif; font-weight: 400; text-transform: uppercase;
+  font-size: clamp(3.4rem, 12vw, 8rem); line-height: 0.88; margin: 0 0 1.2rem; color: var(--black);
+}
+h1.zag em { font-style: normal; color: var(--red); display: block; }
+.mil-number {
+  font-family: "Bebas Neue", sans-serif; color: var(--red);
+  font-size: clamp(2rem, 6vw, 3.4rem); line-height: 1; margin: 0 0 0.3rem; letter-spacing: 0.04em;
+}
+.mil-label { font-family: "PT Sans", sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: 0.26em; font-size: 0.8rem; margin: 0 0 1.8rem; color: var(--black); }
+.dek-poster { max-width: 42rem; font-size: 1.05rem; line-height: 1.6; margin: 0 0 1.6rem; font-style: italic; color: #4a4234; }
+.byrow { font-family: "PT Sans", sans-serif; font-size: 0.78rem; letter-spacing: 0.22em; text-transform: uppercase; display: flex; flex-wrap: wrap; gap: 0.3rem 2.2rem; margin: 0; color: var(--black); }
+
+/* --- article ----------------------------------------------- */
+.tekst { max-width: var(--measure); margin: 3rem auto 0; padding-inline: 1.25rem; counter-reset: glava; }
+.tekst > p { margin: 0 0 1.15em; }
+.tekst > p:first-of-type::first-letter {
+  font-family: "Bebas Neue", sans-serif; float: left; font-size: 4em; line-height: 0.82;
+  padding: 0.02em 0.14em 0 0; color: var(--red);
+}
+.tekst h2 {
+  font-family: "Bebas Neue", sans-serif; font-weight: 400; text-transform: uppercase;
+  font-size: 2rem; line-height: 1; margin: 2.3em 0 0.7em; counter-increment: glava;
+  display: flex; align-items: baseline; gap: 0.7rem;
+}
+.tekst h2::before {
+  content: counter(glava, decimal-leading-zero);
+  background: var(--red); color: var(--cream); font-size: 1.15rem; line-height: 1;
+  padding: 0.32em 0.42em 0.18em; flex: none; transform: translateY(-0.18em);
+}
+.tekst em { font-style: italic; }
+.tekst .dinkus { text-align: center; color: var(--red); letter-spacing: 1.4em; padding-left: 1.4em; margin: 2em 0; }
+/* factbox → the ledger, black panel */
+.tekst .factbox { background: var(--black); color: var(--cream); margin: 2.2em 0; border-left: 10px solid var(--red); }
+.tekst .factbox-title {
+  margin: 0; padding: 0.75rem 1.2rem 0.6rem; font-family: "Bebas Neue", sans-serif;
+  font-weight: 400; font-size: 1.5rem; letter-spacing: 0.06em; text-transform: uppercase;
+  border-bottom: 2px solid var(--red);
+}
+.tekst .factbox dl { margin: 0; padding: 0.5rem 1.2rem 0.7rem; }
+.tekst .factbox .row { display: flex; justify-content: space-between; gap: 1.6rem; padding: 0.48rem 0; border-bottom: 1px dotted rgba(239, 227, 203, 0.35); }
+.tekst .factbox .row:last-child { border-bottom: 0; }
+.tekst .factbox dt { font-family: "PT Sans", sans-serif; font-size: 0.8rem; letter-spacing: 0.14em; text-transform: uppercase; color: #cbbfa4; padding-top: 0.25em; }
+.tekst .factbox dd { margin: 0; text-align: right; font-family: "Bebas Neue", sans-serif; font-size: 1.15rem; letter-spacing: 0.04em; color: var(--cream); }
+/* pullquote → slogan */
+.tekst .pullquote { margin: 2.6em -0.5rem; transform: rotate(-1.6deg); background: var(--red); color: var(--cream); padding: 1.4rem 1.6rem 1.2rem; box-shadow: 0.6rem 0.6rem 0 var(--black); }
+.tekst .pullquote p { margin: 0; font-family: "Bebas Neue", sans-serif; font-size: clamp(1.5rem, 4vw, 2.1rem); line-height: 1.04; text-transform: uppercase; }
+.tekst .pullquote cite { display: block; margin-top: 0.8rem; font-style: normal; font-family: "PT Sans", sans-serif; font-size: 0.78rem; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(239, 227, 203, 0.8); }
+.tekst .pullquote cite::before { content: "— "; }
+
+/* --- timeline → year column -------------------------------- */
+.gody { max-width: var(--measure); margin: 3.4rem auto 0; padding-inline: 1.25rem; }
+.gody-head { font-family: "Bebas Neue", sans-serif; font-weight: 400; text-transform: uppercase; font-size: 2.4rem; line-height: 1; margin: 0 0 0.2rem; }
+.gody-head em { font-style: normal; color: var(--red); }
+.gody-sub { font-family: "PT Sans", sans-serif; font-size: 0.8rem; letter-spacing: 0.22em; text-transform: uppercase; color: #6f6249; margin: 0 0 1.6rem; }
+.gody ol { list-style: none; margin: 0; padding: 0; border-left: 6px solid var(--red); }
+.gody li { position: relative; padding: 0 0 1.4rem 1.6rem; }
+.gody li::before { content: ""; position: absolute; left: -0.95rem; top: 0.42em; width: 1rem; height: 1rem; background: var(--cream); border: 4px solid var(--red); }
+.gody li.key::before { background: var(--red); box-shadow: 0 0 0 3px var(--cream), 0 0 0 6px var(--black); }
+.gody .d { font-family: "Bebas Neue", sans-serif; font-size: 1.45rem; line-height: 1; color: var(--red); display: block; margin-bottom: 0.25rem; }
+.gody h3 { margin: 0; font-family: "PT Sans", sans-serif; font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
+.gody p { margin: 0.3rem 0 0; font-size: 0.97rem; color: #4a4234; }
+
+/* --- sources + footer -------------------------------------- */
+.istochniki { max-width: var(--measure); margin: 3rem auto 0; padding-inline: 1.25rem; font-size: 0.92rem; }
+.istochniki h2 { font-family: "Bebas Neue", sans-serif; font-weight: 400; font-size: 1.7rem; text-transform: uppercase; border-bottom: 4px solid var(--black); padding-bottom: 0.2rem; margin: 0 0 0.8rem; }
+.istochniki ol { margin: 0; padding-left: 1.5rem; }
+.istochniki li { margin-bottom: 0.4rem; }
+.podval { margin-top: 3.5rem; background: var(--black); color: var(--cream); padding: 2.4rem 1.25rem 2.8rem; }
+.podval-in { max-width: 60rem; margin-inline: auto; }
+.podval .slogan { font-family: "Bebas Neue", sans-serif; font-size: clamp(1.6rem, 4.5vw, 2.6rem); line-height: 0.95; text-transform: uppercase; margin: 0 0 0.5rem; }
+.podval .slogan em { font-style: normal; color: var(--red); }
+.podval .note { font-family: "PT Sans", sans-serif; font-size: 0.85rem; color: #b9ac8f; margin: 0 0 1.6rem; max-width: 46rem; }
+.podval ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.6rem 2.4rem; font-family: "PT Sans", sans-serif; font-size: 0.82rem; letter-spacing: 0.2em; text-transform: uppercase; }
+.podval a { color: var(--cream); }
+.podval a:hover { background: var(--red); color: var(--cream); }
+</style>
+</head>
+<body>
+
+<div class="strip">
+  <div class="strip-in">
+    <span>{{ site.name }} // Theme Thunder № 5</span>
+    <span lang="ru" title="State publishing pastiche">ГОСИЗДАТ · ПЛАКАТ № 47</span>
+    <a href="{{ art.url }}">Standard edition →</a>
+  </div>
+</div>
+
+<header class="plakat">
+  <div class="plakat-bar">
+    <div class="plakat-in">
+      <p class="zvezda" aria-hidden="true">★</p>
+      <p class="gornyak">Оружие века<span class="tr">"The weapon of the century" · a poster edition</span></p>
+    </div>
+  </div>
+  <div class="plakat-main">
+    <div class="plakat-in">
+      <h1 class="zag">The Kalashnikov<em>Century</em></h1>
+      <p class="mil-number">100 000 000</p>
+      <p class="mil-label">Rifles, all patterns, estimated — the most manufactured firearm in history</p>
+      <p class="dek-poster">{{ art.data.dek }}</p>
+      <p class="byrow">
+        <span>{{ art.data.byline }}</span>
+        <span>{{ art.data.fileNo }}</span>
+        <span>Posted {{ art.date | readableDate }}</span>
+      </p>
+    </div>
+  </div>
+</header>
+
+<article class="tekst" aria-label="Article, poster edition">
+{{ art.templateContent | safe }}
+</article>
+
+{%- if art.data.timeline %}
+<section class="gody" aria-label="Timeline">
+  <h2 class="gody-head">One rifle's <em>century</em></h2>
+  <p class="gody-sub">1941 — 2013 · from hospital sketchbook to a hundred million</p>
+  <ol>
+    {%- for item in art.data.timeline.items %}
+    <li{% if item.key %} class="key"{% endif %}>
+      <span class="d">{{ item.date }}</span>
+      <h3>{{ item.title }}</h3>
+      <p>{{ item.text }}</p>
+    </li>
+    {%- endfor %}
+  </ol>
+</section>
+{%- endif %}
+
+{%- if art.data.sources %}
+<section class="istochniki" aria-label="Sources">
+  <h2>Sources &amp; further reading</h2>
+  <ol>
+    {%- for s in art.data.sources %}
+    <li>{{ s | safe }}</li>
+    {%- endfor %}
+  </ol>
+</section>
+{%- endif %}
+
+<footer class="podval">
+  <div class="podval-in">
+    <p class="slogan">The design will be obsolete eventually. <em>The rifles will not.</em></p>
+    <p class="note">A Theme Thunder edition — the standard {{ site.name }} article, unaltered, re-set in the visual language of the state that shipped the rifle. The aesthetic is the artefact; the article is the argument.</p>
+    <ul>
+      <li><a href="{{ art.url }}">Standard edition</a></li>
+      <li><a href="/thunder/">Theme Thunder index</a></li>
+      <li><a href="/">{{ site.name }} front page</a></li>
+    </ul>
+  </div>
+</footer>
+
+</body>
+</html>

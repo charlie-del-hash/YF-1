@@ -8,6 +8,10 @@ fileNo: "File № 07"
 byline: "By the Arsenal Desk"
 tags: ["arsenal", "air-warfare"]
 topics: ["Platform Dossier", "Naval Aviation", "US Navy", "Iran", "Cold War"]
+thunder:
+  url: "/thunder/f14-tomcat-dossier/"
+  label: "Read it as a 1970s NATOPS flight manual"
+  note: "typewriter text, warning boxes, punch holes"
 hero:
   ratio: "wide"
   label: "Hero image · 21:9 · replace via front matter src"

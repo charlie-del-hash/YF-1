@@ -1,0 +1,211 @@
+---
+title: "Production Front 1943 · The Shell Game — Theme Thunder"
+---
+{%- set art = collections.articles | articleBySlug("shell-game-155mm") -%}
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ title }} — {{ site.name }}</title>
+<meta name="description" content="{{ art.data.dek }}">
+<meta property="og:site_name" content="{{ site.name }}">
+<meta property="og:title" content="{{ art.data.title }} — Theme Thunder edition">
+<meta property="og:description" content="Theme Thunder: the 155 mm story re-set as a wartime production-drive bulletin — poster type, scoreboard and slogans.">
+<meta property="og:type" content="article">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23f3ead3'/%3E%3Cpath d='M8 2l1.8 3.9 4.2.5-3.1 2.9.8 4.2L8 11.4l-3.7 2.1.8-4.2L2 6.4l4.2-.5z' fill='%23b02e26'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Libre+Franklin:ital,wght@0,400;0,600;0,800;1,400&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   THEME THUNDER № 3 — "THE PRODUCTION FRONT"
+   A war-production drive bulletin: poster gothics, scoreboard
+   panels, three stars and a slogan in red overprint.
+   ============================================================ */
+:root {
+  --cream:  #f3ead3;
+  --cream-2:#eaddbc;
+  --navy:   #1e3a56;
+  --navy-2: #16293d;
+  --red:    #b02e26;
+  --ink:    #23241f;
+  --measure: 42rem;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--cream); color: var(--ink);
+  font-family: "Libre Franklin", "Franklin Gothic Medium", Arial, sans-serif;
+  font-size: 1.02rem; line-height: 1.66;
+}
+a { color: var(--red); }
+a:hover { background: var(--red); color: var(--cream); text-decoration: none; }
+::selection { background: var(--navy); color: var(--cream); }
+.wrap { max-width: 58rem; margin-inline: auto; padding-inline: 1.25rem; }
+
+/* --- top strip --------------------------------------------- */
+.strip {
+  background: var(--navy-2); color: var(--cream);
+  font-family: "Oswald", sans-serif; font-size: 0.8rem;
+  letter-spacing: 0.2em; text-transform: uppercase;
+}
+.strip .wrap { display: flex; flex-wrap: wrap; gap: 0.3rem 1.6rem; justify-content: space-between; padding-block: 0.5rem; }
+.strip a { color: var(--cream); text-decoration: none; }
+.strip a:hover { background: var(--cream); color: var(--navy-2); }
+
+/* --- poster masthead --------------------------------------- */
+.poster {
+  background:
+    radial-gradient(circle at 1px 1px, rgba(30, 58, 86, 0.16) 1px, transparent 1.6px),
+    var(--cream);
+  background-size: 7px 7px;
+  border-bottom: 6px solid var(--navy);
+  text-align: center; padding: 3rem 1rem 0;
+  overflow: hidden;
+}
+.stars { color: var(--red); font-size: 1.5rem; letter-spacing: 1.6em; padding-left: 1.6em; margin: 0 0 1rem; }
+.bulletin {
+  font-family: "Oswald", sans-serif; font-weight: 600; font-size: 0.95rem;
+  letter-spacing: 0.5em; padding-left: 0.5em; text-transform: uppercase; color: var(--navy); margin: 0 0 1.4rem;
+}
+.poster h1 {
+  font-family: "Anton", "Oswald", sans-serif; font-weight: 400;
+  text-transform: uppercase; line-height: 0.95; margin: 0 auto 0.6rem;
+  font-size: clamp(3.2rem, 11vw, 7rem); color: var(--navy);
+  max-width: 12ch;
+}
+.poster h1 em { font-style: normal; color: var(--red); display: block; }
+.poster .standfirst {
+  max-width: 44rem; margin: 1.6rem auto 0; font-size: 1.02rem; line-height: 1.6;
+  color: var(--ink);
+}
+.poster .byrow {
+  display: flex; justify-content: center; flex-wrap: wrap; gap: 0.3rem 2.4rem;
+  font-family: "Oswald", sans-serif; font-size: 0.8rem; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--navy); margin: 1.6rem 0 0; padding-bottom: 2.2rem;
+}
+/* red ribbon */
+.ribbon-row { position: relative; margin-top: 0.6rem; }
+.ribbon {
+  display: block; background: var(--red); color: var(--cream);
+  font-family: "Oswald", sans-serif; font-weight: 600;
+  font-size: clamp(1rem, 2.6vw, 1.45rem); letter-spacing: 0.3em; text-transform: uppercase;
+  padding: 0.55rem 1rem; transform: rotate(-1.6deg) scale(1.02);
+  box-shadow: 0 4px 0 rgba(22, 41, 61, 0.25);
+}
+
+/* --- article ----------------------------------------------- */
+.body { max-width: var(--measure); margin: 3rem auto 0; padding-inline: 1.25rem; }
+.body > p { margin: 0 0 1.15em; }
+.body > p:first-of-type::first-letter {
+  font-family: "Anton", sans-serif; color: var(--red); float: left;
+  font-size: 3.9em; line-height: 0.8; padding: 0.06em 0.12em 0 0;
+}
+.body h2 {
+  font-family: "Oswald", sans-serif; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.08em; font-size: 1.7rem; color: var(--navy);
+  margin: 2.2em 0 0.7em; line-height: 1.15;
+}
+.body h2::after {
+  content: ""; display: block; width: 4.5rem; height: 0.5rem;
+  background: var(--red); margin-top: 0.45rem;
+}
+.body em { font-style: italic; }
+.body .dinkus { text-align: center; color: var(--red); font-size: 1.2rem; letter-spacing: 1.4em; padding-left: 1.4em; margin: 2em 0; }
+/* factbox → PRODUCTION SCOREBOARD */
+.body .factbox { background: var(--navy); color: var(--cream); margin: 2.2em 0; padding: 0 0 0.6rem; }
+.body .factbox-title {
+  margin: 0; padding: 0.7rem 1.2rem 0.55rem; font-family: "Oswald", sans-serif;
+  font-weight: 600; font-size: 1.05rem; letter-spacing: 0.24em; text-transform: uppercase;
+  border-bottom: 3px double rgba(243, 234, 211, 0.5); color: var(--cream);
+}
+.body .factbox-title::before { content: "★ "; color: #e8c15a; }
+.body .factbox-title::after {
+  content: " — scoreboard";
+  display: inline; width: auto; height: auto; background: none; margin: 0;
+}
+.body .factbox dl { margin: 0; padding: 0.5rem 1.2rem 0.4rem; }
+.body .factbox .row { display: flex; justify-content: space-between; gap: 1.6rem; padding: 0.5rem 0; border-bottom: 1px dotted rgba(243, 234, 211, 0.45); }
+.body .factbox .row:last-child { border-bottom: 0; }
+.body .factbox dt { font-family: "Oswald", sans-serif; font-weight: 400; font-size: 0.82rem; letter-spacing: 0.14em; text-transform: uppercase; color: #cfdcea; padding-top: 0.2em; }
+.body .factbox dd { margin: 0; text-align: right; font-family: "Oswald", sans-serif; font-weight: 600; font-size: 1.02rem; color: #f5d878; }
+/* pullquote → poster slogan */
+.body .pullquote { margin: 2.4em 0; text-align: center; border-block: 4px solid var(--navy); padding: 1.3rem 0.6rem 1.1rem; }
+.body .pullquote p {
+  margin: 0; font-family: "Oswald", sans-serif; font-weight: 700;
+  font-size: clamp(1.5rem, 4.4vw, 2.2rem); line-height: 1.2;
+  text-transform: uppercase; color: var(--red); letter-spacing: 0.04em;
+}
+.body .pullquote p::before { content: "★ "; color: var(--navy); }
+.body .pullquote p::after { content: " ★"; color: var(--navy); }
+.body .pullquote cite { display: block; margin-top: 0.7rem; font-style: normal; font-family: "Oswald", sans-serif; font-size: 0.8rem; letter-spacing: 0.26em; text-transform: uppercase; color: var(--navy); }
+
+/* --- sources + exit ---------------------------------------- */
+.returns { max-width: var(--measure); margin: 3rem auto 0; padding-inline: 1.25rem; font-size: 0.9rem; }
+.returns h2 { font-family: "Oswald", sans-serif; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; font-size: 1.15rem; color: var(--navy); border-bottom: 3px double var(--navy); padding-bottom: 0.35rem; }
+.returns ol { margin: 0.8rem 0 0; padding-left: 1.5rem; }
+.returns li { margin-bottom: 0.4rem; }
+.bond {
+  margin-top: 3.5rem; background: var(--red); color: var(--cream); text-align: center;
+  padding: 2.2rem 1.25rem 2.6rem;
+  background-image: radial-gradient(circle at 1px 1px, rgba(0, 0, 0, 0.12) 1px, transparent 1.6px);
+  background-size: 7px 7px;
+}
+.bond .line1 { font-family: "Oswald", sans-serif; font-weight: 600; letter-spacing: 0.4em; text-transform: uppercase; font-size: 0.85rem; margin: 0 0 0.5rem; }
+.bond .line2 { font-family: "Anton", sans-serif; font-size: clamp(1.7rem, 5vw, 2.8rem); text-transform: uppercase; margin: 0 0 1.4rem; line-height: 1.05; }
+.bond ul { list-style: none; margin: 0; padding: 0; display: flex; justify-content: center; flex-wrap: wrap; gap: 0.6rem 2.4rem; font-family: "Oswald", sans-serif; font-size: 0.85rem; letter-spacing: 0.18em; text-transform: uppercase; }
+.bond a { color: var(--cream); }
+.bond a:hover { background: var(--cream); color: var(--red); }
+</style>
+</head>
+<body>
+
+<div class="strip">
+  <div class="wrap">
+    <span>{{ site.name }} // Theme Thunder № 3</span>
+    <span>War production bulletin · {{ art.date | readableDate }}</span>
+    <a href="{{ art.url }}">Standard edition →</a>
+  </div>
+</div>
+
+<header class="poster">
+  <p class="stars" aria-hidden="true">★ ★ ★</p>
+  <p class="bulletin">The Production Front · Bulletin № 155</p>
+  <h1>The Shell <em>Game</em></h1>
+  <p class="standfirst">{{ art.data.dek }}</p>
+  <p class="byrow">
+    <span>{{ art.data.byline }}</span>
+    <span>Kept from open returns</span>
+  </p>
+  <div class="ribbon-row">
+    <span class="ribbon">Ammunition is an industry — keep it alive</span>
+  </div>
+</header>
+
+<article class="body" aria-label="Article, production-bulletin edition">
+{{ art.templateContent | safe }}
+</article>
+
+{%- if art.data.sources %}
+<section class="returns" aria-label="Sources">
+  <h2>Official returns &amp; papers cited</h2>
+  <ol>
+    {%- for s in art.data.sources %}
+    <li>{{ s | safe }}</li>
+    {%- endfor %}
+  </ol>
+</section>
+{%- endif %}
+
+<footer class="bond">
+  <p class="line1">Read — file — pass it on</p>
+  <p class="line2">Production wins wars</p>
+  <ul>
+    <li><a href="{{ art.url }}">Standard edition</a></li>
+    <li><a href="/thunder/">Theme Thunder index</a></li>
+    <li><a href="/">{{ site.name }} front page</a></li>
+  </ul>
+</footer>
+
+</body>
+</html>

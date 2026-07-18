@@ -78,6 +78,30 @@ all-dispatches list, prev/next pagers, related cards and the RSS feed.
 - `sources:` — list of strings (HTML allowed for `<em>`), renders the
   "Sources & further reading" block.
 
+### Theme Thunder (period-correct editions)
+
+`/thunder/` is the journal's period-print channel: the top articles re-set in
+standalone designs native to their subject's era (a 1915 broadsheet, a 1918
+assault manual, a Soviet poster, a NATOPS manual, a war-production bulletin,
+a 1982 radar scope). Each edition is one self-contained `.njk` file in
+`src/thunder/` — its own fonts and CSS, no shared stylesheet — that pulls the
+standard article's rendered body via the `articleBySlug` filter, so the words
+live in one place and the design in another.
+
+To link an article to its themed edition, add to its front matter:
+
+```yaml
+thunder:
+  url: "/thunder/my-article/"
+  label: "Read it as a 1915 broadsheet"
+  note: "blackletter, column rules, price one penny"
+```
+
+That renders the ⚡ cross-link box under the byline. Add a matching card in
+`src/thunder/index.njk`. To theme a new article, copy the closest existing
+edition in `src/thunder/` and restyle the same component classes
+(`.factbox`, `.pullquote`, `.dinkus`) in its embedded CSS.
+
 ### The two other page types
 
 - **Platform dossier** — add `layout: layouts/dossier.njk` plus `specs:`
@@ -94,6 +118,7 @@ src/
   _data/         site.js (name/branding), sections.js (nav+archives), upcoming.js (teaser cards)
   _includes/     layouts (base, article, dossier, wire) + partials
   articles/      one .md per article
+  thunder/       Theme Thunder — standalone period-correct editions + index
   wire/          one .md per wire edition
   css/style.css  the whole design system
   images/        drop photos here, reference as /images/…
@@ -106,8 +131,10 @@ eleventy.config.js   filters & shortcodes
 - **Rebrand**: edit `src/_data/site.js`; colours/fonts in `src/css/style.css`.
 - **Sections**: edit `src/_data/sections.js` — nav, archives and footer update
   everywhere.
-- **Sample content**: the three articles are grounded in real history with real
+- **Sample content**: the six articles are grounded in real history with real
   sources, but re-verify every figure before putting your name on them. The
-  Wire items are illustrative, not reported news — replace them.
+  Wire items are illustrative, not reported news — replace them. The 1915
+  "telegrams" and adverts on the broadsheet Theme Thunder page are period
+  pastiche, labelled as such.
 - The masthead date is the build date; "Vol. I — No. 12" is a string in
   `site.js`.

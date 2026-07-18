@@ -21,6 +21,7 @@
         <li><a href="{{ ('/section/' + s.slug + '/') }}"{% if page.url == '/section/' + s.slug + '/' %} aria-current="page"{% endif %}>{{ s.title }}</a></li>
         {%- endfor %}
         <li><a href="{{ '/wire/' }}"{% if '/wire/' in page.url %} aria-current="page"{% endif %}>The Wire</a></li>
+        <li class="thunder"><a href="{{ '/thunder/' }}"{% if '/thunder/' in page.url %} aria-current="page"{% endif %}>Theme Thunder <span aria-hidden="true">⚡</span></a></li>
         <li class="kit"><a href="{{ '/kit/' }}"{% if page.url == '/kit/' %} aria-current="page"{% endif %}>Kit: Components</a></li>
       </ul>
     </div>

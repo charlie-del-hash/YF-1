@@ -13,6 +13,12 @@
     <span class="author">{{ byline or ("By the " + site.name + " desk") }}</span>
     <span class="meta">{{ page.date | readableDate }} · {{ content | readingTime }}{% if tags | sectionOf %} · Filed under {{ (tags | sectionOf).title }}{% endif %}</span>
   </div>
+  {%- if thunder %}
+  <aside class="thunder-link">
+    <span class="bolt" aria-hidden="true">⚡</span>
+    <span class="tl-text"><a href="{{ thunder.url }}"><strong>Theme Thunder:</strong> {{ thunder.label }}</a>{% if thunder.note %} <span class="tl-note">— {{ thunder.note }}</span>{% endif %}</span>
+  </aside>
+  {%- endif %}
 </header>
 {%- if hero %}
 <div class="article-hero">{{ hero | frameHtml | safe }}</div>

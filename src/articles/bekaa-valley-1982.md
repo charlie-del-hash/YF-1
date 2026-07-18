@@ -8,6 +8,10 @@ byline: "By the Air Warfare Desk"
 tags: ["air-warfare", "history"]
 topics: ["Air Warfare", "Israel", "Syria", "Cold War", "SEAD", "Electronic Warfare"]
 featured: true
+thunder:
+  url: "/thunder/bekaa-valley-1982/"
+  label: "Replay it on a 1982 radar scope"
+  note: "green phosphor, scanlines and track data"
 hero:
   ratio: "wide"
   label: "Hero image · 21:9 · replace via front matter src"

@@ -903,6 +903,63 @@ figcaption .credit::before { content: "— "; }
 }
 
 /* --------------------------------------------------------------------------
+   17b. Theme Thunder — nav accent, article cross-link, front-page band
+   -------------------------------------------------------------------------- */
+.mainnav .thunder a { color: var(--alert); }
+.mainnav .thunder a:hover { color: var(--alert); text-decoration: underline; }
+
+.thunder-link {
+  display: flex;
+  align-items: baseline;
+  gap: 0.65rem;
+  margin-top: 1.3rem;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--alert);
+  background: var(--paper-2);
+  padding: 0.6rem 0.9rem;
+  font: 500 0.8rem var(--mono);
+  letter-spacing: 0.04em;
+}
+.thunder-link .bolt { color: var(--alert); flex: none; }
+.thunder-link a { text-decoration: none; }
+.thunder-link a:hover strong { text-decoration: underline; }
+.thunder-link strong { color: var(--alert); font-weight: 700; }
+.thunder-link .tl-note { color: var(--ink-2); }
+
+.thunderband {
+  margin-top: 3.2rem;
+  border: 1px solid var(--line-strong);
+  border-left: 6px solid var(--alert);
+  background: var(--paper-2);
+}
+.thunderband .tb-inner {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 1.6rem;
+  padding: 1.5rem 1.8rem;
+}
+.thunderband .tb-bolt { font-size: 2rem; line-height: 1; color: var(--alert); }
+.thunderband .kicker { color: var(--alert); }
+.thunderband .tb-hed {
+  font-size: 1.45rem;
+  line-height: 1.2;
+  margin: 0.3rem 0 0.4rem;
+  letter-spacing: -0.01em;
+}
+.thunderband .tb-dek {
+  margin: 0;
+  color: var(--ink-2);
+  font-size: 0.92rem;
+  max-width: 46rem;
+}
+.thunderband .tb-more { white-space: nowrap; }
+@media (max-width: 980px) {
+  .thunderband .tb-inner { grid-template-columns: 1fr; gap: 0.8rem; }
+  .thunderband .tb-bolt { display: none; }
+}
+
+/* --------------------------------------------------------------------------
    18. Responsive
    -------------------------------------------------------------------------- */
 @media (max-width: 980px) {

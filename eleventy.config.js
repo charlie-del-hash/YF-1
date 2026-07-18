@@ -77,6 +77,12 @@ module.exports = function (eleventyConfig) {
 
   eleventyConfig.addFilter("frameHtml", frameHtml);
 
+  /* look up one article by its file slug — used by the Theme Thunder pages
+     to re-render an existing article inside a period-correct design */
+  eleventyConfig.addFilter("articleBySlug", (coll = [], slug) =>
+    coll.find((p) => p.fileSlug === slug) || null
+  );
+
   /* ---------- shortcodes ---------- */
 
   eleventyConfig.addShortcode("frame", frameHtml);

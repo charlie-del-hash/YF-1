@@ -1,0 +1,222 @@
+---
+title: "Theme Thunder — six dispatches in the print of their day"
+---
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ title }} — {{ site.name }}</title>
+<meta name="description" content="Theme Thunder: the journal's top dispatches re-set in period-correct designs — a 1915 broadsheet, a 1918 assault manual, a Soviet poster, a NATOPS manual, a war-production bulletin and a 1982 radar scope.">
+<meta property="og:site_name" content="{{ site.name }}">
+<meta property="og:title" content="Theme Thunder — {{ site.name }}">
+<meta property="og:description" content="Six dispatches, re-set in the print of their day. Same words, period type.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23101014'/%3E%3Cpath d='M9.5 1L4 9h3l-1.5 6L11 6.5H7.8z' fill='%23f5c518'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;500;600&family=Old+Standard+TT:ital@0;1&family=Stardos+Stencil:wght@700&family=UnifrakturCook:wght@700&family=UnifrakturMaguntia&family=VT323&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   THEME THUNDER — channel select
+   Six dispatches, six decades of print. Each card borrows the
+   type and palette of the edition behind it.
+   ============================================================ */
+:root {
+  --void:  #0f0f13;
+  --void-2:#17171d;
+  --bone:  #e9e6da;
+  --dim:   #8b8b96;
+  --bolt:  #f5c518;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--void); color: var(--bone);
+  font-family: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  line-height: 1.6; font-size: 1rem;
+}
+a { color: inherit; text-decoration: none; }
+::selection { background: var(--bolt); color: var(--void); }
+.wrap { max-width: 72rem; margin-inline: auto; padding-inline: 1.4rem; }
+
+/* --- header ------------------------------------------------ */
+.topline {
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.3rem 1.6rem;
+  padding: 0.8rem 0; font-size: 0.8rem; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--dim); border-bottom: 1px solid #26262e;
+}
+.topline a:hover { color: var(--bolt); }
+.hero { padding: 4.2rem 0 3.2rem; }
+.hero .bolt { color: var(--bolt); }
+.hero h1 {
+  font-family: "Anton", sans-serif; font-weight: 400; text-transform: uppercase;
+  font-size: clamp(3rem, 10vw, 6.8rem); line-height: 0.92; margin: 0 0 1.4rem;
+  letter-spacing: 0.01em;
+}
+.hero h1 .flash { color: var(--bolt); }
+.hero .sub { max-width: 44rem; color: var(--bone); font-size: 1.02rem; margin: 0 0 0.6rem; }
+.hero .subsub { color: var(--dim); font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase; margin: 0; }
+
+/* --- channel grid ------------------------------------------ */
+.channels {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
+  gap: 1.4rem; padding-bottom: 4rem;
+}
+.ch {
+  position: relative; display: flex; flex-direction: column; min-height: 21rem;
+  border: 1px solid #2c2c35; overflow: hidden;
+  transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+}
+.ch:hover, .ch:focus-visible {
+  transform: translateY(-4px);
+  border-color: var(--bolt);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.55);
+}
+.ch-top {
+  display: flex; justify-content: space-between; align-items: baseline;
+  gap: 1rem; margin-bottom: auto;
+}
+.ch-no { font-size: 0.7rem; letter-spacing: 0.2em; opacity: 0.75; white-space: nowrap; }
+.ch-era { font-size: 0.72rem; letter-spacing: 0.24em; text-transform: uppercase; opacity: 0.9; }
+.ch-body { display: flex; flex-direction: column; flex: 1; padding: 1.1rem 1.2rem 1.15rem; }
+.ch-name { margin: 1.6rem 0 0.55rem; line-height: 1; }
+.ch-title { font-size: 0.86rem; line-height: 1.5; margin: 0 0 1.2rem; opacity: 0.92; }
+.ch-cta { margin-top: auto; font-size: 0.75rem; letter-spacing: 0.24em; text-transform: uppercase; }
+.ch-cta::after { content: " →"; }
+
+/* № 1 — scope 1982 */
+.ch--scope { background: radial-gradient(ellipse at 50% 0%, #0a2413 0%, #041008 70%); color: #b9f5cc; }
+.ch--scope::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: repeating-linear-gradient(0deg, rgba(0,0,0,0.28) 0 1px, transparent 1px 3px);
+}
+.ch--scope .ch-top { color: #46915f; }
+.ch--scope .ch-name { font-family: "VT323", monospace; font-size: 3rem; color: #3aff77; text-shadow: 0 0 12px rgba(58,255,119,0.5); }
+.ch--scope .ch-cta { color: #ffb000; }
+/* № 2 — natops 1974 */
+.ch--natops { background: #f0ece0; color: #1c1c1a; }
+.ch--natops .ch-body { border: 2px solid #1c1c1a; margin: 0.55rem; }
+.ch--natops .ch-name { font-family: "Stardos Stencil", monospace; font-weight: 700; font-size: 2.1rem; text-transform: uppercase; }
+.ch--natops .ch-top { color: #56564e; }
+.ch--natops .ch-cta { color: #a8271b; }
+/* № 3 — production front */
+.ch--prod { background: #f3ead3; color: #23241f; }
+.ch--prod .ch-body { border-top: 8px solid #b02e26; }
+.ch--prod .ch-name { font-family: "Anton", sans-serif; font-size: 2.3rem; text-transform: uppercase; color: #b02e26; }
+.ch--prod .ch-top { color: #1e3a56; }
+.ch--prod .ch-cta {
+  background: #1e3a56; color: #f3ead3;
+  margin: auto -1.2rem -1.15rem; padding: 0.85rem 1.2rem;
+}
+/* № 4 — feldheer 1918 */
+.ch--feld { background: radial-gradient(ellipse 120% 110% at 50% 30%, #e7d9b8 55%, #cdb88b 100%); color: #2e2717; }
+.ch--feld .ch-name { font-family: "UnifrakturMaguntia", serif; font-size: 2.5rem; }
+.ch--feld .ch-top { color: #6d5f43; }
+.ch--feld .ch-cta { color: #9c2b1e; }
+/* № 5 — agitprop 1949 */
+.ch--agit { background: #efe3cb; color: #211d18; }
+.ch--agit .ch-top {
+  background: #c02418; color: #efe3cb;
+  margin: -1.1rem -1.2rem 0; padding: 0.85rem 1.2rem 0.7rem;
+}
+.ch--agit .ch-name {
+  font-family: "Bebas Neue", sans-serif; font-size: 3rem; text-transform: uppercase;
+  color: #c02418; text-shadow: 0.14rem 0.14rem 0 #211d18;
+}
+.ch--agit .ch-cta { color: #99190f; }
+/* № 6 — broadsheet 1915 */
+.ch--sheet { background: #f1e6cd; color: #241f16; }
+.ch--sheet .ch-body { border-block: 3px double #241f16; margin: 0.8rem 0.9rem; }
+.ch--sheet .ch-name { font-family: "UnifrakturCook", serif; font-weight: 700; font-size: 2.2rem; }
+.ch--sheet .ch-title { font-family: "Old Standard TT", serif; font-style: italic; font-size: 0.95rem; }
+.ch--sheet .ch-top { color: #57492f; }
+.ch--sheet .ch-cta { color: #241f16; }
+
+/* --- footer ------------------------------------------------ */
+.foot {
+  border-top: 1px solid #26262e; padding: 1.6rem 0 3rem;
+  color: var(--dim); font-size: 0.82rem; letter-spacing: 0.08em;
+}
+.foot a { color: var(--bone); }
+.foot a:hover { color: var(--bolt); }
+@media (prefers-reduced-motion: reduce) { .ch { transition: none; } }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="topline">
+    <span>{{ site.name }} // special channel</span>
+    <a href="/">← Back to the front page</a>
+  </div>
+
+  <header class="hero">
+    <h1>Theme <span class="flash">⚡</span> Thunder</h1>
+    <p class="sub">Six dispatches from the journal, re-set in the print of their day — a London broadsheet, a field manual, a production poster, a flight manual, an agitprop sheet, a radar scope. Same words. Period type.</p>
+    <p class="subsub">Every edition links back to its standard version — pick your channel.</p>
+  </header>
+
+  <nav class="channels" aria-label="Theme Thunder editions">
+
+    <a class="ch ch--sheet" href="/thunder/shell-scandal-1915/">
+      <span class="ch-body">
+        <span class="ch-top"><span class="ch-era">London · Friday morning</span><span class="ch-no">№ 6 · 1915</span></span>
+        <span class="ch-name">The Daily Sitrep.</span>
+        <span class="ch-title">The shell scandal of 1915 — the shortage that toppled a government, at a penny a copy.</span>
+        <span class="ch-cta">Read the front page</span>
+      </span>
+    </a>
+
+    <a class="ch ch--feld" href="/thunder/storm-troops-1918/">
+      <span class="ch-body">
+        <span class="ch-top"><span class="ch-era">Großes Hauptquartier</span><span class="ch-no">№ 4 · 1918</span></span>
+        <span class="ch-name">Der Angriff</span>
+        <span class="ch-title">Storm troops, 1918 — the reinvention of the infantry attack, as a field-printed assault manual.</span>
+        <span class="ch-cta">Open the manual</span>
+      </span>
+    </a>
+
+    <a class="ch ch--prod" href="/thunder/shell-game-155mm/">
+      <span class="ch-body">
+        <span class="ch-top"><span class="ch-era">War production bulletin</span><span class="ch-no">№ 3 · 1943</span></span>
+        <span class="ch-name">More Shells!</span>
+        <span class="ch-title">The 155 mm shell game — the West relearns that ammunition is an industry, in poster type.</span>
+        <span class="ch-cta">See the bulletin</span>
+      </span>
+    </a>
+
+    <a class="ch ch--agit" href="/thunder/kalashnikov-century/">
+      <span class="ch-body">
+        <span class="ch-top"><span class="ch-era">Госиздат · agitprop</span><span class="ch-no">№ 5 · 1949</span></span>
+        <span class="ch-name">AK — 100 000 000</span>
+        <span class="ch-title">The Kalashnikov century — one rifle arms half the world, told as a constructivist poster.</span>
+        <span class="ch-cta">Unroll the poster</span>
+      </span>
+    </a>
+
+    <a class="ch ch--natops" href="/thunder/f14-tomcat-dossier/">
+      <span class="ch-body">
+        <span class="ch-top"><span class="ch-era">Navair · flight manual</span><span class="ch-no">№ 2 · 1974</span></span>
+        <span class="ch-name">NATOPS F-14A</span>
+        <span class="ch-title">The Tomcat dossier — typewriter text, warning boxes, punch holes and a record of changes.</span>
+        <span class="ch-cta">File the manual</span>
+      </span>
+    </a>
+
+    <a class="ch ch--scope" href="/thunder/bekaa-valley-1982/">
+      <span class="ch-body">
+        <span class="ch-top"><span class="ch-era">GCI station · replay mode</span><span class="ch-no">№ 1 · 1982</span></span>
+        <span class="ch-name">SCOPE 1982</span>
+        <span class="ch-title">The Bekaa Valley air battles — replayed in green phosphor on a ground-controlled-intercept console.</span>
+        <span class="ch-cta">Light the tube</span>
+      </span>
+    </a>
+
+  </nav>
+
+  <footer class="foot">
+    <p>Theme Thunder is {{ site.name }}'s period-print channel: the same article, unaltered, re-set in a design native to its subject's era. · <a href="/">Front page</a> · <a href="/articles/">All dispatches</a></p>
+  </footer>
+</div>
+
+</body>
+</html>
