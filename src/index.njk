@@ -1,0 +1,100 @@
+---
+layout: layouts/base.njk
+eleventyExcludeFromCollections: true
+---
+{%- set featured = collections.articles | findFeatured %}
+{%- set others = collections.articles | without(featured) | newestFirst %}
+{%- set latestWire = collections.wire | last %}
+
+<!-- ================= LEAD: feature story + compact stack ================= -->
+<section class="lead" aria-label="Lead stories">
+  <article class="feature">
+    {%- if featured.data.hero %}
+    {{ featured.data.hero | frameHtml | safe }}
+    {%- endif %}
+    <span class="kicker">
+      {%- for k in featured.data.kicker -%}
+        {%- if not loop.first %}<span class="sep">//</span>{% endif -%}
+        {%- set slug = k | sectionSlugFor -%}
+        {%- if slug %}<a href="{{ ('/section/' + slug + '/') }}">{{ k }}</a>{% else %}{{ k }}{% endif -%}
+      {%- endfor -%}
+    </span>
+    <h1 class="feature-hed"><a href="{{ featured.url }}">{{ featured.data.title }}</a></h1>
+    <p class="feature-dek">{{ featured.data.dek }}</p>
+    <p class="card-meta">{{ featured.data.byline }} · {{ featured.date | readableDate }}</p>
+  </article>
+
+  <aside class="stack" aria-label="Also this week">
+    <h2 class="stack-title">Also This Week</h2>
+    {%- for item in others | limitTo(3) %}
+    <article class="card">
+      <span class="kicker">{{ (item.data.tags | sectionOf).title if (item.data.tags | sectionOf) else "Dispatch" }}</span>
+      <h3 class="card-hed"><a href="{{ item.url }}">{{ item.data.title }}</a></h3>
+      <p class="card-meta">{{ item.date | readableDate }}</p>
+    </article>
+    {%- endfor %}
+    {%- if latestWire %}
+    <article class="card">
+      <span class="kicker">The Wire</span>
+      <h3 class="card-hed"><a href="{{ latestWire.url }}">{{ latestWire.data.title }}: {{ latestWire.data.dek | truncate(60) }}</a></h3>
+      <p class="card-meta">Briefs · {{ latestWire.date | readableDate }}</p>
+    </article>
+    {%- endif %}
+  </aside>
+</section>
+
+<!-- ================= IN THE WORKS grid ================= -->
+{%- if upcoming.length %}
+<section aria-label="In the works">
+  <div class="band">
+    <h2 class="band-label">In The Works</h2>
+    <span class="rule" aria-hidden="true"></span>
+    <a class="more" href="{{ '/articles/' }}">All dispatches</a>
+  </div>
+  <div class="grid grid--3">
+    {%- for item in upcoming %}
+    <article class="card">
+      <span class="kicker">{{ item.kicker }}</span>
+      <h3 class="card-hed">{{ item.title }}</h3>
+      <p class="card-dek">{{ item.dek }}</p>
+      <p class="card-meta">Coming soon</p>
+    </article>
+    {%- endfor %}
+  </div>
+</section>
+{%- endif %}
+
+<!-- ================= DOSSIER PROMO band ================= -->
+<section class="promo inverse" aria-label="Featured dossier">
+  <div>
+    <span class="kicker">The Dossier Series</span>
+    <h2 class="promo-hed">The Tomcat file</h2>
+    <p class="promo-dek">Every week, one platform taken apart: origins, design, combat record and afterlife. This week — Grumman's swing-wing fleet defender, from the F-111B debacle to the last airframes flying in Iran.</p>
+    <a class="more" href="{{ '/articles/f14-tomcat-dossier/' }}">Read the full dossier</a>
+  </div>
+  <dl class="promo-facts">
+    <div class="row"><dt>First flight</dt><dd>21 Dec 1970</dd></div>
+    <div class="row"><dt>Airframes built</dt><dd>712</dd></div>
+    <div class="row"><dt>Top speed</dt><dd>Mach 2.34</dd></div>
+    <div class="row"><dt>Still flying with</dt><dd>Iran (IRIAF)</dd></div>
+  </dl>
+</section>
+
+<!-- ================= THE WIRE teaser ================= -->
+{%- if latestWire and latestWire.data.teasers %}
+<section aria-label="The Wire">
+  <div class="band">
+    <h2 class="band-label">The Wire</h2>
+    <span class="rule" aria-hidden="true"></span>
+    <a class="more" href="{{ '/wire/' }}">All briefs</a>
+  </div>
+  <div class="grid grid--3">
+    {%- for t in latestWire.data.teasers %}
+    <article class="card">
+      <span class="dateline">{{ t.dateline }}</span>
+      <h3 class="card-hed"><a href="{{ latestWire.url }}">{{ t.hed }}</a></h3>
+    </article>
+    {%- endfor %}
+  </div>
+</section>
+{%- endif %}

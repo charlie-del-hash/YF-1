@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% if title %}{{ title }} — {{ site.name }}{% else %}{{ site.name }} — {{ site.strapline }}{% endif %}</title>
+<meta name="description" content="{{ dek or description or site.description }}">
+{%- if noindex %}
+<meta name="robots" content="noindex">
+{%- endif %}
+{%- if site.url %}
+<link rel="canonical" href="{{ (page.url | url) | absoluteUrl(site.url) }}">
+<meta property="og:url" content="{{ (page.url | url) | absoluteUrl(site.url) }}">
+{%- endif %}
+<meta property="og:site_name" content="{{ site.name }}">
+<meta property="og:title" content="{{ title or site.name }}">
+<meta property="og:description" content="{{ dek or description or site.description }}">
+<meta property="og:type" content="{{ ogType or 'website' }}">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23556230'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ '/css/style.css' }}">
+<link rel="alternate" type="application/rss+xml" title="{{ site.name }}" href="{{ '/feed.xml' }}">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+{% include "partials/masthead.njk" %}
+
+<main id="main" class="wrap">
+{{ content | safe }}
+</main>
+
+{% include "partials/footer.njk" %}
+
+</body>
+</html>

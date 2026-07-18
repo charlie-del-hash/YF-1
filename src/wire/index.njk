@@ -1,0 +1,25 @@
+---
+layout: layouts/base.njk
+title: "The Wire"
+permalink: /wire/
+description: "Weekly procurement and arsenal briefs."
+tags: []
+eleventyExcludeFromCollections: true
+---
+<div class="band" style="margin-top: 2.4rem;">
+  <h1 class="band-label">The Wire — All Editions</h1>
+  <span class="rule" aria-hidden="true"></span>
+</div>
+
+<div class="wire-list">
+  {%- for item in collections.wire | newestFirst %}
+  <article class="wire-item">
+    <span class="wire-no">№ {{ item.data.edition }}</span>
+    <div>
+      <span class="dateline">{{ item.date | readableDate }}</span>
+      <h2 class="wire-hed"><a href="{{ item.url }}" style="text-decoration: none;">{{ item.data.title }}</a></h2>
+      <p>{{ item.data.dek }}</p>
+    </div>
+  </article>
+  {%- endfor %}
+</div>

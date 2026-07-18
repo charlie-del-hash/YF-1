@@ -1,0 +1,36 @@
+<footer class="footer inverse">
+  <div class="wrap footer-grid">
+    <div>
+      <a class="logotype" href="{{ '/' }}">{{ site.name }}<span class="dot" aria-hidden="true"></span></a>
+      <p class="footer-blurb">{{ site.footerBlurb }}</p>
+    </div>
+    <nav aria-label="Footer sections">
+      <h3>Sections</h3>
+      <ul>
+        {%- for s in sections %}
+        <li><a href="{{ ('/section/' + s.slug + '/') }}">{{ s.title }}</a></li>
+        {%- endfor %}
+      </ul>
+    </nav>
+    <nav aria-label="Site">
+      <h3>Site</h3>
+      <ul>
+        <li><a href="{{ '/' }}">Front page</a></li>
+        <li><a href="{{ '/articles/' }}">All dispatches</a></li>
+        <li><a href="{{ '/wire/' }}">The Wire</a></li>
+        <li><a href="{{ '/feed.xml' }}">RSS feed</a></li>
+        <li><a href="{{ '/kit/' }}">Component kit</a></li>
+      </ul>
+    </nav>
+    <div>
+      <h3>Colophon</h3>
+      <p class="footer-blurb">{{ site.colophon }}</p>
+    </div>
+  </div>
+  <div class="footer-strip">
+    <div class="wrap">
+      <span>{{ site.copyright }}</span>
+      <span>{{ site.motto }}</span>
+    </div>
+  </div>
+</footer>

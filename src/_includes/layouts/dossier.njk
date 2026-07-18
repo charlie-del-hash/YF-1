@@ -1,0 +1,54 @@
+---
+layout: layouts/base.njk
+ogType: article
+---
+<article>
+{% include "partials/arthead.njk" %}
+
+<div class="article-cols" style="margin-top: 2.4rem;">
+  <div class="prose prose--dropcap">
+{{ content | safe }}
+  </div>
+
+  <aside class="rail" aria-label="Technical data">
+    {%- if specs %}
+    <div class="specbox">
+      <h2 class="specbox-head">{{ specs.title }}</h2>
+      <table>
+        {%- for row in specs.rows %}
+        <tr><th scope="row">{{ row[0] }}</th><td>{{ row[1] | safe }}</td></tr>
+        {%- endfor %}
+      </table>
+      {%- if specs.foot %}
+      <p class="specbox-foot">{{ specs.foot }}</p>
+      {%- endif %}
+    </div>
+    {%- endif %}
+    {%- if railNote %}
+    <p class="rail-note">{{ railNote }}</p>
+    {%- endif %}
+  </aside>
+</div>
+
+{%- if variants %}
+<div class="datatable">
+  <table>
+    <caption>{{ variants.caption }}</caption>
+    <thead>
+      <tr>{% for h in variants.head %}<th>{{ h }}</th>{% endfor %}</tr>
+    </thead>
+    <tbody>
+      {%- for row in variants.rows %}
+      <tr>{% for cell in row %}<td>{{ cell | safe }}</td>{% endfor %}</tr>
+      {%- endfor %}
+      {%- if variants.totalLabel %}
+      <tr><td colspan="{{ variants.head.length - 1 }}">{{ variants.totalLabel }}</td><td>{{ variants.totalValue }}</td></tr>
+      {%- endif %}
+    </tbody>
+  </table>
+</div>
+{%- endif %}
+
+{% include "partials/timeline.njk" %}
+{% include "partials/article-footer.njk" %}
+</article>

@@ -1,0 +1,37 @@
+---
+layout: layouts/base.njk
+pagination:
+  data: sections
+  size: 1
+  alias: section
+permalink: "/section/{{ section.slug }}/"
+eleventyComputed:
+  title: "{{ section.title }}"
+  description: "Dispatches filed under {{ section.title }}."
+eleventyExcludeFromCollections: true
+---
+{%- set posts = collections[section.slug] | newestFirst if collections[section.slug] else [] %}
+
+<div class="band" style="margin-top: 2.4rem;">
+  <h1 class="band-label">{{ section.title }}</h1>
+  <span class="rule" aria-hidden="true"></span>
+  <a class="more" href="{{ '/articles/' }}">All dispatches</a>
+</div>
+
+{%- if posts.length %}
+<div class="grid grid--3">
+  {%- for item in posts %}
+  <article class="card">
+    {%- if item.data.hero %}
+    <div class="frame"><span class="frame-label">{{ item.data.hero.label or "Image slot" }}</span></div>
+    {%- endif %}
+    <span class="kicker">{{ (item.data.kicker or []) | first or section.title }}</span>
+    <h2 class="card-hed"><a href="{{ item.url }}">{{ item.data.title }}</a></h2>
+    <p class="card-dek">{{ item.data.dek | truncate(150) }}</p>
+    <p class="card-meta">{{ item.date | readableDate }}</p>
+  </article>
+  {%- endfor %}
+</div>
+{%- else %}
+<p class="rail-note" style="padding: 2rem 0 3rem;">No dispatches filed under {{ section.title }} yet — the section page is ready and will fill as you tag articles with <code>{{ section.slug }}</code>.</p>
+{%- endif %}

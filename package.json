@@ -1,0 +1,16 @@
+{
+  "name": "sitrep-journal",
+  "version": "1.0.0",
+  "private": true,
+  "description": "SITREP — an open-source defence journal. Eleventy static site.",
+  "scripts": {
+    "dev": "eleventy --serve",
+    "build": "eleventy",
+    "build:pages": "eleventy --pathprefix \"/sitrep-journal/\""
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "^3.0.0",
+    "@11ty/eleventy-plugin-rss": "^2.0.2",
+    "markdown-it": "^14.1.0"
+  }
+}

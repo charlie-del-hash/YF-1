@@ -1,0 +1,28 @@
+<header class="masthead">
+  <div class="topstrip">
+    <div class="wrap">
+      <span>{{ site.topstripLeft }}</span>
+      <span>{{ site.topstripRight }}</span>
+    </div>
+  </div>
+  <div class="wrap masthead-core">
+    <p class="masthead-side">{{ site.volume }}</p>
+    <div>
+      <a class="logotype" href="{{ '/' }}">{{ site.name }}<span class="dot" aria-hidden="true"></span></a>
+      <p class="tagline">{{ site.tagline }}</p>
+    </div>
+    <p class="masthead-side right">{{ build.dateDisplay }}</p>
+  </div>
+  <nav class="mainnav" aria-label="Sections">
+    <div class="wrap">
+      <ul>
+        <li><a href="{{ '/' }}"{% if page.url == '/' %} aria-current="page"{% endif %}>Front Page</a></li>
+        {%- for s in sections %}
+        <li><a href="{{ ('/section/' + s.slug + '/') }}"{% if page.url == '/section/' + s.slug + '/' %} aria-current="page"{% endif %}>{{ s.title }}</a></li>
+        {%- endfor %}
+        <li><a href="{{ '/wire/' }}"{% if '/wire/' in page.url %} aria-current="page"{% endif %}>The Wire</a></li>
+        <li class="kit"><a href="{{ '/kit/' }}"{% if page.url == '/kit/' %} aria-current="page"{% endif %}>Kit: Components</a></li>
+      </ul>
+    </div>
+  </nav>
+</header>

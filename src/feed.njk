@@ -1,0 +1,33 @@
+---
+permalink: /feed.xml
+eleventyExcludeFromCollections: true
+---
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>{{ site.name }} — {{ site.strapline }}</title>
+  <subtitle>{{ site.description }}</subtitle>
+  {%- if site.url %}
+  <link href="{{ ('/feed.xml' | url) | absoluteUrl(site.url) }}" rel="self"/>
+  <link href="{{ ('/' | url) | absoluteUrl(site.url) }}"/>
+  <id>{{ ('/' | url) | absoluteUrl(site.url) }}</id>
+  {%- else %}
+  <link href="/feed.xml" rel="self"/>
+  <link href="/"/>
+  <id>urn:sitrep-journal</id>
+  {%- endif %}
+  <updated>{{ collections.articles | getNewestCollectionItemDate | dateToRfc3339 }}</updated>
+  {%- for post in collections.articles | newestFirst %}
+  <entry>
+    <title>{{ post.data.title }}</title>
+    {%- if site.url %}
+    <link href="{{ (post.url | url) | absoluteUrl(site.url) }}"/>
+    <id>{{ (post.url | url) | absoluteUrl(site.url) }}</id>
+    {%- else %}
+    <link href="{{ post.url }}"/>
+    <id>urn:sitrep{{ post.url }}</id>
+    {%- endif %}
+    <updated>{{ post.date | dateToRfc3339 }}</updated>
+    <summary>{{ post.data.dek }}</summary>
+  </entry>
+  {%- endfor %}
+</feed>

@@ -1,0 +1,17 @@
+{%- if timeline %}
+<section aria-label="Timeline">
+  <div class="band" style="max-width: var(--measure); margin-inline: auto;">
+    <h2 class="band-label">{{ timeline.title }}</h2>
+    <span class="rule" aria-hidden="true"></span>
+  </div>
+  <ol class="timeline" style="list-style: none;">
+    {%- for item in timeline.items %}
+    <li class="tl-item{% if item.key %} tl-item--key{% endif %}">
+      <span class="tl-date">{{ item.date }}</span>
+      <h3>{{ item.title }}</h3>
+      <p>{{ item.text }}</p>
+    </li>
+    {%- endfor %}
+  </ol>
+</section>
+{%- endif %}

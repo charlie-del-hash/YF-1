@@ -1,0 +1,19 @@
+<header class="arthead">
+  <span class="kicker">
+    {%- for k in kicker -%}
+      {%- if not loop.first %}<span class="sep">//</span>{% endif -%}
+      {%- set slug = k | sectionSlugFor -%}
+      {%- if slug %}<a href="{{ ('/section/' + slug + '/') }}">{{ k }}</a>{% else %}{{ k }}{% endif -%}
+    {%- endfor -%}
+    {%- if fileNo %}<span class="sep">//</span>{{ fileNo }}{% endif -%}
+  </span>
+  <h1 class="hed">{{ title }}</h1>
+  <p class="dek">{{ dek }}</p>
+  <div class="byline">
+    <span class="author">{{ byline or ("By the " + site.name + " desk") }}</span>
+    <span class="meta">{{ page.date | readableDate }} · {{ content | readingTime }}{% if tags | sectionOf %} · Filed under {{ (tags | sectionOf).title }}{% endif %}</span>
+  </div>
+</header>
+{%- if hero %}
+<div class="article-hero">{{ hero | frameHtml | safe }}</div>
+{%- endif %}

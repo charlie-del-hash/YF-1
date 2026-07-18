@@ -1,0 +1,14 @@
+---
+layout: layouts/base.njk
+ogType: article
+---
+<article>
+{% include "partials/arthead.njk" %}
+
+<div class="prose prose--dropcap">
+{{ content | safe }}
+</div>
+
+{% include "partials/timeline.njk" %}
+{% include "partials/article-footer.njk" %}
+</article>

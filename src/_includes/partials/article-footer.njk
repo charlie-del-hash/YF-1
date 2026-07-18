@@ -1,0 +1,51 @@
+{%- if sources %}
+<section class="sources">
+  <h2>Sources &amp; further reading</h2>
+  <ol>
+    {%- for s in sources %}
+    <li>{{ s | safe }}</li>
+    {%- endfor %}
+  </ol>
+</section>
+{%- endif %}
+
+{%- if topics %}
+<nav class="tags" aria-label="Topics">
+  {%- for t in topics %}
+  {%- set slug = t | sectionSlugFor %}
+  <a href="{{ (('/section/' + slug + '/') if slug else '/articles/') }}">{{ t }}</a>
+  {%- endfor %}
+</nav>
+{%- endif %}
+
+{%- set prevPost = collections.articles | getPreviousCollectionItem(page) %}
+{%- set nextPost = collections.articles | getNextCollectionItem(page) %}
+{%- if prevPost or nextPost %}
+<nav class="pager" aria-label="More dispatches">
+  {%- if prevPost %}
+  <a href="{{ prevPost.url }}"><span class="dir">← Previous dispatch</span>{{ prevPost.data.title }}</a>
+  {%- endif %}
+  {%- if nextPost %}
+  <a class="next" href="{{ nextPost.url }}"><span class="dir">Next dispatch →</span>{{ nextPost.data.title }}</a>
+  {%- endif %}
+</nav>
+{%- endif %}
+
+{%- set related = collections.articles | relatedTo(page, 3) %}
+{%- if related.length %}
+<section aria-label="Related dispatches">
+  <div class="band">
+    <h2 class="band-label">Related Dispatches</h2>
+    <span class="rule" aria-hidden="true"></span>
+  </div>
+  <div class="grid grid--{{ 3 if related.length >= 3 else 2 }}">
+    {%- for item in related %}
+    <article class="card">
+      <span class="kicker">{{ (item.data.tags | sectionOf).title if (item.data.tags | sectionOf) else "Dispatch" }}</span>
+      <h3 class="card-hed"><a href="{{ item.url }}">{{ item.data.title }}</a></h3>
+      <p class="card-meta">{{ item.date | readableDate }}</p>
+    </article>
+    {%- endfor %}
+  </div>
+</section>
+{%- endif %}

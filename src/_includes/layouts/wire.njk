@@ -1,0 +1,24 @@
+---
+layout: layouts/base.njk
+ogType: article
+---
+<article>
+<header class="arthead">
+  <span class="kicker"><a href="{{ '/wire/' }}">The Wire</a><span class="sep">//</span>Weekly Edition</span>
+  <h1 class="hed">{{ title }}</h1>
+  <p class="dek">{{ dek }}</p>
+  <div class="byline">
+    <span class="author">{{ byline or "Compiled by the Wire Desk" }}</span>
+    <span class="meta">{{ page.date | readableDate }} · {{ content | readingTime }} · Edition № {{ edition }}</span>
+  </div>
+</header>
+
+<div class="wire-list">
+{{ content | safe }}
+</div>
+
+<nav class="pager" aria-label="More">
+  <a href="{{ '/wire/' }}"><span class="dir">← The Wire</span>All editions</a>
+  <a class="next" href="{{ '/' }}"><span class="dir">Front page →</span>Latest dispatches</a>
+</nav>
+</article>

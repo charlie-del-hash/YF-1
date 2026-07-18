@@ -1,0 +1,122 @@
+---
+layout: layouts/base.njk
+title: "Component Library"
+permalink: /kit/
+description: "Visual reference of every reusable component. Internal — noindexed."
+noindex: true
+eleventyExcludeFromCollections: true
+---
+<div class="band" style="margin-top:2.4rem;"><h1 class="band-label">Component Library</h1><span class="rule" aria-hidden="true"></span></div>
+<p class="prose" style="margin-bottom:2rem;">Every reusable block, with the Markdown/shortcode syntax that produces it. This page is <code>noindex</code>ed — handy for you, invisible to search engines. Component markup lives in <code>src/_includes/</code> and <code>eleventy.config.js</code>.</p>
+
+<!-- ============ Header ============ -->
+<div class="band"><h2 class="band-label">01 · Article Header (from front matter)</h2><span class="rule" aria-hidden="true"></span></div>
+<header class="arthead" style="margin-top:0;">
+  <span class="kicker">Kicker<span class="sep">//</span>Sub-Kicker<span class="sep">//</span>File № 00</span>
+  <p class="hed" style="margin:0;">The headline sits here, balanced across two lines</p>
+  <p class="dek">The dek expands the headline into a promise. All of this renders from front matter: <code>title</code>, <code>dek</code>, <code>kicker</code>, <code>fileNo</code>, <code>byline</code>, <code>date</code>.</p>
+  <div class="byline">
+    <span class="author">By the Section Desk</span>
+    <span class="meta">18 Jul 2026 · 10 min read · Filed under Section</span>
+  </div>
+</header>
+
+<!-- ============ Prose ============ -->
+<div class="band"><h2 class="band-label">02 · Prose &amp; Scene Break</h2><span class="rule" aria-hidden="true"></span></div>
+<div class="prose prose--dropcap">
+  <p>Article bodies are plain Markdown. The first paragraph gets a drop cap automatically. <strong>Bold</strong>, <em>italic</em> and <a href="#">links</a> work as usual; <code>##</code> makes a section heading:</p>
+  <h2>A section heading (h2)</h2>
+  <p>A scene break is the shortcode <code>{% raw %}{% dinkus %}{% endraw %}</code>:</p>
+  <p class="dinkus" aria-hidden="true">✦ ✦ ✦</p>
+  <blockquote>Standard Markdown <code>&gt;</code> blockquotes render like this, for quoted documents.</blockquote>
+</div>
+
+<!-- ============ Media ============ -->
+<div class="band"><h2 class="band-label">03 · Media Frames — {% raw %}{% frame %}{% endraw %}</h2><span class="rule" aria-hidden="true"></span></div>
+<p class="prose" style="margin-bottom:1.4rem;"><code>{% raw %}{% frame { ratio: "wide", src: "/images/foo.jpg", alt: "…", caption: "…", credit: "Photo: source" } %}{% endraw %}</code> — omit <code>src</code> and set <code>label</code> for a placeholder. Ratios: <code>wide</code> (21:9), default (16:9), <code>43</code>, <code>32</code>, <code>sq</code>.</p>
+<div class="grid grid--2">
+  <div>{% frame { label: "16:9 default", caption: "A caption explains what the reader is looking at.", credit: "Photo: source" } %}</div>
+  <div>{% frame { ratio: "43", label: "4:3 · ratio: 43", caption: "Captions are set in mono to separate them from body text.", credit: "Photo: source" } %}</div>
+</div>
+
+<!-- ============ Pull quote ============ -->
+<div class="band"><h2 class="band-label">04 · Pull Quote — {% raw %}{% pullquote %}{% endraw %}</h2><span class="rule" aria-hidden="true"></span></div>
+{% pullquote "Attribution or context line" %}One side fought inside a functioning picture of the battle; the other fought inside noise.{% endpullquote %}
+
+<!-- ============ Fact box ============ -->
+<div class="band"><h2 class="band-label">05 · Fact Box — {% raw %}{% factbox %}{% endraw %}</h2><span class="rule" aria-hidden="true"></span></div>
+{% factbox "At a glance", [["Label", "Value"], ["Another label", "A longer value that wraps if it must"], ["Date", "9–11 June 1982"]] %}
+
+<!-- ============ Spec box ============ -->
+<div class="band"><h2 class="band-label">06 · Spec Sheet (dossier layout, from <code>specs:</code> front matter)</h2><span class="rule" aria-hidden="true"></span></div>
+<div style="max-width: 22rem;">
+  <div class="specbox">
+    <h2 class="specbox-head">Technical Dossier · Sample</h2>
+    <table>
+      <tr><th scope="row">Role</th><td>Sample platform</td></tr>
+      <tr><th scope="row">Crew</th><td>2</td></tr>
+      <tr><th scope="row">Max speed</th><td>Mach 2.34</td></tr>
+    </table>
+    <p class="specbox-foot">Footnote for caveats and source notes.</p>
+  </div>
+</div>
+
+<!-- ============ Timeline ============ -->
+<div class="band"><h2 class="band-label">07 · Timeline (from <code>timeline:</code> front matter)</h2><span class="rule" aria-hidden="true"></span></div>
+<ol class="timeline" style="list-style:none; margin-top:0;">
+  <li class="tl-item">
+    <span class="tl-date">5 June 1967</span>
+    <h3>A standard entry</h3>
+    <p>Date, short title, one or two sentences of context.</p>
+  </li>
+  <li class="tl-item tl-item--key">
+    <span class="tl-date">9 June 1982</span>
+    <h3>A key entry (<code>key: true</code>)</h3>
+    <p>The filled olive marker highlights the pivotal event in the sequence.</p>
+  </li>
+</ol>
+
+<!-- ============ Wire item ============ -->
+<div class="band"><h2 class="band-label">08 · Wire Item — {% raw %}{% wireitem %}{% endraw %}</h2><span class="rule" aria-hidden="true"></span></div>
+<div class="wire-list" style="margin-inline:0; max-width:48rem;">
+  {% wireitem "01", "City — 18 Jul", "A numbered brief: dateline, headline, a paragraph or two", "Section · Country" %}
+Wire items are for short dated news — a contract signed, a test flown, a claim made. The body is Markdown; two to four sentences each.
+  {% endwireitem %}
+</div>
+
+<!-- ============ Cards ============ -->
+<div class="band"><h2 class="band-label">09 · Card Grid (auto-generated on archives)</h2><span class="rule" aria-hidden="true"></span></div>
+<div class="grid grid--3">
+  <article class="card">
+    <div class="frame"><span class="frame-label">Image · 16:9</span></div>
+    <span class="kicker">Kicker</span>
+    <h3 class="card-hed"><a href="#">Card with image, kicker, headline, dek and meta</a></h3>
+    <p class="card-dek">Cards render automatically on section archives and the front page.</p>
+    <p class="card-meta">Section · Date</p>
+  </article>
+  <article class="card">
+    <span class="kicker">Kicker</span>
+    <h3 class="card-hed"><a href="#">Text-only card for compact listings</a></h3>
+    <p class="card-meta">Section · Date</p>
+  </article>
+  <article class="card">
+    <span class="dateline">Dateline — 18 Jul</span>
+    <h3 class="card-hed"><a href="#">Wire-style card using a dateline instead of a kicker</a></h3>
+    <p class="card-meta">Briefs</p>
+  </article>
+</div>
+
+<!-- ============ Promo band ============ -->
+<div class="band"><h2 class="band-label">10 · Inverse Promo Band (edit in <code>src/index.njk</code>)</h2><span class="rule" aria-hidden="true"></span></div>
+<section class="promo inverse" style="margin-top:0;">
+  <div>
+    <span class="kicker">Series label</span>
+    <h2 class="promo-hed">A promoted dossier or series</h2>
+    <p class="promo-dek">Inverse panels flip to ink-on-paper for emphasis. Use for series promos or archive callouts.</p>
+    <a class="more" href="#">Call to action</a>
+  </div>
+  <dl class="promo-facts">
+    <div class="row"><dt>Fact label</dt><dd>Value</dd></div>
+    <div class="row"><dt>Another</dt><dd>Value</dd></div>
+  </dl>
+</section>

@@ -1,0 +1,23 @@
+---
+layout: layouts/base.njk
+title: "All Dispatches"
+permalink: /articles/
+description: "Every article, newest first."
+eleventyExcludeFromCollections: true
+---
+<div class="band" style="margin-top: 2.4rem;">
+  <h1 class="band-label">All Dispatches</h1>
+  <span class="rule" aria-hidden="true"></span>
+  <a class="more" href="{{ '/feed.xml' }}">RSS feed</a>
+</div>
+
+<div class="grid grid--3">
+  {%- for item in collections.articles | newestFirst %}
+  <article class="card">
+    <span class="kicker">{{ (item.data.tags | sectionOf).title if (item.data.tags | sectionOf) else "Dispatch" }}</span>
+    <h2 class="card-hed"><a href="{{ item.url }}">{{ item.data.title }}</a></h2>
+    <p class="card-dek">{{ item.data.dek | truncate(150) }}</p>
+    <p class="card-meta">{{ item.date | readableDate }}</p>
+  </article>
+  {%- endfor %}
+</div>
