@@ -10,7 +10,7 @@ module.exports = {
   topstripLeft: "Open-source defence journal",
   topstripRight: "Est. 2026 · Published weekly",
   volume: "Vol. I — No. 12",
-  url: "",
+  url: "https://charlie-del-hash.github.io"",
   footerBlurb:
     "An independent journal of defence affairs: national security, procurement and arsenals, air power, firearms, and military history from the Great War to today's Middle East. Assembled from open sources.",
   colophon:
