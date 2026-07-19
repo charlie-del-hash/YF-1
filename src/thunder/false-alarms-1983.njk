@@ -1,0 +1,392 @@
+---
+title: "BIG BOARD 1983 · Launch Detect — Theme Thunder"
+---
+{%- set art = collections.articles | articleBySlug("false-alarms-1983") -%}
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ title }} — {{ site.name }}</title>
+<meta name="description" content="{{ art.data.dek }}">
+<meta property="og:site_name" content="{{ site.name }}">
+<meta property="og:title" content="{{ art.data.title }} — Theme Thunder edition">
+<meta property="og:description" content="Theme Thunder: the false alarms of 1983 replayed on a missile-warning wall display — amber vector map, five phantom tracks, reliability highest.">
+<meta property="og:type" content="article">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%230a0a0d'/%3E%3Ccircle cx='8' cy='8' r='6' fill='none' stroke='%23ffb000'/%3E%3Cpath d='M4 12L12 4' stroke='%23ff4136'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Michroma&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   THEME THUNDER № 8 — "BIG BOARD 1983"
+   A missile-warning centre on the graveyard watch, September
+   1983. Amber vector graphics, five tracks that are not there,
+   and a human being deciding not to believe the wall.
+   ============================================================ */
+:root {
+  --void:      #0a0a0d;   /* dead wall */
+  --void-2:    #14110a;   /* raised panel */
+  --amber:     #ffb000;   /* bright vector */
+  --amber-soft:#f6dfae;   /* long-persistence body text */
+  --amber-dim: #9a742f;   /* labels, chrome */
+  --amber-ghost:#382a0e;  /* rules, graticule */
+  --alert:     #ff4136;   /* launch / key data */
+  --measure: 41rem;
+}
+* { box-sizing: border-box; }
+html { background: #060608; }
+body {
+  margin: 0;
+  background:
+    radial-gradient(ellipse 120% 90% at 50% 0%, #1a1408 0%, var(--void) 55%);
+  color: var(--amber-soft);
+  font-family: "Space Mono", ui-monospace, Menlo, monospace;
+  font-size: 1rem;
+  line-height: 1.72;
+  min-height: 100vh;
+}
+/* --- projection-room furniture ----------------------------- */
+.crt::before {
+  content: "";
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(0deg,
+    rgba(0, 0, 0, 0.20) 0 1px, transparent 1px 3px);
+  pointer-events: none; z-index: 40;
+}
+.crt::after {
+  content: "";
+  position: fixed; inset: 0;
+  background: radial-gradient(ellipse 95% 85% at 50% 45%,
+    transparent 60%, rgba(0, 0, 0, 0.55) 100%);
+  pointer-events: none; z-index: 41;
+}
+a { color: var(--amber); text-decoration: none; }
+a:hover { background: var(--amber); color: var(--void); }
+::selection { background: var(--amber); color: var(--void); }
+.wrap { max-width: 62rem; margin-inline: auto; padding-inline: 1.25rem; }
+
+/* --- status bar -------------------------------------------- */
+.statusbar {
+  border-bottom: 1px solid var(--amber-ghost);
+  font-size: 0.8rem; letter-spacing: 0.14em;
+  color: var(--amber-dim); text-transform: uppercase;
+}
+.statusbar .wrap {
+  display: flex; flex-wrap: wrap; gap: 0.35rem 1.6rem;
+  justify-content: space-between; padding-block: 0.55rem;
+}
+.statusbar b { color: var(--amber); font-weight: 400; }
+.statusbar a { color: var(--amber-dim); }
+.statusbar a:hover { background: var(--amber-dim); color: var(--void); }
+
+/* --- console header ---------------------------------------- */
+.console-head { padding: 3rem 0 2rem; text-align: left; }
+.boot {
+  color: var(--amber-dim); font-size: 0.85rem; letter-spacing: 0.12em;
+  margin: 0 0 1.6rem; text-transform: uppercase;
+}
+.boot b { color: var(--alert); font-weight: 400; }
+h1.trackname {
+  font-family: "Michroma", sans-serif;
+  font-size: clamp(1.9rem, 5.2vw, 3.4rem);
+  line-height: 1.08; margin: 0 0 1.2rem;
+  color: var(--amber); text-transform: uppercase; font-weight: 400;
+  letter-spacing: 0.05em;
+  text-shadow: 0 0 16px rgba(255, 176, 0, 0.4);
+}
+.dek-block {
+  border-left: 3px double var(--amber-ghost);
+  padding-left: 1.1rem; max-width: var(--measure);
+  color: var(--amber-soft); font-size: 0.96rem; margin: 0 0 1.4rem;
+}
+.opline {
+  display: flex; flex-wrap: wrap; gap: 0.4rem 2rem;
+  font-size: 0.8rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--amber-dim);
+}
+.opline b { color: var(--amber); font-weight: 400; }
+
+/* --- the big board ----------------------------------------- */
+.boardbay { padding: 1.4rem 0 2.4rem; }
+.board {
+  display: grid; grid-template-columns: 1.5fr 1fr; gap: 1.4rem;
+  align-items: stretch;
+}
+.map {
+  border: 1px solid var(--amber-ghost); padding: 0.8rem;
+  background: radial-gradient(circle at 50% 45%, #15100a 0%, #0b0a0a 70%);
+  box-shadow: 0 0 0 4px #131009, 0 0 0 5px #2c2210,
+    0 0 60px rgba(255, 176, 0, 0.08), inset 0 0 45px rgba(0, 0, 0, 0.7);
+}
+.map svg { display: block; width: 100%; height: auto; }
+.map .grat { stroke: var(--amber-ghost); fill: none; stroke-width: 1; }
+.map .coast { stroke: #6d5320; fill: none; stroke-width: 1.3; stroke-linejoin: round; }
+.map .arc {
+  stroke: var(--amber); fill: none; stroke-width: 1.4;
+  stroke-dasharray: 5 4;
+  animation: march 0.9s linear infinite;
+  filter: drop-shadow(0 0 3px rgba(255, 176, 0, 0.6));
+}
+@keyframes march { to { stroke-dashoffset: -18; } }
+.map .trk {
+  fill: var(--alert);
+  filter: drop-shadow(0 0 4px rgba(255, 65, 54, 0.8));
+  animation: blinktrk 1.1s steps(1) infinite;
+}
+@keyframes blinktrk { 50% { opacity: 0.25; } }
+.map .lbl {
+  font-family: "Michroma", sans-serif; font-size: 9px;
+  fill: var(--amber-dim); letter-spacing: 0.14em;
+}
+.map .lbl--hot { fill: var(--alert); }
+.map .dot { fill: var(--amber-dim); }
+/* status column */
+.rack { display: flex; flex-direction: column; gap: 0.9rem; }
+.stat {
+  border: 1px solid var(--amber-ghost); padding: 0.75rem 0.95rem;
+  font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--amber-dim);
+}
+.stat b {
+  display: block; font-weight: 400; color: var(--amber);
+  font-family: "Michroma", sans-serif; font-size: 1.02rem;
+  margin-top: 0.35rem; letter-spacing: 0.08em;
+}
+.stat--alert { border-color: var(--alert); background: rgba(255, 65, 54, 0.07); }
+.stat--alert b { color: var(--alert); animation: blinktrk 1.1s steps(1) infinite; }
+.stat--calm b { color: var(--amber-soft); }
+.board-caption {
+  margin: 1rem 0 0; text-align: center;
+  font-size: 0.78rem; letter-spacing: 0.1em; color: var(--amber-dim);
+  text-transform: uppercase;
+}
+@media (max-width: 52rem) {
+  .board { grid-template-columns: 1fr; }
+  .rack { flex-direction: row; flex-wrap: wrap; }
+  .rack .stat { flex: 1 1 12rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .map .arc, .map .trk, .stat--alert b { animation: none; }
+}
+
+/* --- article feed ------------------------------------------ */
+.feed { max-width: var(--measure); margin-inline: auto; padding-bottom: 2rem; }
+.feed p { margin: 0 0 1.15em; }
+.feed h2 {
+  font-family: "Michroma", sans-serif; font-weight: 400;
+  color: var(--amber); font-size: 1.28rem; letter-spacing: 0.08em;
+  text-transform: uppercase; margin: 2.6em 0 0.7em; line-height: 1.4;
+  text-shadow: 0 0 12px rgba(255, 176, 0, 0.35);
+}
+.feed h2::before { content: "// "; color: var(--amber-dim); }
+.feed em { font-style: normal; color: var(--amber); }
+.feed strong { color: var(--amber); font-weight: 400; }
+.feed .dinkus {
+  text-align: center; color: var(--amber-dim); letter-spacing: 1.2em;
+  margin: 2em 0;
+}
+/* factbox → STATUS BOARD */
+.feed .factbox {
+  border: 1px solid var(--amber-dim); margin: 2em 0; font-size: 0.88rem;
+  background: rgba(20, 17, 10, 0.8);
+}
+.feed .factbox-title {
+  margin: 0; padding: 0.45rem 0.9rem; background: var(--amber-dim);
+  color: var(--void); font-size: 0.82rem; font-weight: 400;
+  letter-spacing: 0.22em; text-transform: uppercase;
+}
+.feed .factbox-title::before { content: "STATUS BOARD // "; }
+.feed .factbox dl { margin: 0; padding: 0.5rem 0.9rem 0.7rem; }
+.feed .factbox .row {
+  display: flex; justify-content: space-between; gap: 1.5rem;
+  padding: 0.42rem 0; border-bottom: 1px dashed var(--amber-ghost);
+}
+.feed .factbox .row:last-child { border-bottom: 0; }
+.feed .factbox dt { color: var(--amber-dim); text-transform: uppercase; font-size: 0.76rem; letter-spacing: 0.1em; padding-top: 0.15em; }
+.feed .factbox dd { margin: 0; text-align: right; color: var(--amber); }
+/* pullquote → VOICE LOOP */
+.feed .pullquote {
+  border: 1px dashed var(--alert); border-left: 4px solid var(--alert);
+  padding: 1rem 1.2rem; margin: 2em 0; position: relative;
+}
+.feed .pullquote::before {
+  content: "VOICE LOOP // RECORDED"; display: block;
+  color: var(--alert); font-size: 0.72rem; letter-spacing: 0.26em;
+  margin-bottom: 0.6rem;
+}
+.feed .pullquote p {
+  margin: 0; color: var(--amber); font-size: 1.08rem; line-height: 1.55;
+  text-transform: uppercase;
+}
+.feed .pullquote cite {
+  display: block; margin-top: 0.7rem; font-style: normal;
+  color: var(--amber-dim); font-size: 0.78rem; letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.feed .pullquote cite::before { content: "SOURCE: "; }
+
+/* --- alert log (timeline) ---------------------------------- */
+.eventlog { max-width: var(--measure); margin: 3rem auto 0; }
+.log-head {
+  font-family: "Michroma", sans-serif; font-weight: 400; font-size: 1.28rem;
+  color: var(--amber); text-transform: uppercase; margin: 0 0 0.4rem;
+  letter-spacing: 0.08em;
+  text-shadow: 0 0 12px rgba(255, 176, 0, 0.35);
+}
+.log-head::before { content: "// "; color: var(--amber-dim); }
+.log-sub { color: var(--amber-dim); font-size: 0.8rem; letter-spacing: 0.18em; text-transform: uppercase; margin: 0 0 1.4rem; }
+.eventlog ol { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--amber-ghost); }
+.eventlog li {
+  display: grid; grid-template-columns: 9.5rem 1fr; gap: 0.2rem 1.4rem;
+  padding: 0.95rem 0.6rem; border-bottom: 1px solid var(--amber-ghost);
+  font-size: 0.92rem;
+}
+.eventlog li.key { background: rgba(255, 176, 0, 0.06); border-left: 3px solid var(--alert); }
+.eventlog .d { color: var(--alert); letter-spacing: 0.08em; text-transform: uppercase; font-size: 0.82rem; padding-top: 0.2em; }
+.eventlog h3 { grid-column: 2; margin: 0; font-size: 0.95rem; font-weight: 400; color: var(--amber); text-transform: uppercase; letter-spacing: 0.06em; }
+.eventlog .d + h3 { grid-column: auto; }
+.eventlog p { grid-column: 2; margin: 0.25rem 0 0; color: var(--amber-soft); }
+@media (max-width: 40rem) {
+  .eventlog li { grid-template-columns: 1fr; }
+  .eventlog h3, .eventlog p { grid-column: 1; }
+}
+
+/* --- references + exit ------------------------------------- */
+.refs { max-width: var(--measure); margin: 3rem auto 0; font-size: 0.85rem; }
+.refs h2 {
+  font-family: "Michroma", sans-serif; font-weight: 400; font-size: 1.1rem;
+  color: var(--amber); text-transform: uppercase; margin: 0 0 0.8rem;
+  letter-spacing: 0.08em;
+}
+.refs h2::before { content: "// "; color: var(--amber-dim); }
+.refs ol { margin: 0; padding-left: 1.6rem; color: var(--amber-dim); }
+.refs li { margin-bottom: 0.4rem; }
+.refs em { font-style: normal; color: var(--amber-soft); }
+.exit {
+  max-width: var(--measure); margin: 3.5rem auto 0; padding: 2rem 0 3.5rem;
+  border-top: 1px solid var(--amber-ghost);
+  font-size: 0.85rem; letter-spacing: 0.12em; text-transform: uppercase;
+}
+.exit p { margin: 0 0 1.2rem; color: var(--amber-dim); }
+.exit .prompt::after { content: "█"; animation: blink 1.1s steps(1) infinite; color: var(--amber); }
+@keyframes blink { 50% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .exit .prompt::after { animation: none; } }
+.exit ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.7rem 2rem; }
+.exit a { color: var(--amber); }
+.exit a:hover { background: var(--amber); color: var(--void); }
+</style>
+</head>
+<body class="crt">
+
+<div class="statusbar">
+  <div class="wrap">
+    <span><b>{{ site.name }}</b> // THEME THUNDER № 8</span>
+    <span>MODE: <b>RECONSTRUCTION</b> · WATCH 25/26 SEP 83</span>
+    <span><a href="{{ art.url }}">STANDARD EDITION →</a></span>
+  </div>
+</div>
+
+<header class="console-head wrap">
+  <p class="boot">MISSILE WARNING CENTER // GRAVEYARD WATCH // BOARD 1 ······ SAT FEED <b>UP</b> · LINK <b>OK</b> · WOLF COUNT <b>0</b></p>
+  <h1 class="trackname">Launch<br>Detect</h1>
+  <p class="dek-block">{{ art.data.dek }}</p>
+  <p class="opline">
+    <span>FILE: <b>{{ art.data.fileNo }}</b></span>
+    <span>DESK: <b>HISTORY</b></span>
+    <span>POSTED: <b>{{ art.date | readableDate }}</b></span>
+    <span>SOURCES: <b>OPEN // DECLASSIFIED</b></span>
+  </p>
+</header>
+
+<div class="boardbay wrap">
+  <div class="board">
+    <div class="map" role="img" aria-label="Stylised missile-warning wall display: a polar-projection map with five apparent missile tracks arcing from the North American ICBM fields toward Moscow — the false launches of 26 September 1983.">
+      <svg viewBox="0 0 480 440" aria-hidden="true">
+        <defs>
+          <clipPath id="scope"><circle cx="240" cy="220" r="196" /></clipPath>
+        </defs>
+        <circle class="grat" cx="240" cy="220" r="196" />
+        <circle class="grat" cx="240" cy="220" r="130" />
+        <circle class="grat" cx="240" cy="220" r="65" />
+        <line class="grat" x1="240" y1="24" x2="240" y2="416" />
+        <line class="grat" x1="44" y1="220" x2="436" y2="220" />
+        <line class="grat" x1="101" y1="81" x2="379" y2="359" />
+        <line class="grat" x1="379" y1="81" x2="101" y2="359" />
+        <g clip-path="url(#scope)">
+          <path class="coast" d="M 60,300 L 88,282 104,286 118,270 136,276 150,262 166,268 176,288 168,306 182,318 176,338 196,352 214,362 206,380 224,392" />
+          <path class="coast" d="M 128,236 L 146,228 160,234 176,224 190,230" />
+          <path class="coast" d="M 300,96 L 318,108 336,102 352,116 372,112 388,130 380,148 396,162 388,182 402,198 394,214" />
+          <path class="coast" d="M 306,140 L 322,150 340,146 356,158 350,172 364,180" />
+          <path class="arc" d="M 140,318 Q 225,140 356,150" style="animation-delay: 0s;" />
+          <path class="arc" d="M 122,300 Q 210,120 348,132" style="animation-delay: -0.2s;" />
+          <path class="arc" d="M 158,332 Q 245,160 366,168" style="animation-delay: -0.4s;" />
+          <path class="arc" d="M 148,306 Q 232,128 352,142" style="animation-delay: -0.55s;" />
+          <path class="arc" d="M 132,326 Q 220,150 360,160" style="animation-delay: -0.75s;" />
+          <rect class="trk" x="326" y="132" width="7" height="7" transform="rotate(45 329.5 135.5)" style="animation-delay: 0s;" />
+          <rect class="trk" x="318" y="118" width="7" height="7" transform="rotate(45 321.5 121.5)" style="animation-delay: -0.3s;" />
+          <rect class="trk" x="336" y="150" width="7" height="7" transform="rotate(45 339.5 153.5)" style="animation-delay: -0.6s;" />
+          <circle class="dot" cx="382" cy="176" r="3" />
+        </g>
+        <text class="lbl" x="112" y="352">CONUS FIELDS</text>
+        <text class="lbl lbl--hot" x="284" y="106">5 TRACKS</text>
+        <text class="lbl" x="352" y="196">MOSCOW</text>
+        <text class="lbl" x="232" y="16">000</text>
+        <text class="lbl" x="446" y="224">090</text>
+        <text class="lbl" x="232" y="434">180</text>
+        <text class="lbl" x="8" y="224">270</text>
+      </svg>
+    </div>
+    <div class="rack" aria-label="Board status">
+      <div class="stat stat--alert">LAUNCH DETECT<b>5 TRACKS · CONUS</b></div>
+      <div class="stat">SYSTEM CONFIDENCE<b>RELIABILITY: HIGHEST</b></div>
+      <div class="stat">GROUND RADAR CHECK<b>NO CONTACT</b></div>
+      <div class="stat">TIME TO IMPACT<b>17:00 MIN</b></div>
+      <div class="stat stat--calm">ACTION<b>ASSESS // HUMAN</b></div>
+    </div>
+  </div>
+  <p class="board-caption">WALL DISPLAY RECONSTRUCTION · 0040 MSK, 26 SEP 1983 · FIVE APPARENT LAUNCHES — ALL OF THEM SUNLIGHT</p>
+</div>
+
+<article class="feed wrap" aria-label="Article, warning-centre edition">
+{{ art.templateContent | safe }}
+</article>
+
+{%- if art.data.timeline %}
+<section class="eventlog wrap" aria-label="Alert log">
+  <h2 class="log-head">Alert Log</h2>
+  <p class="log-sub">{{ art.data.timeline.title }}</p>
+  <ol>
+    {%- for item in art.data.timeline.items %}
+    <li{% if item.key %} class="key"{% endif %}>
+      <span class="d">{{ item.date }}</span>
+      <h3>{{ item.title }}</h3>
+      <p>{{ item.text }}</p>
+    </li>
+    {%- endfor %}
+  </ol>
+</section>
+{%- endif %}
+
+{%- if art.data.sources %}
+<section class="refs wrap" aria-label="Sources">
+  <h2>Reference Index</h2>
+  <ol>
+    {%- for s in art.data.sources %}
+    <li>{{ s | safe }}</li>
+    {%- endfor %}
+  </ol>
+</section>
+{%- endif %}
+
+<footer class="exit wrap">
+  <p class="prompt">END OF RECONSTRUCTION. BOARD CLEAR — ZERO TRACKS. AWAITING ASSESSMENT </p>
+  <ul>
+    <li><a href="{{ art.url }}">[ STANDARD EDITION ]</a></li>
+    <li><a href="/thunder/">[ THEME THUNDER INDEX ]</a></li>
+    <li><a href="/">[ {{ site.name }} FRONT PAGE ]</a></li>
+  </ul>
+</footer>
+
+</body>
+</html>

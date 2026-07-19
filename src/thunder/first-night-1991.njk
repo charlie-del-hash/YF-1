@@ -1,0 +1,438 @@
+---
+title: "TAPE 1991 · The First Night — Theme Thunder"
+---
+{%- set art = collections.articles | articleBySlug("first-night-1991") -%}
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ title }} — {{ site.name }}</title>
+<meta name="description" content="{{ art.data.dek }}">
+<meta property="og:site_name" content="{{ site.name }}">
+<meta property="og:title" content="{{ art.data.title }} — Theme Thunder edition">
+<meta property="og:description" content="Theme Thunder: the first night of Desert Storm played back from a cockpit tape — FLIR green, HUD symbology, tracking noise at the bottom of the frame.">
+<meta property="og:type" content="article">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23050705'/%3E%3Cpath d='M8 3v3M8 10v3M3 8h3M10 8h3' stroke='%23cfeec6'/%3E%3Ccircle cx='8' cy='8' r='1.5' fill='%23f2f2ee'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kode+Mono:wght@400;500;700&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   THEME THUNDER № 9 — "TAPE 1991"
+   A gun-camera cassette from the first night of Desert Storm,
+   played back in the wing intelligence vault. FLIR green, HUD
+   symbology, and tracking noise along the bottom of the frame.
+   ============================================================ */
+:root {
+  --tube:      #050705;   /* dead screen */
+  --tube-2:    #0b100a;   /* raised panel */
+  --hud:       #cfeec6;   /* HUD symbology */
+  --hud-soft:  #c6dcc0;   /* body text */
+  --hud-dim:   #5f7a58;   /* labels, chrome */
+  --hud-ghost: #243321;   /* rules */
+  --osd:       #f2f2ee;   /* VCR on-screen display */
+  --alert:     #ff5147;   /* rec / key data */
+  --measure: 41rem;
+}
+* { box-sizing: border-box; }
+html { background: #030403; }
+body {
+  margin: 0;
+  background:
+    radial-gradient(ellipse 120% 90% at 50% 0%, #101a0e 0%, var(--tube) 55%);
+  color: var(--hud-soft);
+  font-family: "Kode Mono", ui-monospace, Menlo, monospace;
+  font-size: 1rem;
+  line-height: 1.72;
+  min-height: 100vh;
+}
+/* --- playback-room furniture ------------------------------- */
+.crt::before {
+  content: "";
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(0deg,
+    rgba(0, 0, 0, 0.20) 0 1px, transparent 1px 3px);
+  pointer-events: none; z-index: 40;
+}
+.crt::after {
+  content: "";
+  position: fixed; inset: 0;
+  background: radial-gradient(ellipse 95% 85% at 50% 45%,
+    transparent 60%, rgba(0, 0, 0, 0.55) 100%);
+  pointer-events: none; z-index: 41;
+}
+a { color: var(--osd); text-decoration: none; }
+a:hover { background: var(--osd); color: var(--tube); }
+::selection { background: var(--hud); color: var(--tube); }
+.wrap { max-width: 62rem; margin-inline: auto; padding-inline: 1.25rem; }
+
+/* --- status bar -------------------------------------------- */
+.statusbar {
+  border-bottom: 1px solid var(--hud-ghost);
+  font-size: 0.8rem; letter-spacing: 0.14em;
+  color: var(--hud-dim); text-transform: uppercase;
+}
+.statusbar .wrap {
+  display: flex; flex-wrap: wrap; gap: 0.35rem 1.6rem;
+  justify-content: space-between; padding-block: 0.55rem;
+}
+.statusbar b { color: var(--hud); font-weight: 400; }
+.statusbar a { color: var(--hud-dim); }
+.statusbar a:hover { background: var(--hud-dim); color: var(--tube); }
+
+/* --- console header ---------------------------------------- */
+.console-head { padding: 3rem 0 2rem; text-align: left; }
+.boot {
+  color: var(--hud-dim); font-size: 0.85rem; letter-spacing: 0.12em;
+  margin: 0 0 1.6rem; text-transform: uppercase;
+}
+.boot b { color: var(--alert); font-weight: 400; }
+h1.trackname {
+  font-family: "Silkscreen", monospace;
+  font-weight: 700;
+  font-size: clamp(1.9rem, 5.4vw, 3.4rem);
+  line-height: 1.15; margin: 0 0 1.2rem;
+  color: var(--hud); text-transform: uppercase;
+  text-shadow: 0 0 16px rgba(207, 238, 198, 0.4);
+}
+.dek-block {
+  border-left: 3px double var(--hud-ghost);
+  padding-left: 1.1rem; max-width: var(--measure);
+  color: var(--hud-soft); font-size: 0.96rem; margin: 0 0 1.4rem;
+}
+.opline {
+  display: flex; flex-wrap: wrap; gap: 0.4rem 2rem;
+  font-size: 0.8rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--hud-dim);
+}
+.opline b { color: var(--hud); font-weight: 400; }
+
+/* --- the tape ---------------------------------------------- */
+.tapebay { display: grid; place-items: center; padding: 1.4rem 0 2.4rem; }
+.tapeframe {
+  position: relative; width: min(46rem, 92vw); aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: linear-gradient(180deg,
+    #091008 0%, #0d140c 50%, #121a10 63.5%, #1a2415 64%, #141d12 100%);
+  box-shadow: 0 0 0 4px #0c120b, 0 0 0 5px #202d1c,
+    0 0 60px rgba(207, 238, 198, 0.08), inset 0 0 55px rgba(0, 0, 0, 0.7);
+}
+.tapeframe::before {
+  content: ""; position: absolute; inset: 0; z-index: 6;
+  background: repeating-linear-gradient(0deg,
+    rgba(0, 0, 0, 0.25) 0 1px, transparent 1px 3px);
+  pointer-events: none;
+}
+.tapeframe::after {
+  content: ""; position: absolute; inset: 0; z-index: 7;
+  background: radial-gradient(ellipse 90% 85% at 50% 50%,
+    transparent 62%, rgba(0, 0, 0, 0.5) 100%);
+  pointer-events: none;
+}
+/* infrared scene */
+.skyline {
+  position: absolute; left: 0; right: 0; bottom: 36%; height: 16%; z-index: 1;
+  background-image:
+    linear-gradient(#232f1c, #232f1c), linear-gradient(#1e2a18, #1e2a18),
+    linear-gradient(#27331f, #27331f), linear-gradient(#1c2717, #1c2717),
+    linear-gradient(#222e1b, #222e1b), linear-gradient(#1f2b19, #1f2b19),
+    linear-gradient(#25311e, #25311e);
+  background-repeat: no-repeat;
+  background-size: 9% 62%, 7% 88%, 11% 48%, 6% 100%, 10% 72%, 8% 55%, 12% 80%;
+  background-position: 4% 100%, 15% 100%, 27% 100%, 41% 100%, 63% 100%, 78% 100%, 92% 100%;
+}
+.bloom {
+  position: absolute; left: 56%; top: 57%; z-index: 1;
+  width: 9rem; height: 6rem; transform: translate(-50%, -50%);
+  background: radial-gradient(ellipse at center,
+    #f4ffee 0%, #d9f5c8 16%, rgba(160, 210, 140, 0.35) 45%, transparent 72%);
+  filter: blur(2px);
+}
+.tracer {
+  position: absolute; bottom: 36%; width: 1px; height: 20%; z-index: 1;
+  background: linear-gradient(0deg, transparent 0%, rgba(232, 255, 220, 0.55) 90%);
+  opacity: 0.55;
+}
+/* HUD symbology */
+.hud { position: absolute; inset: 0; z-index: 3; color: var(--hud); }
+.cross-h, .cross-v { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+.cross-h {
+  width: 11rem; height: 1px;
+  background: linear-gradient(90deg, var(--hud) 0 38%, transparent 38% 62%, var(--hud) 62% 100%);
+}
+.cross-v {
+  width: 1px; height: 7.5rem;
+  background: linear-gradient(180deg, var(--hud) 0 38%, transparent 38% 62%, var(--hud) 62% 100%);
+}
+.pipper {
+  position: absolute; top: 50%; left: 50%; width: 10px; height: 10px;
+  transform: translate(-50%, -50%); border: 1px solid var(--hud); border-radius: 50%;
+  box-shadow: 0 0 6px rgba(207, 238, 198, 0.5);
+}
+.tdbox {
+  position: absolute; left: 56%; top: 57%; width: 4rem; height: 3.2rem;
+  transform: translate(-50%, -50%); border: 1px solid #eaffe4;
+  box-shadow: 0 0 8px rgba(207, 238, 198, 0.35);
+}
+.tdbox span {
+  position: absolute; top: -1.25rem; left: 0; white-space: nowrap;
+  font-size: 0.6rem; letter-spacing: 0.18em; color: var(--hud);
+}
+.ladder {
+  position: absolute; top: 24%; bottom: 26%; display: flex;
+  flex-direction: column; justify-content: space-between;
+  font-size: 0.64rem; letter-spacing: 0.1em; color: var(--hud);
+}
+.ladder--l { left: 5%; border-left: 1px solid var(--hud); padding-left: 0.45rem; }
+.ladder--r { right: 5%; border-right: 1px solid var(--hud); padding-right: 0.45rem; text-align: right; }
+.hud-top {
+  position: absolute; top: 8%; left: 50%; transform: translateX(-50%);
+  font-size: 0.66rem; letter-spacing: 0.3em; white-space: nowrap; color: var(--hud);
+}
+.hud-hdg {
+  position: absolute; bottom: 13%; left: 50%; transform: translateX(-50%);
+  font-size: 0.66rem; letter-spacing: 0.22em; white-space: nowrap; color: var(--hud);
+}
+/* VCR on-screen display */
+.osd {
+  position: absolute; z-index: 5;
+  font-family: "Silkscreen", monospace; font-size: 0.8rem;
+  color: var(--osd); letter-spacing: 0.06em;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.85);
+}
+.osd--tl { top: 4.5%; left: 4%; }
+.osd--tr { top: 4.5%; right: 4%; }
+.osd--bl { bottom: 4.5%; left: 4%; }
+.osd--br { bottom: 4.5%; right: 4%; }
+/* VHS artefacts */
+.snow {
+  position: absolute; inset: 0; z-index: 4; pointer-events: none;
+  background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200"%3E%3Cfilter id="s"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/%3E%3CfeColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.5 0"/%3E%3C/filter%3E%3Crect width="200" height="200" filter="url(%23s)"/%3E%3C/svg%3E');
+  background-size: 200px 200px;
+  opacity: 0.07; mix-blend-mode: screen;
+  animation: snowjit 0.45s steps(2) infinite;
+}
+@keyframes snowjit {
+  0% { background-position: 0 0; }
+  50% { background-position: 80px 120px; }
+  100% { background-position: 160px 40px; }
+}
+.trackband {
+  position: absolute; left: 0; right: 0; bottom: 1.5%; height: 8px; z-index: 5;
+  background: repeating-linear-gradient(90deg,
+    rgba(255, 255, 255, 0.22) 0 14px, rgba(255, 255, 255, 0.04) 14px 34px,
+    rgba(255, 255, 255, 0.3) 34px 40px, rgba(255, 255, 255, 0.07) 40px 62px);
+  opacity: 0.7;
+  animation: trackjit 0.32s steps(2) infinite;
+}
+@keyframes trackjit {
+  0% { background-position-x: 0; }
+  50% { background-position-x: 22px; }
+  100% { background-position-x: -14px; }
+}
+.tape-caption {
+  margin: 1rem auto 0; max-width: 38rem; text-align: center;
+  font-size: 0.78rem; letter-spacing: 0.1em; color: var(--hud-dim);
+  text-transform: uppercase;
+}
+@media (prefers-reduced-motion: reduce) {
+  .snow, .trackband { animation: none; }
+}
+
+/* --- article feed ------------------------------------------ */
+.feed { max-width: var(--measure); margin-inline: auto; padding-bottom: 2rem; }
+.feed p { margin: 0 0 1.15em; }
+.feed h2 {
+  font-family: "Silkscreen", monospace; font-weight: 400;
+  color: var(--hud); font-size: 1.15rem; letter-spacing: 0.04em;
+  text-transform: uppercase; margin: 2.6em 0 0.7em; line-height: 1.5;
+  text-shadow: 0 0 12px rgba(207, 238, 198, 0.35);
+}
+.feed h2::before { content: "► "; color: var(--hud-dim); }
+.feed em { font-style: normal; color: var(--hud); }
+.feed strong { color: var(--hud); font-weight: 400; }
+.feed .dinkus {
+  text-align: center; color: var(--hud-dim); letter-spacing: 1.2em;
+  margin: 2em 0;
+}
+/* factbox → MISSION DATA */
+.feed .factbox {
+  border: 1px solid var(--hud-dim); margin: 2em 0; font-size: 0.88rem;
+  background: rgba(11, 16, 10, 0.8);
+}
+.feed .factbox-title {
+  margin: 0; padding: 0.45rem 0.9rem; background: var(--hud-dim);
+  color: var(--tube); font-size: 0.82rem; font-weight: 400;
+  letter-spacing: 0.22em; text-transform: uppercase;
+}
+.feed .factbox-title::before { content: "MISSION DATA // "; }
+.feed .factbox dl { margin: 0; padding: 0.5rem 0.9rem 0.7rem; }
+.feed .factbox .row {
+  display: flex; justify-content: space-between; gap: 1.5rem;
+  padding: 0.42rem 0; border-bottom: 1px dashed var(--hud-ghost);
+}
+.feed .factbox .row:last-child { border-bottom: 0; }
+.feed .factbox dt { color: var(--hud-dim); text-transform: uppercase; font-size: 0.76rem; letter-spacing: 0.1em; padding-top: 0.15em; }
+.feed .factbox dd { margin: 0; text-align: right; color: var(--hud); }
+/* pullquote → STRIKE FREQ */
+.feed .pullquote {
+  border: 1px dashed var(--alert); border-left: 4px solid var(--alert);
+  padding: 1rem 1.2rem; margin: 2em 0; position: relative;
+}
+.feed .pullquote::before {
+  content: "COMM // STRIKE FREQ"; display: block;
+  color: var(--alert); font-size: 0.72rem; letter-spacing: 0.26em;
+  margin-bottom: 0.6rem;
+}
+.feed .pullquote p {
+  margin: 0; color: var(--hud); font-size: 1.08rem; line-height: 1.55;
+  text-transform: uppercase;
+}
+.feed .pullquote cite {
+  display: block; margin-top: 0.7rem; font-style: normal;
+  color: var(--hud-dim); font-size: 0.78rem; letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.feed .pullquote cite::before { content: "SOURCE: "; }
+
+/* --- mission log (timeline) -------------------------------- */
+.eventlog { max-width: var(--measure); margin: 3rem auto 0; }
+.log-head {
+  font-family: "Silkscreen", monospace; font-weight: 400; font-size: 1.15rem;
+  color: var(--hud); text-transform: uppercase; margin: 0 0 0.4rem;
+  text-shadow: 0 0 12px rgba(207, 238, 198, 0.35);
+}
+.log-head::before { content: "► "; color: var(--hud-dim); }
+.log-sub { color: var(--hud-dim); font-size: 0.8rem; letter-spacing: 0.18em; text-transform: uppercase; margin: 0 0 1.4rem; }
+.eventlog ol { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--hud-ghost); }
+.eventlog li {
+  display: grid; grid-template-columns: 10.5rem 1fr; gap: 0.2rem 1.4rem;
+  padding: 0.95rem 0.6rem; border-bottom: 1px solid var(--hud-ghost);
+  font-size: 0.92rem;
+}
+.eventlog li.key { background: rgba(207, 238, 198, 0.06); border-left: 3px solid var(--alert); }
+.eventlog .d { color: var(--alert); letter-spacing: 0.08em; text-transform: uppercase; font-size: 0.8rem; padding-top: 0.2em; }
+.eventlog h3 { grid-column: 2; margin: 0; font-size: 0.95rem; font-weight: 400; color: var(--hud); text-transform: uppercase; letter-spacing: 0.06em; }
+.eventlog .d + h3 { grid-column: auto; }
+.eventlog p { grid-column: 2; margin: 0.25rem 0 0; color: var(--hud-soft); }
+@media (max-width: 40rem) {
+  .eventlog li { grid-template-columns: 1fr; }
+  .eventlog h3, .eventlog p { grid-column: 1; }
+}
+
+/* --- references + exit ------------------------------------- */
+.refs { max-width: var(--measure); margin: 3rem auto 0; font-size: 0.85rem; }
+.refs h2 {
+  font-family: "Silkscreen", monospace; font-weight: 400; font-size: 1rem;
+  color: var(--hud); text-transform: uppercase; margin: 0 0 0.8rem;
+}
+.refs h2::before { content: "► "; color: var(--hud-dim); }
+.refs ol { margin: 0; padding-left: 1.6rem; color: var(--hud-dim); }
+.refs li { margin-bottom: 0.4rem; }
+.refs em { font-style: normal; color: var(--hud-soft); }
+.exit {
+  max-width: var(--measure); margin: 3.5rem auto 0; padding: 2rem 0 3.5rem;
+  border-top: 1px solid var(--hud-ghost);
+  font-size: 0.85rem; letter-spacing: 0.12em; text-transform: uppercase;
+}
+.exit p { margin: 0 0 1.2rem; color: var(--hud-dim); }
+.exit .prompt::after { content: "█"; animation: blink 1.1s steps(1) infinite; color: var(--hud); }
+@keyframes blink { 50% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .exit .prompt::after { animation: none; } }
+.exit ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.7rem 2rem; }
+.exit a { color: var(--hud); }
+.exit a:hover { background: var(--hud); color: var(--tube); }
+</style>
+</head>
+<body class="crt">
+
+<div class="statusbar">
+  <div class="wrap">
+    <span><b>{{ site.name }}</b> // THEME THUNDER № 9</span>
+    <span>MODE: <b>PLAYBACK</b> · TAPE 1 OF 1 · 17 JAN 91</span>
+    <span><a href="{{ art.url }}">STANDARD EDITION →</a></span>
+  </div>
+</div>
+
+<header class="console-head wrap">
+  <p class="boot">TAPE VAULT // WING INTELLIGENCE // DECK 2 ······ HEADS <b>CLEAN</b> · TRACKING <b>ADJ</b> · COUNTER <b>0:47:12</b></p>
+  <h1 class="trackname">The First<br>Night</h1>
+  <p class="dek-block">{{ art.data.dek }}</p>
+  <p class="opline">
+    <span>FILE: <b>{{ art.data.fileNo }}</b></span>
+    <span>DESK: <b>AIR WARFARE</b></span>
+    <span>POSTED: <b>{{ art.date | readableDate }}</b></span>
+    <span>SOURCES: <b>OPEN // UNCLASSIFIED</b></span>
+  </p>
+</header>
+
+<div class="tapebay wrap">
+  <div>
+    <div class="tapeframe" role="img" aria-label="Stylised infrared gun-camera frame over Baghdad: a city skyline in FLIR green, a targeting box bracketing a heat bloom on one building, HUD airspeed and altitude ladders, and VCR playback text with tracking noise along the bottom.">
+      <div class="skyline" aria-hidden="true"></div>
+      <div class="bloom" aria-hidden="true"></div>
+      <i class="tracer" style="left: 22%; transform: rotate(-7deg);" aria-hidden="true"></i>
+      <i class="tracer" style="left: 34%; transform: rotate(4deg); height: 26%;" aria-hidden="true"></i>
+      <i class="tracer" style="left: 81%; transform: rotate(-3deg); height: 16%;" aria-hidden="true"></i>
+      <div class="hud" aria-hidden="true">
+        <span class="hud-top">ARM · GBU-27 · LASE RDY</span>
+        <i class="cross-h"></i><i class="cross-v"></i><i class="pipper"></i>
+        <span class="tdbox"><span>TGT: TELECOM EXCHANGE</span></span>
+        <span class="ladder ladder--l"><span>560</span><span>540</span><span>520</span></span>
+        <span class="ladder ladder--r"><span>14.2</span><span>13.8</span><span>13.4</span></span>
+        <span class="hud-hdg">· 350 · 355 · 000 ·</span>
+      </div>
+      <span class="osd osd--tl" aria-hidden="true">PLAY ►</span>
+      <span class="osd osd--tr" aria-hidden="true">SP</span>
+      <span class="osd osd--bl" aria-hidden="true">0:47:12</span>
+      <span class="osd osd--br" aria-hidden="true">17. 1.91 02:47</span>
+      <div class="snow" aria-hidden="true"></div>
+      <div class="trackband" aria-hidden="true"></div>
+    </div>
+    <p class="tape-caption">IR TAPE REPLAY · BAGHDAD SECTOR · H-HOUR MINUS 13 MIN · 17 JANUARY 1991</p>
+  </div>
+</div>
+
+<article class="feed wrap" aria-label="Article, cockpit-tape edition">
+{{ art.templateContent | safe }}
+</article>
+
+{%- if art.data.timeline %}
+<section class="eventlog wrap" aria-label="Mission log">
+  <h2 class="log-head">Mission Log</h2>
+  <p class="log-sub">{{ art.data.timeline.title }}</p>
+  <ol>
+    {%- for item in art.data.timeline.items %}
+    <li{% if item.key %} class="key"{% endif %}>
+      <span class="d">{{ item.date }}</span>
+      <h3>{{ item.title }}</h3>
+      <p>{{ item.text }}</p>
+    </li>
+    {%- endfor %}
+  </ol>
+</section>
+{%- endif %}
+
+{%- if art.data.sources %}
+<section class="refs wrap" aria-label="Sources">
+  <h2>Reference Index</h2>
+  <ol>
+    {%- for s in art.data.sources %}
+    <li>{{ s | safe }}</li>
+    {%- endfor %}
+  </ol>
+</section>
+{%- endif %}
+
+<footer class="exit wrap">
+  <p class="prompt">END OF TAPE. AUTO-REWIND OFF. AWAITING INPUT </p>
+  <ul>
+    <li><a href="{{ art.url }}">[ STANDARD EDITION ]</a></li>
+    <li><a href="/thunder/">[ THEME THUNDER INDEX ]</a></li>
+    <li><a href="/">[ {{ site.name }} FRONT PAGE ]</a></li>
+  </ul>
+</footer>
+
+</body>
+</html>

@@ -83,7 +83,9 @@ all-dispatches list, prev/next pagers, related cards and the RSS feed.
 `/thunder/` is the journal's period-print channel: the top articles re-set in
 standalone designs native to their subject's era (a 1915 broadsheet, a 1918
 assault manual, a Soviet poster, a NATOPS manual, a war-production bulletin,
-a 1982 radar scope). Each edition is one self-contained `.njk` file in
+and an instrument bay of four glowing displays — a 1968 sonar waterfall, a
+1982 radar scope, a 1983 missile-warning board, a 1991 gun-camera tape).
+Each edition is one self-contained `.njk` file in
 `src/thunder/` — its own fonts and CSS, no shared stylesheet — that pulls the
 standard article's rendered body via the `articleBySlug` filter, so the words
 live in one place and the design in another.

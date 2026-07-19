@@ -1,0 +1,379 @@
+---
+title: "WATERFALL 1968 · Four Boats Down — Theme Thunder"
+---
+{%- set art = collections.articles | articleBySlug("four-submarines-1968") -%}
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ title }} — {{ site.name }}</title>
+<meta name="description" content="{{ art.data.dek }}">
+<meta property="og:site_name" content="{{ site.name }}">
+<meta property="og:title" content="{{ art.data.title }} — Theme Thunder edition">
+<meta property="og:description" content="Theme Thunder: the four submarine losses of 1968 read off a sonar waterfall — cyan phosphor, falling paper, one broadband event.">
+<meta property="og:type" content="article">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%2302070d'/%3E%3Cpath d='M4 2v12M8 2v12M12 2v12' stroke='%234fe3ff' stroke-width='1'/%3E%3Cpath d='M2 7h12' stroke='%23ff6d4d' stroke-width='2'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anonymous+Pro:wght@400;700&family=Doto:wght@800;900&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   THEME THUNDER № 7 — "WATERFALL 1968"
+   A shore-station sound room, spring 1968. Cyan phosphor,
+   lofargram paper falling at slow speed, tonals and one
+   broadband event that should not be there.
+   ============================================================ */
+:root {
+  --tube:      #02070d;   /* dead screen */
+  --tube-2:    #051523;   /* raised panel */
+  --phos:      #4fe3ff;   /* bright phosphor */
+  --phos-soft: #bfe9f7;   /* long-persistence body text */
+  --phos-dim:  #3b7e97;   /* labels, chrome */
+  --phos-ghost:#14384c;   /* rules, scales */
+  --flare:     #ff6d4d;   /* transient / key data */
+  --measure: 41rem;
+}
+* { box-sizing: border-box; }
+html { background: #010308; }
+body {
+  margin: 0;
+  background:
+    radial-gradient(ellipse 120% 90% at 50% 0%, #071c2c 0%, var(--tube) 55%);
+  color: var(--phos-soft);
+  font-family: "Anonymous Pro", ui-monospace, Menlo, monospace;
+  font-size: 1.05rem;
+  line-height: 1.72;
+  min-height: 100vh;
+}
+/* --- CRT furniture ----------------------------------------- */
+.crt::before {
+  content: "";
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(0deg,
+    rgba(0, 0, 0, 0.22) 0 1px, transparent 1px 3px);
+  pointer-events: none; z-index: 40;
+}
+.crt::after {
+  content: "";
+  position: fixed; inset: 0;
+  background: radial-gradient(ellipse 95% 85% at 50% 45%,
+    transparent 60%, rgba(0, 0, 0, 0.55) 100%);
+  pointer-events: none; z-index: 41;
+}
+a { color: var(--flare); text-decoration: none; }
+a:hover { background: var(--flare); color: var(--tube); }
+::selection { background: var(--phos); color: var(--tube); }
+.wrap { max-width: 62rem; margin-inline: auto; padding-inline: 1.25rem; }
+
+/* --- status bar -------------------------------------------- */
+.statusbar {
+  border-bottom: 1px solid var(--phos-ghost);
+  font-size: 0.82rem; letter-spacing: 0.14em;
+  color: var(--phos-dim); text-transform: uppercase;
+}
+.statusbar .wrap {
+  display: flex; flex-wrap: wrap; gap: 0.35rem 1.6rem;
+  justify-content: space-between; padding-block: 0.55rem;
+}
+.statusbar b { color: var(--phos); font-weight: 400; }
+.statusbar a { color: var(--phos-dim); }
+.statusbar a:hover { background: var(--phos-dim); color: var(--tube); }
+
+/* --- console header ---------------------------------------- */
+.console-head { padding: 3rem 0 2rem; text-align: left; }
+.boot {
+  color: var(--phos-dim); font-size: 0.85rem; letter-spacing: 0.12em;
+  margin: 0 0 1.6rem; text-transform: uppercase;
+}
+.boot b { color: var(--flare); font-weight: 400; }
+h1.trackname {
+  font-family: "Doto", monospace;
+  font-weight: 900;
+  font-size: clamp(2.5rem, 7vw, 4.5rem);
+  line-height: 1.02; margin: 0 0 1.2rem;
+  color: var(--phos); text-transform: uppercase;
+  text-shadow: 0 0 16px rgba(79, 227, 255, 0.45);
+}
+.dek-block {
+  border-left: 3px double var(--phos-ghost);
+  padding-left: 1.1rem; max-width: var(--measure);
+  color: var(--phos-soft); font-size: 0.98rem; margin: 0 0 1.4rem;
+}
+.opline {
+  display: flex; flex-wrap: wrap; gap: 0.4rem 2rem;
+  font-size: 0.82rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--phos-dim);
+}
+.opline b { color: var(--phos); font-weight: 400; }
+
+/* --- the waterfall ----------------------------------------- */
+.grambay { display: grid; place-items: center; padding: 1.4rem 0 2.4rem; }
+.gram {
+  position: relative; width: min(36rem, 92vw);
+  border: 1px solid var(--phos-ghost);
+  background: linear-gradient(180deg, #04121e 0%, #030d17 100%);
+  box-shadow: 0 0 0 4px #06131c, 0 0 0 5px #10293a,
+    0 0 60px rgba(79, 227, 255, 0.10), inset 0 0 45px rgba(0, 0, 0, 0.7);
+}
+.gram-scale {
+  display: flex; justify-content: space-between;
+  padding: 0.45rem 0.8rem 0.35rem;
+  border-bottom: 1px solid var(--phos-ghost);
+  font-size: 0.62rem; letter-spacing: 0.14em; color: var(--phos-dim);
+  background:
+    repeating-linear-gradient(90deg, var(--phos-ghost) 0 1px, transparent 1px 9.5%)
+    bottom / 100% 5px no-repeat;
+}
+.paper {
+  position: relative; height: 24rem; overflow: hidden;
+  background:
+    repeating-linear-gradient(90deg,
+      rgba(79, 227, 255, 0.05) 0 1px, transparent 1px 2.6rem);
+}
+/* falling flow-noise speckle */
+.paper::before {
+  content: ""; position: absolute; inset: 0;
+  background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="220" height="220"%3E%3Cfilter id="n"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" stitchTiles="stitch"/%3E%3CfeColorMatrix type="matrix" values="0 0 0 0 0.31 0 0 0 0 0.89 0 0 0 0 1 0 0 0 0.55 0"/%3E%3C/filter%3E%3Crect width="220" height="220" filter="url(%23n)"/%3E%3C/svg%3E');
+  background-size: 220px 220px;
+  opacity: 0.34; mix-blend-mode: screen;
+  animation: feed 9s linear infinite;
+}
+@keyframes feed { to { background-position: 0 220px; } }
+/* narrowband tonals */
+.tonal {
+  position: absolute; top: 0; bottom: 0; width: 2px;
+  background: repeating-linear-gradient(180deg,
+    var(--phos) 0 7px, rgba(79, 227, 255, 0.35) 7px 11px);
+  box-shadow: 0 0 9px 1px rgba(79, 227, 255, 0.5);
+  opacity: 0.85;
+}
+.tonal--faint { opacity: 0.4; box-shadow: 0 0 6px 0 rgba(79, 227, 255, 0.3); }
+.tonal span {
+  position: absolute; top: 0.5rem; left: 0.55rem;
+  writing-mode: vertical-rl;
+  font-size: 0.62rem; letter-spacing: 0.16em; color: var(--phos-dim);
+  white-space: nowrap; text-transform: uppercase;
+}
+/* the broadband transient */
+.event {
+  position: absolute; left: 4%; right: 4%; top: 38%; height: 3px;
+  background: linear-gradient(90deg,
+    transparent 0%, var(--flare) 12%, #ffd0c2 50%, var(--flare) 88%, transparent 100%);
+  box-shadow: 0 0 14px 2px rgba(255, 109, 77, 0.55);
+  animation: sear 9s linear infinite;
+}
+@keyframes sear { 0%, 8% { opacity: 1; } 55% { opacity: 0.55; } 100% { opacity: 1; } }
+.event span {
+  position: absolute; right: 0.2rem; top: 0.5rem;
+  font-size: 0.62rem; letter-spacing: 0.16em; color: var(--flare);
+  text-transform: uppercase;
+}
+.gram-foot {
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.3rem 1.4rem;
+  padding: 0.4rem 0.8rem; border-top: 1px solid var(--phos-ghost);
+  font-size: 0.62rem; letter-spacing: 0.14em; color: var(--phos-dim);
+  text-transform: uppercase;
+}
+.gram-caption {
+  margin: 1rem auto 0; max-width: 34rem; text-align: center;
+  font-size: 0.78rem; letter-spacing: 0.1em; color: var(--phos-dim);
+  text-transform: uppercase;
+}
+@media (prefers-reduced-motion: reduce) {
+  .paper::before { animation: none; }
+  .event { animation: none; }
+}
+
+/* --- article feed ------------------------------------------ */
+.feed { max-width: var(--measure); margin-inline: auto; padding-bottom: 2rem; }
+.feed p { margin: 0 0 1.15em; }
+.feed h2 {
+  font-family: "Doto", monospace; font-weight: 800;
+  color: var(--phos); font-size: 1.55rem; letter-spacing: 0.05em;
+  text-transform: uppercase; margin: 2.6em 0 0.7em;
+  text-shadow: 0 0 12px rgba(79, 227, 255, 0.35);
+}
+.feed h2::before { content: "≈ "; color: var(--phos-dim); }
+.feed em { font-style: normal; color: var(--phos); }
+.feed strong { color: var(--phos); font-weight: 400; }
+.feed .dinkus {
+  text-align: center; color: var(--phos-dim); letter-spacing: 1.2em;
+  margin: 2em 0;
+}
+/* factbox → SOUND SHEET */
+.feed .factbox {
+  border: 1px solid var(--phos-dim); margin: 2em 0; font-size: 0.9rem;
+  background: rgba(5, 21, 35, 0.8);
+}
+.feed .factbox-title {
+  margin: 0; padding: 0.45rem 0.9rem; background: var(--phos-dim);
+  color: var(--tube); font-size: 0.85rem; font-weight: 400;
+  letter-spacing: 0.22em; text-transform: uppercase;
+}
+.feed .factbox-title::before { content: "SOUND SHEET // "; }
+.feed .factbox dl { margin: 0; padding: 0.5rem 0.9rem 0.7rem; }
+.feed .factbox .row {
+  display: flex; justify-content: space-between; gap: 1.5rem;
+  padding: 0.42rem 0; border-bottom: 1px dashed var(--phos-ghost);
+}
+.feed .factbox .row:last-child { border-bottom: 0; }
+.feed .factbox dt { color: var(--phos-dim); text-transform: uppercase; font-size: 0.78rem; letter-spacing: 0.1em; padding-top: 0.15em; }
+.feed .factbox dd { margin: 0; text-align: right; color: var(--phos); }
+/* pullquote → SOUND ROOM TRANSCRIPT */
+.feed .pullquote {
+  border: 1px dashed var(--flare); border-left: 4px solid var(--flare);
+  padding: 1rem 1.2rem; margin: 2em 0; position: relative;
+}
+.feed .pullquote::before {
+  content: "SOUND ROOM // TRANSCRIPT"; display: block;
+  color: var(--flare); font-size: 0.72rem; letter-spacing: 0.26em;
+  margin-bottom: 0.6rem;
+}
+.feed .pullquote p {
+  margin: 0; color: var(--phos); font-size: 1.12rem; line-height: 1.55;
+  text-transform: uppercase;
+}
+.feed .pullquote cite {
+  display: block; margin-top: 0.7rem; font-style: normal;
+  color: var(--phos-dim); font-size: 0.78rem; letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.feed .pullquote cite::before { content: "SOURCE: "; }
+
+/* --- contact log (timeline) -------------------------------- */
+.eventlog { max-width: var(--measure); margin: 3rem auto 0; }
+.log-head {
+  font-family: "Doto", monospace; font-weight: 800; font-size: 1.55rem;
+  color: var(--phos); text-transform: uppercase; margin: 0 0 0.4rem;
+  text-shadow: 0 0 12px rgba(79, 227, 255, 0.35);
+}
+.log-head::before { content: "≈ "; color: var(--phos-dim); }
+.log-sub { color: var(--phos-dim); font-size: 0.8rem; letter-spacing: 0.18em; text-transform: uppercase; margin: 0 0 1.4rem; }
+.eventlog ol { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--phos-ghost); }
+.eventlog li {
+  display: grid; grid-template-columns: 9.5rem 1fr; gap: 0.2rem 1.4rem;
+  padding: 0.95rem 0.6rem; border-bottom: 1px solid var(--phos-ghost);
+  font-size: 0.92rem;
+}
+.eventlog li.key { background: rgba(79, 227, 255, 0.07); border-left: 3px solid var(--flare); }
+.eventlog .d { color: var(--flare); letter-spacing: 0.08em; text-transform: uppercase; font-size: 0.82rem; padding-top: 0.2em; }
+.eventlog h3 { grid-column: 2; margin: 0; font-size: 0.95rem; font-weight: 400; color: var(--phos); text-transform: uppercase; letter-spacing: 0.06em; }
+.eventlog .d + h3 { grid-column: auto; }
+.eventlog p { grid-column: 2; margin: 0.25rem 0 0; color: var(--phos-soft); }
+@media (max-width: 40rem) {
+  .eventlog li { grid-template-columns: 1fr; }
+  .eventlog h3, .eventlog p { grid-column: 1; }
+}
+
+/* --- references + exit ------------------------------------- */
+.refs { max-width: var(--measure); margin: 3rem auto 0; font-size: 0.85rem; }
+.refs h2 {
+  font-family: "Doto", monospace; font-weight: 800; font-size: 1.35rem;
+  color: var(--phos); text-transform: uppercase; margin: 0 0 0.8rem;
+}
+.refs h2::before { content: "≈ "; color: var(--phos-dim); }
+.refs ol { margin: 0; padding-left: 1.6rem; color: var(--phos-dim); }
+.refs li { margin-bottom: 0.4rem; }
+.refs em { font-style: normal; color: var(--phos-soft); }
+.exit {
+  max-width: var(--measure); margin: 3.5rem auto 0; padding: 2rem 0 3.5rem;
+  border-top: 1px solid var(--phos-ghost);
+  font-size: 0.85rem; letter-spacing: 0.12em; text-transform: uppercase;
+}
+.exit p { margin: 0 0 1.2rem; color: var(--phos-dim); }
+.exit .prompt::after { content: "█"; animation: blink 1.1s steps(1) infinite; color: var(--phos); }
+@keyframes blink { 50% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .exit .prompt::after { animation: none; } }
+.exit ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.7rem 2rem; }
+.exit a { color: var(--phos); }
+.exit a:hover { background: var(--phos); color: var(--tube); }
+</style>
+</head>
+<body class="crt">
+
+<div class="statusbar">
+  <div class="wrap">
+    <span><b>{{ site.name }}</b> // THEME THUNDER № 7</span>
+    <span>MODE: <b>PLAYBACK</b> · GRAMS 25 JAN – 22 MAY 68</span>
+    <span><a href="{{ art.url }}">STANDARD EDITION →</a></span>
+  </div>
+</div>
+
+<header class="console-head wrap">
+  <p class="boot">NAVFAC SOUND ROOM // OCEAN SYSTEMS // CH 12 ······ ARRAY <b>UP</b> · INK FEED <b>OK</b> · CLOCK <b>0559Z</b></p>
+  <h1 class="trackname">Four Boats<br>Down</h1>
+  <p class="dek-block">{{ art.data.dek }}</p>
+  <p class="opline">
+    <span>FILE: <b>{{ art.data.fileNo }}</b></span>
+    <span>DESK: <b>UNDERSEA</b></span>
+    <span>POSTED: <b>{{ art.date | readableDate }}</b></span>
+    <span>SOURCES: <b>OPEN // UNCLASSIFIED</b></span>
+  </p>
+</header>
+
+<div class="grambay wrap">
+  <div>
+    <div class="gram" role="img" aria-label="Stylised sonar lofargram: vertical narrowband tonal traces from routine shipping and a submarine contact, cut by one bright broadband transient marked as the event of 8 March 1968.">
+      <div class="gram-scale" aria-hidden="true">
+        <span>10 Hz</span><span>20</span><span>40</span><span>80</span><span>160</span><span>320 Hz</span>
+      </div>
+      <div class="paper" aria-hidden="true">
+        <i class="tonal tonal--faint" style="left: 12%;"><span>MERCHANT · 4-BLADE</span></i>
+        <i class="tonal" style="left: 27%;"><span>50 Hz ELECTRICAL</span></i>
+        <i class="tonal tonal--faint" style="left: 43%;"><span>TRAWLER PAIR</span></i>
+        <i class="tonal" style="left: 58%;"><span>SHAFT RATE · SUBMERGED</span></i>
+        <i class="tonal tonal--faint" style="left: 71%;"><span>6-BLADE · DISTANT</span></i>
+        <i class="tonal" style="left: 86%; opacity: 0.6;"><span>BLADE RATE ×5</span></i>
+        <span class="event"><span>BROADBAND EVENT · 8 MAR · 0559Z</span></span>
+      </div>
+      <div class="gram-foot" aria-hidden="true">
+        <span>PAPER SPEED: SLOW</span><span>LOFAR · NORTH PACIFIC SECTOR</span><span>ROLL 68-067</span>
+      </div>
+    </div>
+    <p class="gram-caption">LOFARGRAM · FREQUENCY V. TIME · THE OCEAN WRITES DOWN EVERYTHING IT HEARS</p>
+  </div>
+</div>
+
+<article class="feed wrap" aria-label="Article, sound-room edition">
+{{ art.templateContent | safe }}
+</article>
+
+{%- if art.data.timeline %}
+<section class="eventlog wrap" aria-label="Contact log">
+  <h2 class="log-head">Contact Log</h2>
+  <p class="log-sub">{{ art.data.timeline.title }}</p>
+  <ol>
+    {%- for item in art.data.timeline.items %}
+    <li{% if item.key %} class="key"{% endif %}>
+      <span class="d">{{ item.date }}</span>
+      <h3>{{ item.title }}</h3>
+      <p>{{ item.text }}</p>
+    </li>
+    {%- endfor %}
+  </ol>
+</section>
+{%- endif %}
+
+{%- if art.data.sources %}
+<section class="refs wrap" aria-label="Sources">
+  <h2>Reference Index</h2>
+  <ol>
+    {%- for s in art.data.sources %}
+    <li>{{ s | safe }}</li>
+    {%- endfor %}
+  </ol>
+</section>
+{%- endif %}
+
+<footer class="exit wrap">
+  <p class="prompt">END OF GRAM. PAPER FEED HOLDS. STILL LISTENING </p>
+  <ul>
+    <li><a href="{{ art.url }}">[ STANDARD EDITION ]</a></li>
+    <li><a href="/thunder/">[ THEME THUNDER INDEX ]</a></li>
+    <li><a href="/">[ {{ site.name }} FRONT PAGE ]</a></li>
+  </ul>
+</footer>
+
+</body>
+</html>
