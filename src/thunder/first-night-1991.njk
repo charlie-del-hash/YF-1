@@ -16,7 +16,7 @@ title: "TAPE 1991 · The First Night — Theme Thunder"
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23050705'/%3E%3Cpath d='M8 3v3M8 10v3M3 8h3M10 8h3' stroke='%23cfeec6'/%3E%3Ccircle cx='8' cy='8' r='1.5' fill='%23f2f2ee'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Kode+Mono:wght@400;500;700&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Kode+Mono:wght@400&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
    THEME THUNDER № 9 — "TAPE 1991"
@@ -50,14 +50,14 @@ body {
 /* --- playback-room furniture ------------------------------- */
 .crt::before {
   content: "";
-  position: fixed; inset: 0;
+  position: fixed; inset: 0; transform: translateZ(0);
   background: repeating-linear-gradient(0deg,
     rgba(0, 0, 0, 0.20) 0 1px, transparent 1px 3px);
   pointer-events: none; z-index: 40;
 }
 .crt::after {
   content: "";
-  position: fixed; inset: 0;
+  position: fixed; inset: 0; transform: translateZ(0);
   background: radial-gradient(ellipse 95% 85% at 50% 45%,
     transparent 60%, rgba(0, 0, 0, 0.55) 100%);
   pointer-events: none; z-index: 41;
@@ -206,20 +206,22 @@ h1.trackname {
 .osd--bl { bottom: 4.5%; left: 4%; }
 .osd--br { bottom: 4.5%; right: 4%; }
 /* VHS artefacts */
+/* snow + tracking noise jitter via transform on oversized layers —
+   the pattern jumps are GPU-composited, never repainted */
 .snow {
-  position: absolute; inset: 0; z-index: 4; pointer-events: none;
+  position: absolute; inset: -200px; z-index: 4; pointer-events: none;
   background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200"%3E%3Cfilter id="s"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/%3E%3CfeColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.5 0"/%3E%3C/filter%3E%3Crect width="200" height="200" filter="url(%23s)"/%3E%3C/svg%3E');
   background-size: 200px 200px;
   opacity: 0.07; mix-blend-mode: screen;
   animation: snowjit 0.45s steps(2) infinite;
 }
 @keyframes snowjit {
-  0% { background-position: 0 0; }
-  50% { background-position: 80px 120px; }
-  100% { background-position: 160px 40px; }
+  0% { transform: translate(0, 0); }
+  50% { transform: translate(80px, 120px); }
+  100% { transform: translate(160px, 40px); }
 }
 .trackband {
-  position: absolute; left: 0; right: 0; bottom: 1.5%; height: 8px; z-index: 5;
+  position: absolute; left: -40px; right: -40px; bottom: 1.5%; height: 8px; z-index: 5;
   background: repeating-linear-gradient(90deg,
     rgba(255, 255, 255, 0.22) 0 14px, rgba(255, 255, 255, 0.04) 14px 34px,
     rgba(255, 255, 255, 0.3) 34px 40px, rgba(255, 255, 255, 0.07) 40px 62px);
@@ -227,9 +229,9 @@ h1.trackname {
   animation: trackjit 0.32s steps(2) infinite;
 }
 @keyframes trackjit {
-  0% { background-position-x: 0; }
-  50% { background-position-x: 22px; }
-  100% { background-position-x: -14px; }
+  0% { transform: translateX(0); }
+  50% { transform: translateX(22px); }
+  100% { transform: translateX(-14px); }
 }
 .tape-caption {
   margin: 1rem auto 0; max-width: 38rem; text-align: center;

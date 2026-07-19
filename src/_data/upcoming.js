@@ -8,8 +8,8 @@ module.exports = [
   },
   {
     kicker: "Naval",
-    title: "Tanker war redux: escorting commerce through the Strait of Hormuz",
-    dek: "What the 1987–88 Earnest Will convoys can and cannot teach navies now.",
+    title: "Seven minutes over the Strait: Vincennes and Iran Air 655",
+    dek: "How an Aegis cruiser's picture went wrong — and what every air-defence crew since has learned from it.",
   },
   {
     kicker: "Firearms",

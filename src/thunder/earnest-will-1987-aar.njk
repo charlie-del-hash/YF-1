@@ -1,0 +1,272 @@
+---
+title: "AAR 1987 · Convoy EW 87-01 — Theme Thunder"
+---
+{%- set art = collections.articles | articleBySlug("earnest-will-1987") -%}
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ title }} — {{ site.name }}</title>
+<meta name="description" content="{{ art.data.dek }}">
+<meta property="og:site_name" content="{{ site.name }}">
+<meta property="og:title" content="{{ art.data.title }} — Theme Thunder edition">
+<meta property="og:description" content="Theme Thunder: Operation Earnest Will filed as a 1987 after-action message — green-bar tractor-feed paper, double-strike headers, a DECLASSIFIED stamp.">
+<meta property="og:type" content="article">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23f5f8f0'/%3E%3Crect y='4' width='16' height='4' fill='%23dcead4'/%3E%3Crect y='12' width='16' height='4' fill='%23dcead4'/%3E%3Ccircle cx='2' cy='3' r='1' fill='%23777'/%3E%3Ccircle cx='2' cy='9' r='1' fill='%23777'/%3E%3Ccircle cx='2' cy='15' r='1' fill='%23777'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Cutive+Mono&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   THEME THUNDER № 11 — "AAR 1987"
+   An after-action message off the ship's printer: green-bar
+   tractor-feed paper, one ribbon of dot-matrix mono, headers
+   bolded by double-strike, and the stamps that came later.
+   Entirely static — paper does not animate.
+   ============================================================ */
+:root {
+  --desk:   #47433c;   /* wardroom table */
+  --band:   #dcead4;   /* green bar */
+  --paper:  #f5f8f0;   /* white bar */
+  --ink:    #2b3134;   /* ribbon black */
+  --faint:  #6b7570;   /* worn print */
+  --stamp:  #b3271e;   /* rubber stamp red */
+  --pen:    #1a3f8f;   /* reviewer's fountain pen (links) */
+  --line: 1.9rem;      /* one printer line = one bar */
+}
+* { box-sizing: border-box; }
+html { background: var(--desk); }
+body {
+  margin: 0; background: var(--desk); color: var(--ink);
+  font-family: "Cutive Mono", "Courier New", monospace;
+  font-size: 0.97rem; line-height: var(--line);
+}
+/* double-strike "bold" — the only bold a daisy wheel knows */
+.ds, b, strong { font-weight: 400; text-shadow: 0.55px 0 0 currentColor; }
+a { color: var(--pen); text-decoration: underline; text-underline-offset: 2px; }
+a:hover { background: rgba(26, 63, 143, 0.12); }
+::selection { background: var(--ink); color: var(--paper); }
+
+/* --- desk strip (site chrome) ------------------------------ */
+.statusbar {
+  color: #cfc8b8; font-size: 0.78rem; letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.statusbar .wrap {
+  max-width: 56rem; margin-inline: auto; padding: 0.6rem 1.2rem;
+  display: flex; flex-wrap: wrap; gap: 0.3rem 1.8rem; justify-content: space-between;
+}
+.statusbar b { color: #fff; }
+.statusbar a { color: #cfc8b8; }
+.statusbar a:hover { background: #cfc8b8; color: var(--desk); }
+
+/* --- the printout ------------------------------------------ */
+.sheet {
+  position: relative; max-width: 54rem; margin: 0.4rem auto 3rem;
+  background: repeating-linear-gradient(180deg,
+    var(--paper) 0 var(--line), var(--band) var(--line) calc(var(--line) * 2));
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.45);
+  padding: 2.85rem 4.4rem 2.85rem;
+}
+.sheet::before, .sheet::after {
+  content: ""; position: absolute; top: 0; bottom: 0; width: 2.1rem;
+  background-image: radial-gradient(circle at 50% 50%, rgba(45, 41, 34, 0.85) 4px, transparent 5px);
+  background-size: 100% var(--line);
+}
+.sheet::before { left: 0; border-right: 1px dashed #b4c0aa; }
+.sheet::after  { right: 0; border-left: 1px dashed #b4c0aa; }
+
+/* --- message header ---------------------------------------- */
+.msghead { margin-bottom: var(--line); }
+.msghead p { margin: 0; white-space: pre-wrap; }
+.msghead .routing { color: var(--faint); font-size: 0.85rem; }
+.classline {
+  text-align: center; letter-spacing: 0.55em; margin: var(--line) 0 0 !important;
+  text-decoration: line-through; text-decoration-thickness: 2px;
+  text-decoration-color: var(--stamp);
+}
+.stampbay { text-align: center; margin: 0 0 var(--line); position: relative; }
+.stamp {
+  display: inline-block; transform: rotate(-4deg);
+  font-family: "Archivo Black", sans-serif; font-size: 0.92rem;
+  color: var(--stamp); border: 3px double var(--stamp);
+  padding: 0.15rem 0.9rem; letter-spacing: 0.14em; text-transform: uppercase;
+  opacity: 0.88; text-shadow: 0 0 1px rgba(179, 39, 30, 0.35);
+}
+h1.subjline {
+  font-size: 1.16rem; font-weight: 400; line-height: var(--line);
+  margin: 0 0 var(--line); text-transform: uppercase;
+  text-shadow: 0.55px 0 0 currentColor;
+}
+h1.subjline::before { content: "SUBJ: "; }
+.dek-block { margin: 0 0 var(--line); }
+.dek-block::before { content: "1. (U) SUMMARY. "; text-shadow: 0.55px 0 0 currentColor; }
+.opline {
+  display: flex; flex-wrap: wrap; gap: 0 2.2rem;
+  font-size: 0.85rem; color: var(--faint); text-transform: uppercase;
+  margin: 0 0 var(--line); padding: 0;
+}
+
+/* --- narrative (article feed) ------------------------------ */
+.feed { counter-reset: para 1; }
+.feed p { margin: 0 0 var(--line); }
+.feed h2 {
+  counter-increment: para;
+  font-size: 1.02rem; font-weight: 400; text-transform: uppercase;
+  margin: calc(var(--line) * 1.5) 0 var(--line);
+  text-shadow: 0.55px 0 0 currentColor; text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.feed h2::before { content: counter(para) ". (U) "; }
+.feed em { font-style: normal; text-shadow: 0.55px 0 0 currentColor; }
+.feed .dinkus { text-align: center; letter-spacing: 1.2em; color: var(--faint); margin: var(--line) 0; }
+/* factbox → TAB A */
+.feed .factbox {
+  border: 3px double var(--ink); margin: var(--line) 0; font-size: 0.9rem;
+  background: rgba(245, 248, 240, 0.55);
+}
+.feed .factbox-title {
+  margin: 0; padding: 0.4rem 1rem 0.25rem; font-size: 0.95rem; font-weight: 400;
+  text-align: center; letter-spacing: 0.18em; text-transform: uppercase;
+  text-shadow: 0.55px 0 0 currentColor; border-bottom: 1px solid var(--ink);
+}
+.feed .factbox-title::before { content: "TAB A — "; }
+.feed .factbox dl { margin: 0; padding: 0.5rem 1rem 0.6rem; }
+.feed .factbox .row {
+  display: flex; justify-content: space-between; gap: 1.5rem;
+  padding: 0.3rem 0; border-bottom: 1px dashed rgba(43, 49, 52, 0.35);
+}
+.feed .factbox .row:last-child { border-bottom: 0; }
+.feed .factbox dt { text-transform: uppercase; font-size: 0.82rem; color: var(--faint); padding-top: 0.1em; }
+.feed .factbox dd { margin: 0; text-align: right; }
+/* pullquote → QUOTE/UNQUOTE */
+.feed .pullquote { margin: var(--line) 0; padding: 0 0 0 2.2rem; position: relative; }
+.feed .pullquote::before {
+  content: "QUOTE"; display: block; letter-spacing: 0.3em;
+  text-shadow: 0.55px 0 0 currentColor;
+}
+.feed .pullquote::after {
+  content: "UNQUOTE"; display: block; letter-spacing: 0.3em;
+  text-shadow: 0.55px 0 0 currentColor;
+}
+.feed .pullquote p { margin: 0; text-transform: uppercase; }
+.feed .pullquote cite { display: block; font-style: normal; font-size: 0.85rem; color: var(--faint); text-transform: uppercase; }
+.feed .pullquote cite::before { content: "ATTRIB: "; }
+
+/* --- TAB B chronology (timeline) --------------------------- */
+.eventlog { margin-top: calc(var(--line) * 1.5); }
+.log-head {
+  font-size: 1.02rem; font-weight: 400; text-transform: uppercase; margin: 0;
+  text-align: center; letter-spacing: 0.18em;
+  text-shadow: 0.55px 0 0 currentColor;
+}
+.log-sub { text-align: center; font-size: 0.85rem; color: var(--faint); text-transform: uppercase; margin: 0 0 var(--line); }
+.eventlog ol { list-style: none; margin: 0; padding: 0; border-top: 3px double var(--ink); }
+.eventlog li {
+  display: grid; grid-template-columns: 11rem 1fr; gap: 0.2rem 1.6rem;
+  padding: 0.85rem 0.4rem; border-bottom: 1px dashed rgba(43, 49, 52, 0.35);
+  font-size: 0.93rem;
+}
+.eventlog li.key { background: rgba(179, 39, 30, 0.07); border-left: 3px solid var(--stamp); }
+.eventlog .d { text-transform: uppercase; font-size: 0.85rem; text-shadow: 0.55px 0 0 currentColor; padding-top: 0.1em; }
+.eventlog h3 { grid-column: 2; margin: 0; font-size: 0.95rem; font-weight: 400; text-transform: uppercase; text-shadow: 0.55px 0 0 currentColor; }
+.eventlog .d + h3 { grid-column: auto; }
+.eventlog p { grid-column: 2; margin: 0.2rem 0 0; }
+@media (max-width: 42rem) {
+  .eventlog li { grid-template-columns: 1fr; }
+  .eventlog h3, .eventlog p { grid-column: 1; }
+  .sheet { padding-inline: 3rem; }
+}
+
+/* --- TAB C refs + terminator ------------------------------- */
+.refs { margin-top: calc(var(--line) * 1.5); font-size: 0.88rem; }
+.refs h2 {
+  font-size: 1.02rem; font-weight: 400; text-transform: uppercase; margin: 0 0 var(--line);
+  text-align: center; letter-spacing: 0.18em; text-shadow: 0.55px 0 0 currentColor;
+}
+.refs ol { margin: 0; padding-left: 1.8rem; }
+.refs li { margin-bottom: 0.4rem; }
+.refs em { font-style: normal; text-shadow: 0.55px 0 0 currentColor; }
+.exit { margin-top: calc(var(--line) * 1.5); text-align: center; }
+.exit .prompt { margin: 0; letter-spacing: 0.3em; text-shadow: 0.55px 0 0 currentColor; }
+.exit .prompt::after { content: none; }
+.exit ul {
+  list-style: none; margin: var(--line) 0 0; padding: 0;
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 0.4rem 2rem;
+  font-size: 0.9rem; text-transform: uppercase;
+}
+</style>
+</head>
+<body>
+
+<div class="statusbar">
+  <div class="wrap">
+    <span><b>{{ site.name }}</b> // THEME THUNDER № 11</span>
+    <span>MODE: FILE COPY · CONVOY EW 87-01</span>
+    <span><a href="{{ art.url }}">STANDARD EDITION →</a></span>
+  </div>
+</div>
+
+<main class="sheet">
+
+<header class="msghead">
+  <p class="routing">RTTUZYUW RUCBSAA0347 2051900-CCCC--RUCBSAA.<br>ZNY CCCCC · R 241900Z JUL 87</p>
+  <p>FM COMIDEASTFOR<br>TO USCINCCENT MACDILL AFB FL//CCJ3//<br>INFO CNO WASHINGTON DC//OP-06// · COMSEVENTHFLT</p>
+  <p class="classline">C O N F I D E N T I A L</p>
+  <div class="stampbay"><span class="stamp">Declassified — auth CNO ltr, 12 Oct 2012</span></div>
+  <h1 class="subjline">Operation Earnest Will — Convoy EW 87-01 — After Action Report</h1>
+  <p class="dek-block">{{ art.data.dek }}</p>
+  <p class="opline">
+    <span>DTG: <b>241900Z JUL 87</b></span>
+    <span>FILE: <b>{{ art.data.fileNo }}</b></span>
+    <span>POSTED: <b>{{ art.date | readableDate }}</b></span>
+    <span>DOWNGRADE: <b>OADR</b></span>
+  </p>
+</header>
+
+<article class="feed" aria-label="Article, after-action edition">
+{{ art.templateContent | safe }}
+</article>
+
+{%- if art.data.timeline %}
+<section class="eventlog" aria-label="Chronology of events">
+  <h2 class="log-head">Tab B — Chronology of Events</h2>
+  <p class="log-sub">{{ art.data.timeline.title }}</p>
+  <ol>
+    {%- for item in art.data.timeline.items %}
+    <li{% if item.key %} class="key"{% endif %}>
+      <span class="d">{{ item.date }}</span>
+      <h3>{{ item.title }}</h3>
+      <p>{{ item.text }}</p>
+    </li>
+    {%- endfor %}
+  </ol>
+</section>
+{%- endif %}
+
+{%- if art.data.sources %}
+<section class="refs" aria-label="References">
+  <h2>Tab C — References</h2>
+  <ol>
+    {%- for s in art.data.sources %}
+    <li>{{ s | safe }}</li>
+    {%- endfor %}
+  </ol>
+</section>
+{%- endif %}
+
+<footer class="exit">
+  <p class="prompt">BT<br>#0347<br>NNNN</p>
+  <ul aria-label="Routing">
+    <li><a href="{{ art.url }}">[ Standard edition ]</a></li>
+    <li><a href="/thunder/earnest-will-1987-cic/">[ CIC edition ]</a></li>
+    <li><a href="/thunder/">[ Thunder index ]</a></li>
+    <li><a href="/">[ {{ site.name }} front page ]</a></li>
+  </ul>
+</footer>
+
+</main>
+
+</body>
+</html>

@@ -1,5 +1,5 @@
 ---
-title: "Theme Thunder — nine dispatches in the print of their day"
+title: "Theme Thunder — twelve dispatches in the print of their day"
 ---
 <!doctype html>
 <html lang="en">
@@ -7,18 +7,23 @@ title: "Theme Thunder — nine dispatches in the print of their day"
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{ title }} — {{ site.name }}</title>
-<meta name="description" content="Theme Thunder: the journal's top dispatches re-set in period-correct designs — a 1915 broadsheet, a 1918 assault manual, a Soviet poster, a war-production bulletin, a sonar waterfall, a NATOPS manual, a radar scope, a missile-warning board and a gun-camera tape.">
+<meta name="description" content="Theme Thunder: the journal's top dispatches re-set in period-correct designs — from a 1915 broadsheet through sonar waterfalls, radar scopes and gun-camera tape to a 1987 after-action message, a CIC plot and a 2003 slide deck.">
 <meta property="og:site_name" content="{{ site.name }}">
 <meta property="og:title" content="Theme Thunder — {{ site.name }}">
-<meta property="og:description" content="Nine dispatches, re-set in the print of their day. Same words, period type.">
+<meta property="og:description" content="Twelve dispatches, re-set in the print of their day. Same words, period type.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23101014'/%3E%3Cpath d='M9.5 1L4 9h3l-1.5 6L11 6.5H7.8z' fill='%23f5c518'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Doto:wght@900&family=IBM+Plex+Mono:wght@400;500;600&family=Michroma&family=Old+Standard+TT:ital@0;1&family=Silkscreen:wght@700&family=Stardos+Stencil:wght@700&family=UnifrakturCook:wght@700&family=UnifrakturMaguntia&family=VT323&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- Display faces below are subset via text= to the glyphs the cards use
+     (A-Z a-z 0-9 and basic punctuation) — cuts font payload roughly in half.
+     If a future card name needs an unusual character, add it to text= or
+     drop the param entirely. Body text uses IBM Plex Mono (full, above). -->
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Arimo:ital,wght@1,700&family=Bebas+Neue&family=Chakra+Petch:wght@600&family=Cutive+Mono&family=Doto:wght@900&family=Michroma&family=Old+Standard+TT:ital@1&family=Silkscreen:wght@700&family=Stardos+Stencil:wght@700&family=UnifrakturCook:wght@700&family=UnifrakturMaguntia&family=VT323&text=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%20.%2C%27%E2%80%99%E2%80%94%E2%80%93-!%3F()%2F%26%E2%84%96%C2%B7&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
    THEME THUNDER — channel select
-   Nine dispatches, eight decades of print and phosphor. Each
+   Twelve dispatches, nine decades of print and phosphor. Each
    card borrows the type and palette of the edition behind it.
    ============================================================ */
 :root {
@@ -163,6 +168,58 @@ a { color: inherit; text-decoration: none; }
 .ch--tape .ch-top { color: #5f7a58; }
 .ch--tape .ch-name { font-family: "Silkscreen", monospace; font-weight: 700; font-size: 1.7rem; color: #cfeec6; text-shadow: 0 0 12px rgba(207,238,198,0.45); }
 .ch--tape .ch-cta { color: #f2f2ee; }
+/* № 10 — slides 2003 */
+.ch--deck { background: #9aa1ae; color: #1a1a1a; }
+.ch--deck .ch-body {
+  background: #fff; border: 1px solid #6f7683; margin: 0.7rem;
+  box-shadow: 2px 2px 0 rgba(90,96,107,0.55);
+}
+.ch--deck .ch-top {
+  background: #006b3c; color: #fff; margin: -1.1rem -1.2rem 0;
+  padding: 0.5rem 1.2rem 0.4rem;
+}
+.ch--deck .ch-name {
+  font-family: Arial, "Arimo", sans-serif; font-weight: 700; font-style: italic;
+  font-size: 2rem; color: #1f3f94;
+  border-bottom: 0.28rem solid; border-image: linear-gradient(90deg, #1f3f94, transparent 85%) 1;
+  padding-bottom: 0.3rem;
+}
+.ch--deck .ch-title { font-family: Arial, "Arimo", sans-serif; }
+.ch--deck .ch-cta { color: #1414cc; text-decoration: underline; }
+/* № 11 — aar 1987 */
+.ch--aar {
+  background: repeating-linear-gradient(180deg, #f5f8f0 0 1.15rem, #dcead4 1.15rem 2.3rem);
+  color: #2b3134;
+}
+.ch--aar::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background-image:
+    radial-gradient(circle at 0.65rem 0.55rem, rgba(45,41,34,0.6) 3px, transparent 4px),
+    radial-gradient(circle at calc(100% - 0.65rem) 0.55rem, rgba(45,41,34,0.6) 3px, transparent 4px);
+  background-size: 100% 1.15rem;
+}
+.ch--aar .ch-body { margin-inline: 1.4rem; }
+.ch--aar .ch-top { color: #6b7570; }
+.ch--aar .ch-name {
+  font-family: "Cutive Mono", monospace; font-size: 1.5rem;
+  text-shadow: 0.55px 0 0 currentColor; text-transform: uppercase;
+}
+.ch--aar .ch-title { font-family: "Cutive Mono", monospace; font-size: 0.82rem; }
+.ch--aar .ch-cta { color: #b3271e; }
+/* № 12 — cic 1987 */
+.ch--cic { background: radial-gradient(circle at 50% 30%, #0b1830 0%, #04070e 75%); color: #b9cdec; }
+.ch--cic::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 42%, transparent 0 30%, rgba(207,226,255,0.2) 30% calc(30% + 1px), transparent calc(30% + 1px) 48%, rgba(207,226,255,0.14) 48% calc(48% + 1px), transparent calc(48% + 1px)),
+    repeating-linear-gradient(0deg, rgba(0,0,0,0.25) 0 1px, transparent 1px 3px);
+}
+.ch--cic .ch-top { color: #56719f; }
+.ch--cic .ch-name {
+  font-family: "Chakra Petch", sans-serif; font-weight: 600; font-size: 1.9rem;
+  color: #cfe2ff; text-shadow: 0 0 12px rgba(207,226,255,0.5); text-transform: uppercase;
+}
+.ch--cic .ch-cta { color: #ffcf5c; }
 
 /* --- footer ------------------------------------------------ */
 .foot {
@@ -184,7 +241,7 @@ a { color: inherit; text-decoration: none; }
 
   <header class="hero">
     <h1>Theme <span class="flash">⚡</span> Thunder</h1>
-    <p class="sub">Nine dispatches from the journal, re-set in the print — and phosphor — of their day: a London broadsheet, a field manual, a production poster, an agitprop sheet, a sonar waterfall, a flight manual, a radar scope, a missile-warning board, a gun-camera tape. Same words. Period type.</p>
+    <p class="sub">Twelve dispatches from the journal, re-set in the print — and phosphor — of their day: a London broadsheet, a field manual, a production poster, an agitprop sheet, a sonar waterfall, a flight manual, a radar scope, a missile-warning board, an after-action message, a CIC plot, a gun-camera tape, a slide deck. Same words. Period type.</p>
     <p class="subsub">Every edition links back to its standard version — pick your channel.</p>
   </header>
 
@@ -262,12 +319,39 @@ a { color: inherit; text-decoration: none; }
       </span>
     </a>
 
+    <a class="ch ch--aar" href="/thunder/earnest-will-1987-aar/">
+      <span class="ch-body">
+        <span class="ch-top"><span class="ch-era">Radio room · file copy</span><span class="ch-no">№ 11 · 1987</span></span>
+        <span class="ch-name">AAR EW 87-01</span>
+        <span class="ch-title">Earnest Will's first convoy, filed as an after-action message on tractor-feed green-bar paper.</span>
+        <span class="ch-cta">Tear off the printout</span>
+      </span>
+    </a>
+
+    <a class="ch ch--cic" href="/thunder/earnest-will-1987-cic/">
+      <span class="ch-body">
+        <span class="ch-top"><span class="ch-era">Combat information center</span><span class="ch-no">№ 12 · 1987</span></span>
+        <span class="ch-name">CIC 1987</span>
+        <span class="ch-title">The same convoy from the darkened plot room — NTDS symbols, a mine datum dead ahead.</span>
+        <span class="ch-cta">Man the plot</span>
+      </span>
+    </a>
+
     <a class="ch ch--tape" href="/thunder/first-night-1991/">
       <span class="ch-body">
         <span class="ch-top"><span class="ch-era">Wing intel vault · VHS</span><span class="ch-no">№ 9 · 1991</span></span>
         <span class="ch-name">Tape 1991</span>
         <span class="ch-title">The first night over Baghdad — played back from a gun-camera cassette at H-hour minus thirteen.</span>
         <span class="ch-cta">Press play</span>
+      </span>
+    </a>
+
+    <a class="ch ch--deck" href="/thunder/iraq-2003-briefing/">
+      <span class="ch-body">
+        <span class="ch-top"><span class="ch-era">Commander's update · read-only</span><span class="ch-no">№ 10 · 2003</span></span>
+        <span class="ch-name">Slides 2003</span>
+        <span class="ch-title">The war on bullet points — sat through as a period slide deck, UNCLASSIFIED bars and all.</span>
+        <span class="ch-cta">Begin slide show</span>
       </span>
     </a>
 

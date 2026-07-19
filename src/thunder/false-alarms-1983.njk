@@ -16,7 +16,7 @@ title: "BIG BOARD 1983 · Launch Detect — Theme Thunder"
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%230a0a0d'/%3E%3Ccircle cx='8' cy='8' r='6' fill='none' stroke='%23ffb000'/%3E%3Cpath d='M4 12L12 4' stroke='%23ff4136'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Michroma&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Michroma&family=Space+Mono&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
    THEME THUNDER № 8 — "BIG BOARD 1983"
@@ -49,14 +49,14 @@ body {
 /* --- projection-room furniture ----------------------------- */
 .crt::before {
   content: "";
-  position: fixed; inset: 0;
+  position: fixed; inset: 0; transform: translateZ(0);
   background: repeating-linear-gradient(0deg,
     rgba(0, 0, 0, 0.20) 0 1px, transparent 1px 3px);
   pointer-events: none; z-index: 40;
 }
 .crt::after {
   content: "";
-  position: fixed; inset: 0;
+  position: fixed; inset: 0; transform: translateZ(0);
   background: radial-gradient(ellipse 95% 85% at 50% 45%,
     transparent 60%, rgba(0, 0, 0, 0.55) 100%);
   pointer-events: none; z-index: 41;

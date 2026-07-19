@@ -81,11 +81,13 @@ all-dispatches list, prev/next pagers, related cards and the RSS feed.
 ### Theme Thunder (period-correct editions)
 
 `/thunder/` is the journal's period-print channel: the top articles re-set in
-standalone designs native to their subject's era (a 1915 broadsheet, a 1918
-assault manual, a Soviet poster, a NATOPS manual, a war-production bulletin,
-and an instrument bay of four glowing displays — a 1968 sonar waterfall, a
-1982 radar scope, a 1983 missile-warning board, a 1991 gun-camera tape).
-Each edition is one self-contained `.njk` file in
+standalone designs native to their subject's era — paper artifacts (a 1915
+broadsheet, a 1918 assault manual, a Soviet poster, a NATOPS manual, a
+war-production bulletin, a 1987 after-action message, a 2003 slide deck) and
+an instrument bay of glowing displays (a 1968 sonar waterfall, a 1982 radar
+scope, a 1983 missile-warning board, a 1987 CIC plot, a 1991 gun-camera
+tape). One article may carry two editions via `thunder.also` (see Earnest
+Will). Each edition is one self-contained `.njk` file in
 `src/thunder/` — its own fonts and CSS, no shared stylesheet — that pulls the
 standard article's rendered body via the `articleBySlug` filter, so the words
 live in one place and the design in another.
