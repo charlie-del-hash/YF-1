@@ -8,9 +8,9 @@ byline: "By the Land & Sea Desk"
 tags: ["land-sea", "middle-east", "history"]
 topics: ["Persian Gulf", "Iran", "Convoy Escort", "Mine Warfare", "US Navy", "Tanker War"]
 thunder:
-  url: "/thunder/earnest-will-1987-aar/"
-  label: "Read the after-action message"
-  note: "green-bar paper, tractor feed, a DECLASSIFIED stamp"
+  url: "/thunder/earnest-will-1987-flash/"
+  label: "Copy the traffic as it comes in"
+  note: "flash precedence on a gas-plasma message screen, 75 baud"
   also:
     url: "/thunder/earnest-will-1987-cic/"
     label: "or man the CIC plot"

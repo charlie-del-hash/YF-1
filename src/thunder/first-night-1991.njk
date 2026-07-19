@@ -82,7 +82,7 @@ a:hover { background: var(--osd); color: var(--tube); }
 .statusbar a:hover { background: var(--hud-dim); color: var(--tube); }
 
 /* --- console header ---------------------------------------- */
-.console-head { padding: 3rem 0 2rem; text-align: left; }
+.console-head { padding-block: 3rem 2rem; text-align: left; }
 .boot {
   color: var(--hud-dim); font-size: 0.85rem; letter-spacing: 0.12em;
   margin: 0 0 1.6rem; text-transform: uppercase;
@@ -109,7 +109,7 @@ h1.trackname {
 .opline b { color: var(--hud); font-weight: 400; }
 
 /* --- the tape ---------------------------------------------- */
-.tapebay { display: grid; place-items: center; padding: 1.4rem 0 2.4rem; }
+.tapebay { display: grid; place-items: center; padding-block: 1.4rem 2.4rem; }
 .tapeframe {
   position: relative; width: min(46rem, 92vw); aspect-ratio: 16 / 9;
   overflow: hidden;
@@ -334,7 +334,7 @@ h1.trackname {
 .refs li { margin-bottom: 0.4rem; }
 .refs em { font-style: normal; color: var(--hud-soft); }
 .exit {
-  max-width: var(--measure); margin: 3.5rem auto 0; padding: 2rem 0 3.5rem;
+  max-width: var(--measure); margin: 3.5rem auto 0; padding-block: 2rem 3.5rem;
   border-top: 1px solid var(--hud-ghost);
   font-size: 0.85rem; letter-spacing: 0.12em; text-transform: uppercase;
 }

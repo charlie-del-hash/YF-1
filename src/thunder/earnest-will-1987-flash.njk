@@ -1,0 +1,403 @@
+---
+title: "FLASH 1987 · Convoy EW 87-01 — Theme Thunder"
+---
+{%- set art = collections.articles | articleBySlug("earnest-will-1987") -%}
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ title }} — {{ site.name }}</title>
+<meta name="description" content="{{ art.data.dek }}">
+<meta property="og:site_name" content="{{ site.name }}">
+<meta property="og:title" content="{{ art.data.title }} — Theme Thunder edition">
+<meta property="og:description" content="Theme Thunder: Operation Earnest Will's after-action traffic copied live in radio central — flash precedence typing itself across a gas-plasma message screen.">
+<meta property="og:type" content="article">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%230a0502'/%3E%3Cg fill='%23ff9a3c'%3E%3Ccircle cx='4' cy='4' r='1.3'/%3E%3Ccircle cx='7' cy='4' r='1.3'/%3E%3Ccircle cx='10' cy='4' r='1.3'/%3E%3Ccircle cx='13' cy='4' r='1.3'/%3E%3Ccircle cx='10' cy='7' r='1.3'/%3E%3Ccircle cx='7' cy='9' r='1.3'/%3E%3Ccircle cx='4' cy='12' r='1.3'/%3E%3Ccircle cx='7' cy='12' r='1.3'/%3E%3Ccircle cx='10' cy='12' r='1.3'/%3E%3Ccircle cx='13' cy='12' r='1.3'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=B612+Mono&family=Handjet:wght@600;800&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   THEME THUNDER № 11 — "FLASH 1987"
+   Radio central, 0404Z, 24 July 1987. The Earnest Will traffic
+   comes off the fleet broadcast at flash precedence and types
+   itself onto a gas-plasma message terminal: orange dot-matrix
+   phosphor, MARK/SPACE lamps, a cursor that never sleeps.
+   All motion is transform/opacity-only; the typed header uses
+   sliding covers over a flat panel (no layout, no repaints)
+   with backwards fill, so reduced-motion shows the final state.
+   ============================================================ */
+:root {
+  --tube:      #0a0502;   /* dead screen */
+  --panel:     #140b05;   /* message area — FLAT: the typing covers match it */
+  --bezel:     #1c1108;   /* raised chrome */
+  --phos:      #ffa64d;   /* bright orange phosphor */
+  --phos-soft: #f0c39b;   /* body text */
+  --phos-dim:  #9c6a3d;   /* labels, chrome */
+  --phos-ghost:#3d2312;   /* rules, rings */
+  --alert:     #ff4530;   /* flash precedence */
+  --amberlink: #ffd166;   /* links */
+  --measure: 41rem;
+}
+* { box-sizing: border-box; }
+html { background: #070301; }
+body {
+  margin: 0;
+  background: radial-gradient(ellipse 120% 90% at 50% 0%, #1f0e04 0%, var(--tube) 55%);
+  color: var(--phos-soft);
+  font-family: "B612 Mono", ui-monospace, Menlo, monospace;
+  font-size: 0.93rem;
+  line-height: 1.72;
+  min-height: 100vh;
+}
+/* --- plasma furniture: pixel grid + vignette --------------- */
+.crt::before {
+  content: "";
+  position: fixed; inset: 0; transform: translateZ(0);
+  background:
+    repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.22) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.16) 0 1px, transparent 1px 3px);
+  pointer-events: none; z-index: 40;
+}
+.crt::after {
+  content: "";
+  position: fixed; inset: 0; transform: translateZ(0);
+  background: radial-gradient(ellipse 95% 85% at 50% 45%,
+    transparent 60%, rgba(0, 0, 0, 0.55) 100%);
+  pointer-events: none; z-index: 41;
+}
+a { color: var(--amberlink); text-decoration: none; }
+a:hover { background: var(--amberlink); color: var(--tube); }
+::selection { background: var(--phos); color: var(--tube); }
+b, strong { font-weight: 400; color: var(--phos); }
+.wrap { max-width: 62rem; margin-inline: auto; padding-inline: 1.25rem; }
+.cursor {
+  display: inline-block; width: 0.55em; height: 1em;
+  background: currentColor; vertical-align: text-bottom;
+  animation: blink 1.1s steps(1) infinite;
+}
+@keyframes blink { 50% { opacity: 0; } }
+
+/* --- status bar -------------------------------------------- */
+.statusbar {
+  border-bottom: 1px solid var(--phos-ghost);
+  font-size: 0.8rem; letter-spacing: 0.14em;
+  color: var(--phos-dim); text-transform: uppercase;
+}
+.statusbar .wrap {
+  display: flex; flex-wrap: wrap; gap: 0.35rem 1.6rem;
+  justify-content: space-between; padding-block: 0.55rem;
+}
+.statusbar b { color: var(--phos); }
+.statusbar a { color: var(--phos-dim); }
+.statusbar a:hover { background: var(--phos-dim); color: var(--tube); }
+
+/* --- console header ---------------------------------------- */
+.console-head { padding-block: 3rem 1.6rem; }
+.boot {
+  color: var(--phos-dim); font-size: 0.85rem; letter-spacing: 0.12em;
+  margin: 0 0 1.6rem; text-transform: uppercase;
+}
+.boot b { color: var(--alert); }
+h1.rigname {
+  font-family: "Handjet", monospace; font-weight: 800;
+  font-size: clamp(2.8rem, 8vw, 5.2rem);
+  line-height: 0.98; margin: 0 0 1.2rem;
+  color: var(--phos); text-transform: uppercase; letter-spacing: 0.05em;
+  text-shadow: 0 0 18px rgba(255, 166, 77, 0.45);
+}
+.opline {
+  display: flex; flex-wrap: wrap; gap: 0.4rem 2rem;
+  font-size: 0.8rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--phos-dim);
+}
+.opline b { color: var(--phos); }
+.opline .prec b { color: var(--alert); animation: hblink 1.1s steps(1) infinite; }
+@keyframes hblink { 50% { opacity: 0.3; } }
+
+/* --- the receive rig --------------------------------------- */
+.rxbay { padding-block: 0.6rem 0.4rem; }
+.rig {
+  border: 1px solid var(--phos-ghost);
+  background: var(--bezel);
+  box-shadow: 0 0 0 4px #100804, 0 0 0 5px #2c1a0c,
+    0 0 60px rgba(255, 166, 77, 0.07);
+}
+.rig-head {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1.6rem;
+  padding: 0.6rem 1.1rem; border-bottom: 1px solid var(--phos-ghost);
+  font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--phos-dim);
+}
+.lamp { display: inline-flex; align-items: center; gap: 0.45rem; }
+.lamp::before {
+  content: ""; width: 7px; height: 7px; border-radius: 50%;
+  background: var(--phos); box-shadow: 0 0 7px rgba(255, 166, 77, 0.8);
+}
+/* the RTTY shift: mark and space trade places five times a second */
+.lamp--mark::before  { animation: rtty 0.34s steps(1) infinite; }
+.lamp--space::before { animation: rtty 0.34s steps(1) infinite; animation-delay: -0.17s; }
+@keyframes rtty { 50% { opacity: 0.18; } }
+.rig-head .prec { margin-left: auto; color: var(--alert); }
+.rig-head .prec b { color: var(--alert); animation: hblink 1.1s steps(1) infinite; }
+.rx {
+  background: var(--panel);
+  padding: 1.4rem 1.5rem 1.2rem;
+  font-size: clamp(0.6rem, 2.45vw, 0.88rem);
+  line-height: 2.1;
+  color: var(--phos-soft);
+  letter-spacing: 0.03em;
+}
+.rx p { position: relative; overflow: hidden; white-space: nowrap; margin: 0; }
+/* the typist: an opaque cover slides off each line in character
+   steps — composite-only, and invisible against the flat panel */
+.rx p::after {
+  content: ""; position: absolute; inset: 0;
+  background: var(--panel); transform: translateX(102%);
+}
+@keyframes type { from { transform: translateX(0); } }
+.rx .l1::after { animation: type 1s    steps(22) 0.4s  backwards; }
+.rx .l2::after { animation: type 0.45s steps(9)  1.55s backwards; }
+.rx .l3::after { animation: type 0.4s  steps(8)  2.15s backwards; }
+.rx .l4::after { animation: type 0.4s  steps(8)  2.7s  backwards; }
+.rx .l5::after { animation: type 0.8s  steps(18) 3.25s backwards; }
+.rx .l6::after { animation: type 1s    steps(23) 4.2s  backwards; }
+.rx .l7::after { animation: type 0.6s  steps(12) 5.35s backwards; }
+@keyframes burst { from { opacity: 0; } }
+.rx .routing { color: var(--phos-dim); }
+.rx .classline {
+  text-align: center; letter-spacing: 0.55em; color: var(--phos);
+  text-shadow: 0 0 12px rgba(255, 166, 77, 0.4);
+}
+.rx .subjline {
+  white-space: normal; overflow: visible;
+  font-family: "Handjet", monospace; font-weight: 600;
+  font-size: clamp(1.05rem, 3.4vw, 1.5rem); line-height: 1.35;
+  color: var(--phos); text-transform: uppercase; letter-spacing: 0.04em;
+  margin: 0.6rem 0 0.8rem;
+  text-shadow: 0 0 14px rgba(255, 166, 77, 0.4);
+  animation: burst 0.35s steps(2) 6.1s backwards;
+}
+.rx .subjline::after { content: none; }
+.rx .summary {
+  white-space: normal; overflow: visible;
+  line-height: 1.75; max-width: 56rem;
+  font-size: clamp(0.78rem, 2.6vw, 0.9rem);
+  animation: burst 0.5s ease-out 6.5s backwards;
+}
+.rx .summary::after { content: none; }
+.rx .summary::before { content: "1. (U) SUMMARY. "; color: var(--phos); }
+.rx .live {
+  margin-top: 0.9rem; color: var(--phos-dim); letter-spacing: 0.2em;
+  animation: burst 0.3s steps(1) 7.2s backwards;
+}
+.rx .live::after { content: none; }
+.rx .live .cursor { color: var(--phos); }
+.declass {
+  margin: 0.9rem 0 0; text-align: center;
+  font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--phos-dim);
+}
+
+/* --- article feed ------------------------------------------ */
+.feed {
+  max-width: var(--measure); margin-inline: auto;
+  padding-block: 2.2rem 2rem; counter-reset: para 1;
+}
+.feed p { margin: 0 0 1.15em; }
+.feed h2 {
+  counter-increment: para;
+  font-family: "Handjet", monospace; font-weight: 600;
+  color: var(--phos); font-size: 1.5rem; letter-spacing: 0.05em;
+  text-transform: uppercase; margin: 2.4em 0 0.6em;
+  text-shadow: 0 0 12px rgba(255, 166, 77, 0.35);
+}
+.feed h2::before { content: counter(para) ". (U) "; color: var(--phos-dim); }
+.feed em { font-style: normal; color: var(--phos); }
+.feed .dinkus {
+  text-align: center; color: var(--phos-dim); letter-spacing: 1.2em;
+  margin: 2em 0;
+}
+/* factbox → TAB A */
+.feed .factbox {
+  border: 1px double var(--phos-dim); border-width: 3px;
+  margin: 2em 0; font-size: 0.86rem; background: rgba(20, 11, 5, 0.8);
+}
+.feed .factbox-title {
+  margin: 0; padding: 0.45rem 0.9rem; border-bottom: 1px solid var(--phos-ghost);
+  color: var(--phos); font-size: 0.82rem; font-weight: 400;
+  letter-spacing: 0.22em; text-transform: uppercase; text-align: center;
+}
+.feed .factbox-title::before { content: "TAB A — "; color: var(--phos-dim); }
+.feed .factbox dl { margin: 0; padding: 0.5rem 0.9rem 0.7rem; }
+.feed .factbox .row {
+  display: flex; justify-content: space-between; gap: 1.5rem;
+  padding: 0.42rem 0; border-bottom: 1px dashed var(--phos-ghost);
+}
+.feed .factbox .row:last-child { border-bottom: 0; }
+.feed .factbox dt { color: var(--phos-dim); text-transform: uppercase; font-size: 0.76rem; letter-spacing: 0.1em; padding-top: 0.15em; }
+.feed .factbox dd { margin: 0; text-align: right; color: var(--phos); }
+/* pullquote → QUOTE / UNQUOTE */
+.feed .pullquote { margin: 2em 0; padding: 0 0 0 2rem; position: relative; }
+.feed .pullquote::before {
+  content: "QUOTE"; display: block; color: var(--alert);
+  font-size: 0.74rem; letter-spacing: 0.3em; margin-bottom: 0.5rem;
+}
+.feed .pullquote::after {
+  content: "UNQUOTE"; display: block; color: var(--alert);
+  font-size: 0.74rem; letter-spacing: 0.3em; margin-top: 0.5rem;
+}
+.feed .pullquote p {
+  margin: 0; color: var(--phos); font-size: 1.02rem; line-height: 1.6;
+  text-transform: uppercase;
+}
+.feed .pullquote cite {
+  display: block; margin-top: 0.6rem; font-style: normal;
+  color: var(--phos-dim); font-size: 0.76rem; letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.feed .pullquote cite::before { content: "ATTRIB: "; }
+
+/* --- TAB B chronology (timeline) --------------------------- */
+.eventlog { max-width: var(--measure); margin: 3rem auto 0; }
+.log-head {
+  font-family: "Handjet", monospace; font-weight: 600; font-size: 1.5rem;
+  color: var(--phos); text-transform: uppercase; margin: 0 0 0.4rem;
+  letter-spacing: 0.05em;
+  text-shadow: 0 0 12px rgba(255, 166, 77, 0.35);
+}
+.log-sub { color: var(--phos-dim); font-size: 0.8rem; letter-spacing: 0.18em; text-transform: uppercase; margin: 0 0 1.4rem; }
+.eventlog ol { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--phos-ghost); }
+.eventlog li {
+  display: grid; grid-template-columns: 10.5rem 1fr; gap: 0.2rem 1.4rem;
+  padding: 0.95rem 0.6rem; border-bottom: 1px solid var(--phos-ghost);
+  font-size: 0.9rem;
+}
+.eventlog li.key { background: rgba(255, 69, 48, 0.06); border-left: 3px solid var(--alert); }
+.eventlog .d { color: var(--alert); letter-spacing: 0.08em; text-transform: uppercase; font-size: 0.8rem; padding-top: 0.2em; }
+.eventlog h3 { grid-column: 2; margin: 0; font-size: 0.92rem; font-weight: 400; color: var(--phos); text-transform: uppercase; letter-spacing: 0.06em; }
+.eventlog .d + h3 { grid-column: auto; }
+.eventlog p { grid-column: 2; margin: 0.25rem 0 0; color: var(--phos-soft); }
+@media (max-width: 40rem) {
+  .eventlog li { grid-template-columns: 1fr; }
+  .eventlog h3, .eventlog p { grid-column: 1; }
+}
+
+/* --- TAB C references + exit ------------------------------- */
+.refs { max-width: var(--measure); margin: 3rem auto 0; font-size: 0.84rem; }
+.refs h2 {
+  font-family: "Handjet", monospace; font-weight: 600; font-size: 1.3rem;
+  color: var(--phos); text-transform: uppercase; margin: 0 0 0.8rem;
+  letter-spacing: 0.05em;
+}
+.refs ol { margin: 0; padding-left: 1.6rem; color: var(--phos-dim); }
+.refs li { margin-bottom: 0.4rem; }
+.refs em { font-style: normal; color: var(--phos-soft); }
+.exit {
+  max-width: var(--measure); margin: 3.5rem auto 0; padding-block: 2rem 3.5rem;
+  border-top: 1px solid var(--phos-ghost);
+  font-size: 0.85rem; letter-spacing: 0.12em; text-transform: uppercase;
+}
+.exit .prompt { margin: 0 0 1.2rem; color: var(--phos-dim); letter-spacing: 0.3em; }
+.exit .awaiting { margin: 0 0 1.2rem; color: var(--phos); }
+.exit ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.7rem 2rem; }
+.exit a { color: var(--phos); }
+.exit a:hover { background: var(--phos); color: var(--tube); }
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor, .opline .prec b, .rig-head .prec b,
+  .lamp--mark::before, .lamp--space::before,
+  .rx p::after, .rx .subjline, .rx .summary, .rx .live { animation: none; }
+}
+</style>
+</head>
+<body class="crt">
+
+<div class="statusbar">
+  <div class="wrap">
+    <span><b>{{ site.name }}</b> // THEME THUNDER № 11</span>
+    <span>MODE: <b>FLT BCST</b> · RADIO CENTRAL · 24 JUL 87</span>
+    <span><a href="{{ art.url }}">STANDARD EDITION →</a></span>
+  </div>
+</div>
+
+<header class="console-head wrap">
+  <p class="boot">RADIO CENTRAL // CHNL 4 ····· NAVCOMPARS <b>UP</b> · KG-84 SECURE · 75 BAUD · <b>COPYING</b></p>
+  <h1 class="rigname">Flash<br>Traffic</h1>
+  <p class="opline">
+    <span>FILE: <b>{{ art.data.fileNo }}</b></span>
+    <span>DTG: <b>240404Z JUL 87</b></span>
+    <span>POSTED: <b>{{ art.date | readableDate }}</b></span>
+    <span class="prec">PREC: <b>Z — FLASH</b></span>
+  </p>
+</header>
+
+<div class="rxbay wrap">
+  <div class="rig">
+    <div class="rig-head" aria-hidden="true">
+      <span class="lamp lamp--mark">Mark</span>
+      <span class="lamp lamp--space">Space</span>
+      <span class="lamp">Sync</span>
+      <span class="prec">Prec: <b>Flash</b></span>
+    </div>
+    <div class="rx" aria-label="Incoming message header">
+      <p class="routing l1">RTTUZYUW RUCBSAA0347 2050404-CCCC--RUCBSAA.</p>
+      <p class="routing l2">ZNY CCCCC ZOC ZUI</p>
+      <p class="l3">Z 240404Z JUL 87</p>
+      <p class="l4">FM COMIDEASTFOR</p>
+      <p class="l5">TO USCINCCENT MACDILL AFB FL//CCJ3//</p>
+      <p class="routing l6">INFO CNO WASHINGTON DC//OP-06// · COMSEVENTHFLT</p>
+      <p class="classline l7">C O N F I D E N T I A L</p>
+      <p class="subjline">SUBJ: Operation Earnest Will — Convoy EW 87-01 — After Action Report</p>
+      <p class="summary">{{ art.data.dek }}</p>
+      <p class="live">COPYING <span class="cursor"></span></p>
+    </div>
+  </div>
+  <p class="declass">FILE COPY DECLASSIFIED — AUTH CNO LTR, 12 OCT 2012 · REPLAYED FOR {{ site.name }} READERS</p>
+</div>
+
+<article class="feed wrap" aria-label="Article, radio-central edition">
+{{ art.templateContent | safe }}
+</article>
+
+{%- if art.data.timeline %}
+<section class="eventlog wrap" aria-label="Chronology of events">
+  <h2 class="log-head">Tab B — Chronology of Events</h2>
+  <p class="log-sub">{{ art.data.timeline.title }}</p>
+  <ol>
+    {%- for item in art.data.timeline.items %}
+    <li{% if item.key %} class="key"{% endif %}>
+      <span class="d">{{ item.date }}</span>
+      <h3>{{ item.title }}</h3>
+      <p>{{ item.text }}</p>
+    </li>
+    {%- endfor %}
+  </ol>
+</section>
+{%- endif %}
+
+{%- if art.data.sources %}
+<section class="refs wrap" aria-label="References">
+  <h2>Tab C — References</h2>
+  <ol>
+    {%- for s in art.data.sources %}
+    <li>{{ s | safe }}</li>
+    {%- endfor %}
+  </ol>
+</section>
+{%- endif %}
+
+<footer class="exit wrap">
+  <p class="prompt">BT<br>#0347<br>NNNN</p>
+  <p class="awaiting">AWAITING FURTHER TRAFFIC <span class="cursor"></span></p>
+  <ul aria-label="Routing">
+    <li><a href="{{ art.url }}">[ STANDARD EDITION ]</a></li>
+    <li><a href="/thunder/earnest-will-1987-cic/">[ CIC EDITION ]</a></li>
+    <li><a href="/thunder/">[ THUNDER INDEX ]</a></li>
+    <li><a href="/">[ {{ site.name }} FRONT PAGE ]</a></li>
+  </ul>
+</footer>
+
+</body>
+</html>
