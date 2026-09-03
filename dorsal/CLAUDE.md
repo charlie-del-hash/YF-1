@@ -235,6 +235,45 @@ host actually picked, which is the part that would otherwise be invisible.
 
 ---
 
+## Decisions taken or changed while building M2
+
+**23. `chat_reads` is its own table.** Unread state could have been a column on
+`plan_participants`, except the host has no participant row — `join_plan()`
+refuses the host of a plan — and a host with no unread count for their own plan
+is the kind of special case that becomes a bug. One table keyed on (user, plan)
+covers everyone.
+
+**24. Blocks apply to the thread, not just the roster.** "You will not see each
+other" has to include the chat, or blocking someone you share a plan with
+achieves nothing. Whether a block should eject one of them from the shared plan
+outright is a real question and it is M4's.
+
+**25. There is no UPDATE policy on `messages` at all.** No edits, because a
+message someone has acted on must not change under them; deleting your own
+within five minutes covers autocorrect and the wrong-window case. Pinning is
+therefore a `security definer` function rather than a column write, which is
+also what stops a message's author pinning themselves.
+
+**26. "Auto-archives (read-only, then hidden)" is implemented as read-only.**
+The chat stops accepting writes 48h after the plan ends and stays readable —
+what the group agreed about the meeting point is worth keeping. There is no
+separate chat list to hide a thread from in v1; a thread lives inside its plan,
+so "hidden" has nothing to mean yet. Revisit if a chat list ever exists.
+
+**27. Web push is NOT built, and this is the honest gap in M2.** It needs a
+network-touching dependency (`web-push` or equivalent) to sign VAPID and encrypt
+payloads, a `push_subscriptions` table, a service worker, and a deployed origin
+over HTTPS to test against — none of which can be verified from a container that
+cannot reach the internet. Rule 1 of the stack table also says no new dependency
+that talks to a network gets added without asking, and a push endpoint is a
+third party receiving a user identifier, so it is a `05-RGPD` question as well
+as a bundle one. Unread counts are in and visible on `Mis planes` and the plan;
+the notification that makes them arrive without opening the app is the piece
+still missing, and the audit's point about iOS PWA push stands: it only works
+once the app is installed to the Home Screen, which is M6.
+
+---
+
 ## Deployment notes
 
 **The project.** `qplddusqtxmkljoyxdhd`, region **`eu-west-1` (Ireland)**, not
@@ -244,8 +283,15 @@ basis — holds. Recorded here rather than silently: `05-RGPD.md` names Frankfur
 and anyone auditing this later should not have to wonder whether the difference
 was noticed.
 
-**Applied so far:** migrations `0001_init` and `0002_plan_lifecycle`, and
-`supabase/seed.sql`.
+**Applied so far:** migrations `0001_init`, `0002_plan_lifecycle` and
+`0003_chat`, and `supabase/seed.sql`.
+
+**Realtime.** `messages` is added to the `supabase_realtime` publication by
+0003, guarded so it is a no-op where that publication does not exist. Supabase
+filters Realtime through the same RLS policies as a query, so a non-participant
+is not subscribed to anything rather than being sent rows and asked not to look.
+The audit's warning about Realtime on RLS-filtered tables at scale is real but
+is a problem at thousands of concurrent sockets, not at launch.
 
 **Verifying a deployment.** `supabase/test/03-remote-check.test.sql` is written
 to run in the Supabase SQL editor as well as under `scripts/pgtest.sh`, so the

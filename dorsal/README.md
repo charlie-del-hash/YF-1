@@ -7,9 +7,10 @@ Working codename. The product spec, data model, design brief, build plan and
 compliance floor are the `0*.md` files this was built from; `CLAUDE.md` is the
 repo constitution and carries the running list of decisions that have changed.
 
-**Status: M1.** Sign in → onboarding → deck with filters → `Me apunto` → roster,
-plus creating, editing, cancelling and leaving plans, waitlist promotion, and
-`Mis planes`. Chat is M2, Palabra is M3, the trust-and-safety surfaces are M4.
+**Status: M2.** Sign in → onboarding → deck with filters → `Me apunto` → roster
+→ group chat. Plus creating, editing, cancelling and leaving plans, waitlist
+promotion, `Mis planes`, and unread counts. Palabra is M3, the trust-and-safety
+surfaces are M4. Web push is not built — see `CLAUDE.md`.
 
 ## Run it
 
@@ -43,6 +44,11 @@ and the seed, and then asserts the things the product promises:
 - a plan cannot be cancelled without a reason, un-cancelled, or narrowed to
   fewer plazas than the people already in it;
 - reliability history is readable only by its owner and writable by nobody;
+- a non-participant cannot read a single message, write one, or forge an author,
+  someone who leaves loses the thread, and blocked people vanish from it;
+- the chat closes 48h after the plan ends and stays readable;
+- pinning is the host's alone, there is only ever one pin, messages cannot be
+  edited, and your own can be deleted for five minutes;
 - `solo mujeres` plans are invisible to everyone else through every query path,
   including by direct id and via the roster;
 - blocked pairs disappear from each other's profiles, plans and rosters;

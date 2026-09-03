@@ -11,7 +11,7 @@ import { formatDayTag } from '@/lib/time';
 import { joinPlan, passPlan } from '@/features/plans/actions';
 import type { PlanCardData } from '@/features/plans/queries';
 
-type Toast = { tone: 'ok' | 'error'; text: string } | null;
+type Toast = { tone: 'ok' | 'error'; text: string; chatPlanId?: string } | null;
 type View = 'cards' | 'list';
 
 const COMMIT_DISTANCE = 96;
@@ -70,6 +70,9 @@ export function DeckClient({ plans }: { plans: PlanCardData[] }) {
               result.status === 'waitlist'
                 ? copy.deck.waitlisted
                 : copy.deck.joinedToastWithDay(formatDayTag(plan.startsAt).toLowerCase()),
+            // Joining opens the thread; this is the shortest path from "I'm in"
+            // to agreeing where exactly to meet, which is the point of the plan.
+            chatPlanId: result.status === 'joined' ? plan.id : undefined,
           });
         } else {
           // Put it back: the person did not choose to pass on it.
@@ -126,6 +129,14 @@ export function DeckClient({ plans }: { plans: PlanCardData[] }) {
           }`}
         >
           {toast.text}
+          {toast.chatPlanId ? (
+            <Link
+              href={`/planes/${toast.chatPlanId}/chat`}
+              className="ml-2 whitespace-nowrap underline underline-offset-4"
+            >
+              {copy.chat.open}
+            </Link>
+          ) : null}
         </p>
       ) : null}
 

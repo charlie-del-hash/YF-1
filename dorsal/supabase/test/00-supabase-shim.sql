@@ -44,3 +44,12 @@ alter default privileges in schema public grant usage on sequences to authentica
 -- Supabase grants the API roles usage on the auth schema so that auth.uid()
 -- is callable from policies and from PostgREST queries. Mirror that here.
 grant usage on schema auth to anon, authenticated, service_role;
+
+-- Supabase ships a `supabase_realtime` publication that tables are added to.
+-- Created here so the migration's realtime step is exercised locally instead of
+-- being skipped and discovered in production.
+do $$ begin
+  if not exists (select 1 from pg_publication where pubname = 'supabase_realtime') then
+    create publication supabase_realtime;
+  end if;
+end $$;

@@ -106,6 +106,21 @@ export type SwipeRow = {
   created_at: string;
 }
 
+export type MessageRow = {
+  id: string;
+  plan_id: string;
+  user_id: string;
+  body: string;
+  is_pinned: boolean;
+  created_at: string;
+};
+
+export type ChatReadRow = {
+  user_id: string;
+  plan_id: string;
+  last_read_at: string;
+};
+
 export type BlockRow = {
   blocker_id: string;
   blocked_id: string;
@@ -129,6 +144,8 @@ export type Database = {
       plan_participants: Table<PlanParticipantRow>;
       swipes: Table<SwipeRow>;
       blocks: Table<BlockRow>;
+      messages: Table<MessageRow>;
+      chat_reads: Table<ChatReadRow>;
     };
     Views: {
       public_profiles: { Row: PublicProfileRow; Relationships: [] };
@@ -138,6 +155,13 @@ export type Database = {
       leave_plan: { Args: { p_plan: string }; Returns: string };
       leave_cost: { Args: { p_plan: string }; Returns: string };
       cancel_plan: { Args: { p_plan: string; p_reason: string }; Returns: undefined };
+      can_use_chat: { Args: { p_plan: string }; Returns: boolean };
+      chat_is_open: { Args: { p_plan: string }; Returns: boolean };
+      chat_closes_at: { Args: { p_plan: string }; Returns: string };
+      pin_message: { Args: { p_message: string }; Returns: undefined };
+      unpin_message: { Args: { p_plan: string }; Returns: undefined };
+      mark_chat_read: { Args: { p_plan: string }; Returns: undefined };
+      my_unread_counts: { Args: Record<string, never>; Returns: { plan_id: string; unread: number }[] };
       complete_onboarding: {
         Args: {
           p_display_name: string;

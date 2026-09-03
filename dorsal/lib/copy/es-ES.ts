@@ -282,13 +282,24 @@ export const copy = {
 
   chat: {
     title: 'Chat del plan',
+    open: 'Abrir el chat',
     placeholder: 'Escribe al grupo',
     send: 'Enviar',
+    sending: 'Enviando…',
     onlyThisPlan: 'Solo puedes escribir con la gente de este plan.',
     closesAfter: 'Este chat se cierra 48 h después del plan.',
-    closed: 'Este chat ya está cerrado.',
+    closed: 'Este chat ya está cerrado. Puedes leerlo, pero no escribir.',
     pin: 'Fijar mensaje',
+    unpin: 'Quitar el fijado',
     pinned: 'Fijado',
+    delete: 'Borrar',
+    you: 'Tú',
+    unread: (n: number) => (n === 1 ? '1 mensaje sin leer' : `${n} mensajes sin leer`),
+    emptyTitle: 'Todavía no ha escrito nadie.',
+    emptyBody: 'Di por dónde entras o a qué hora llegas. Ayuda más de lo que parece.',
+    emptyHost: 'Escribe el punto exacto y fíjalo. Es lo que evita las llamadas de última hora.',
+    sendFailed: 'No se ha enviado. Vuelve a intentarlo.',
+    tooLong: 'Te has pasado de largo. Máximo 1000 caracteres.',
   },
 
   attendance: {

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { DeckFilterBar } from '@/features/deck/deck-filters';
 import { DEFAULT_FILTERS } from '@/features/deck/filters';
 import { PlanForm } from '@/features/plans/plan-form';
+import { ChatClient } from '@/features/chat/chat-client';
 import { Bib } from '@/components/ui/bib';
 import { Button } from '@/components/ui/button';
 import { PlanCard } from '@/components/plan-card';
@@ -61,6 +62,32 @@ export default function Kit() {
         center={{ lat: 40.4168, lng: -3.7038 }}
         initialDate="2026-09-12"
       />
+      <div className="border-t border-borde pt-4">
+        <ChatClient
+          planId="11111111-1111-5111-8111-111111111111"
+          viewerId="u-yo"
+          isHost
+          isOpen
+          closesAt="2026-09-14T08:30:00.000Z"
+          names={{
+            'u-marta': { name: 'Marta', dorsal: 1042 },
+            'u-yo': { name: 'Yo', dorsal: 1077 },
+          }}
+          initialMessages={[
+            {
+              id: 'm1', userId: 'u-marta', body: 'Quedamos en la puerta de Alcalá, no en el estanque.',
+              isPinned: true, createdAt: '2026-09-11T17:02:00+02:00',
+              authorName: 'Marta', authorDorsal: 1042,
+            },
+            {
+              id: 'm2', userId: 'u-yo', body: 'Perfecto. Llego 5 minutos antes.',
+              isPinned: false, createdAt: '2026-09-11T17:04:00+02:00',
+              authorName: 'Yo', authorDorsal: 1077,
+            },
+          ]}
+        />
+      </div>
+
       <div className="flex flex-wrap gap-2">
         <Button>Me apunto</Button>
         <Button variant="secondary">Paso</Button>

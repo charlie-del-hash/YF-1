@@ -5,6 +5,7 @@ import { PlanCard } from '@/components/plan-card';
 import { Button } from '@/components/ui/button';
 import { copy } from '@/lib/copy/es-ES';
 import { getMyPlans, getViewer, type MyPlan } from '@/features/plans/queries';
+import { getUnreadCounts } from '@/features/chat/queries';
 
 export const metadata: Metadata = { title: copy.myPlans.title };
 export const dynamic = 'force-dynamic';
@@ -13,7 +14,7 @@ export default async function MyPlansPage() {
   const viewer = await getViewer();
   if (!viewer) redirect('/alta');
 
-  const { upcoming, past } = await getMyPlans(viewer);
+  const [{ upcoming, past }, unread] = await Promise.all([getMyPlans(viewer), getUnreadCounts()]);
 
   return (
     <div className="flex flex-1 flex-col gap-6 pb-4">
@@ -39,7 +40,11 @@ export default async function MyPlansPage() {
         ) : (
           <ul className="mt-2 flex flex-col gap-3">
             {upcoming.map((plan) => (
-              <PlanRow key={`${plan.id}-${plan.myStatus}`} plan={plan} />
+              <PlanRow
+                key={`${plan.id}-${plan.myStatus}`}
+                plan={plan}
+                unread={unread.get(plan.id) ?? 0}
+              />
             ))}
           </ul>
         )}
@@ -52,7 +57,11 @@ export default async function MyPlansPage() {
         ) : (
           <ul className="mt-2 flex flex-col gap-3">
             {past.map((plan) => (
-              <PlanRow key={`${plan.id}-${plan.myStatus}`} plan={plan} />
+              <PlanRow
+                key={`${plan.id}-${plan.myStatus}`}
+                plan={plan}
+                unread={unread.get(plan.id) ?? 0}
+              />
             ))}
           </ul>
         )}
@@ -61,12 +70,20 @@ export default async function MyPlansPage() {
   );
 }
 
-function PlanRow({ plan }: { plan: MyPlan }) {
+function PlanRow({ plan, unread }: { plan: MyPlan; unread: number }) {
   return (
     <li>
       <Link href={`/planes/${plan.id}`} className="block">
         <PlanCard plan={plan} compact />
       </Link>
+      {unread > 0 ? (
+        <Link
+          href={`/planes/${plan.id}/chat`}
+          className="mt-1 inline-block font-medium text-pista underline underline-offset-4"
+        >
+          {copy.chat.unread(unread)}
+        </Link>
+      ) : null}
       <p className="mt-1 text-[15px] text-tinta-60">
         {plan.status === 'cancelled'
           ? plan.cancelledReason
