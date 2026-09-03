@@ -10,6 +10,8 @@ import {
   getLeaveCost, getMyStatus, getPlan, getRoster, getViewer,
 } from '@/features/plans/queries';
 import { getUnreadCounts } from '@/features/chat/queries';
+import { formatPalabra, reservedPlazas } from '@/features/reliability/palabra';
+import { getPalabraMany } from '@/features/reliability/queries';
 import { JoinButton } from '@/features/plans/join-button';
 import { HostControls, LeaveButton } from '@/features/plans/plan-actions';
 
@@ -44,6 +46,7 @@ export default async function PlanPage({ params }: { params: Promise<{ id: strin
   // confirmation and the row that gets written cannot disagree.
   const leaveCost = isIn && !isCancelled ? await getLeaveCost(id) : null;
   const unread = isIn || isHost ? ((await getUnreadCounts()).get(id) ?? 0) : 0;
+  const palabras = await getPalabraMany([plan.host.id, ...roster.map((p) => p.userId)]);
 
   return (
     <article className="flex flex-1 flex-col gap-6 pb-4">
@@ -96,6 +99,8 @@ export default async function PlanPage({ params }: { params: Promise<{ id: strin
         </p>
         {plan.minPlansRequired > 0 ? (
           <p className="mt-1 text-[15px] text-tinta-60">{copy.plan.gate(plan.minPlansRequired)}</p>
+        ) : reservedPlazas(plan.capacity, plan.minPlansRequired) > 0 ? (
+          <p className="mt-1 text-[15px] text-tinta-60">{copy.plan.reservedPlaza}</p>
         ) : null}
       </section>
 
@@ -127,6 +132,9 @@ export default async function PlanPage({ params }: { params: Promise<{ id: strin
               <span className="font-medium">{plan.host.displayName}</span>
               <span className="block text-[15px] text-tinta-60">
                 {copy.plan.hostedBy(plan.host.displayName)}
+                {palabras.has(plan.host.id) ? (
+                  <> · {formatPalabra(palabras.get(plan.host.id)!)}</>
+                ) : null}
               </span>
             </span>
           </li>
@@ -135,7 +143,14 @@ export default async function PlanPage({ params }: { params: Promise<{ id: strin
               <span className="font-display text-lg font-bold text-tinta-60" data-numeric>
                 {person.dorsalNumber}
               </span>
-              <span>{person.displayName}</span>
+              <span>
+                {person.displayName}
+                {palabras.has(person.userId) ? (
+                  <span className="block text-[15px] text-tinta-60">
+                    {formatPalabra(palabras.get(person.userId)!)}
+                  </span>
+                ) : null}
+              </span>
             </li>
           ))}
         </ul>

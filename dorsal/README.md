@@ -7,10 +7,11 @@ Working codename. The product spec, data model, design brief, build plan and
 compliance floor are the `0*.md` files this was built from; `CLAUDE.md` is the
 repo constitution and carries the running list of decisions that have changed.
 
-**Status: M2.** Sign in → onboarding → deck with filters → `Me apunto` → roster
-→ group chat. Plus creating, editing, cancelling and leaving plans, waitlist
-promotion, `Mis planes`, and unread counts. Palabra is M3, the trust-and-safety
-surfaces are M4. Web push is not built — see `CLAUDE.md`.
+**Status: M3.** Sign in → onboarding → deck with filters → `Me apunto` → roster
+→ group chat → attendance → Palabra. Plus creating, editing, cancelling and
+leaving plans, waitlist promotion, `Mis planes`, unread counts, the
+minimum-plans gate and reserved plazas for newcomers. The trust-and-safety
+surfaces are M4; web push is deferred to M6 — see `CLAUDE.md`.
 
 ## Run it
 
@@ -49,6 +50,13 @@ and the seed, and then asserts the things the product promises:
 - the chat closes 48h after the plan ends and stays readable;
 - pinning is the host's alone, there is only ever one pin, messages cannot be
   edited, and your own can be deleted for five minutes;
+- a no-show is recorded only when both sides say so, a disagreement penalises
+  nobody, and after 72 hours the one side that answered is trusted and marked
+  as such;
+- the minimum-plans gate cannot exceed two, one plaza on an ungated plan is
+  held for someone with no history, and two faltas in thirty days closes the
+  nearly-full plans without closing the product;
+- one person sees another's record as three numbers and never as events;
 - `solo mujeres` plans are invisible to everyone else through every query path,
   including by direct id and via the roster;
 - blocked pairs disappear from each other's profiles, plans and rosters;

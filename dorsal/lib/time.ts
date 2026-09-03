@@ -43,6 +43,11 @@ export function formatWhen(value: string | Date): string {
   return `${formatDayTag(value)} · ${formatTime(value)}`;
 }
 
+/** `sábado` — the weekday alone, for "¿Fuiste al plan del sábado?". */
+export function formatWeekdayName(value: string | Date): string {
+  return new Intl.DateTimeFormat(LOCALE, { weekday: 'long', timeZone: TZ }).format(toDate(value));
+}
+
 /** `12 sept` — compact, for lists of past plans. */
 export function formatShortDate(value: string | Date): string {
   const d = toDate(value);

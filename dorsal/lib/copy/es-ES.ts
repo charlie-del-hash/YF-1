@@ -203,6 +203,7 @@ export const copy = {
       todos: '',
     },
     gate: (n: number) => `Para gente con ${n} ${n === 1 ? 'plan' : 'planes'} o más`,
+    reservedPlaza: 'Una plaza guardada para alguien que empieza.',
   },
 
   create: {
@@ -230,6 +231,14 @@ export const copy = {
     levelTo: 'Hasta',
     capacity: '¿Cuántas plazas?',
     capacityHelp: 'Contándote a ti, sois uno más.',
+    gateLabel: '¿Pides experiencia?',
+    gateHelp:
+      'Como mucho dos planes. Más que eso y quien acaba de llegar no puede empezar por ningún sitio.',
+    gateOptions: {
+      none: 'Cualquiera puede apuntarse',
+      one: 'Con un plan a la espalda',
+      two: 'Con dos planes a la espalda',
+    },
     thirdHalfLabel: '¿Y después?',
     thirdHalfVenueLabel: '¿Dónde quedáis después?',
     audienceLabel: 'Quién puede apuntarse',
@@ -273,6 +282,8 @@ export const copy = {
     plansAttended: (n: number) => (n === 1 ? '1 plan' : `${n} planes`),
     attendance: (pct: number) => `${pct}% asistencia`,
     newcomer: 'Nuevo por aquí',
+    noPlansYet: 'Todavía sin planes',
+    palabra: (plans: string, pct: number) => `${plans} · ${pct}% asistencia`,
     sports: 'Deportes',
     zone: 'Zona',
     travel: (km: number) => `Hasta ${km} km`,
@@ -308,7 +319,14 @@ export const copy = {
     selfTitle: (day: string) => `¿Fuiste al plan del ${day}?`,
     yes: 'Sí, fui',
     no: 'Al final no pude',
+    came: 'Vino',
+    didNotCome: 'No vino',
     thanks: 'Gracias. Tu palabra vale.',
+    pending: 'Falta confirmar',
+    windowCloses: 'Tienes 72 h para decirlo. Después vale lo que diga la otra parte.',
+    disputed: 'No coincidís en esto. No cuenta para nadie.',
+    settled: 'Ya está anotado.',
+    saveFailed: 'No se ha podido anotar. Vuelve a intentarlo.',
   },
 
   safety: {
@@ -337,6 +355,8 @@ export const copy = {
     planStarted: 'Este plan ya ha empezado.',
     blocked: 'No puedes apuntarte a este plan.',
     removedByHost: 'Quien organiza te ha sacado de este plan.',
+    cooldown:
+      'Has faltado a dos planes este mes. Los que están casi llenos se te cierran unos días; el resto siguen abiertos.',
     suspended: 'Tu cuenta está suspendida. Escríbenos si crees que es un error.',
     noProfile: 'Termina de darte de alta para apuntarte a un plan.',
     notAuthenticated: 'Entra en tu cuenta para seguir.',

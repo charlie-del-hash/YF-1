@@ -35,6 +35,7 @@ export default async function EditPlanPage({ params }: { params: Promise<{ id: s
         levelMin: plan.levelMin,
         levelMax: plan.levelMax,
         capacity: plan.capacity,
+        minPlansRequired: plan.minPlansRequired,
         thirdHalf: plan.thirdHalf,
         audience: plan.audience,
         meetingNote: plan.meetingNote,

@@ -274,6 +274,54 @@ once the app is installed to the Home Screen, which is M6.
 
 ---
 
+## Decisions taken or changed while building M3
+
+**28. The minimum-plans gate is capped at two, in the database.** 02-DATA-MODEL
+allows up to ten. The pre-build audit is right that this is a catch-22: the
+people most likely to be gated out are exactly the ones 01-PRD names as the
+primary user — someone who has just moved to Madrid and has no history anywhere.
+Two filters drive-by joins and clears in two weekends.
+
+**29. One plaza on an ungated plan is held for someone with no history.** The
+gate alone was never enough: an ungated plan that fills with regulars is just as
+closed to a newcomer as a gated one. On plans with `min_plans_required = 0` and
+capacity ≥ 4, an established user who arrives for the last plaza is
+**waitlisted, not refused** — the plaza opens to them if no newcomer takes it.
+Below capacity 4 nothing is reserved, because one plaza is then a quarter of
+the group.
+
+**30. Palabra cannot render a score at anyone.** `features/reliability/palabra.ts`
+produces one of three strings and by construction cannot produce a rank, a
+badge, a colour or a comparison. The case that decided its shape: someone who
+committed and did not turn up. "Nuevo por aquí" would be a lie, and
+`0 planes · 0% asistencia` is the most public shaming this product could do, so
+they read as `Todavía sin planes` — true, and not a verdict. A future screen
+wanting "top hosts this month" has to go around this module, and that should be
+a conversation rather than a commit.
+
+**31. Both attendance answers are weighted the same.** `Sí, fui` was styled as
+the primary action and `Al final no pude` as secondary, which nudges people
+toward the answer that flatters them — in the one place in the product where the
+data has to be honest rather than encouraging. Both are secondary now.
+
+**32. Settlement is lazy, because there is no scheduler.** The 72-hour rule is
+applied by `settle_my_overdue_plans()` when someone who was in the plan opens
+`Mis planes`. It is idempotent and cheap. A cron would do this properly and
+should, once there is somewhere to run one; until then a record cannot sit
+unresolved for ever just because nobody ran anything.
+
+**33. A disagreement penalises nobody and is logged.** Three `disputed` events
+is the threshold 01-PRD sets for a human to look, and the queue that human works
+from is M4's. The data is being collected now so the queue has something to show
+when it exists.
+
+**34. The cooldown closes the full plans, not the product.** Two faltas in
+thirty days means no joining plans already at 80% capacity — the ones where
+someone would be left standing. Everything emptier stays open, which is what
+makes it a cooldown rather than a ban.
+
+---
+
 ## Deployment notes
 
 **The project.** `qplddusqtxmkljoyxdhd`, region **`eu-west-1` (Ireland)**, not
@@ -283,8 +331,8 @@ basis — holds. Recorded here rather than silently: `05-RGPD.md` names Frankfur
 and anyone auditing this later should not have to wonder whether the difference
 was noticed.
 
-**Applied so far:** migrations `0001_init`, `0002_plan_lifecycle` and
-`0003_chat`, and `supabase/seed.sql`.
+**Applied so far:** migrations `0001_init`, `0002_plan_lifecycle`, `0003_chat`
+and `0004_palabra`, and `supabase/seed.sql`.
 
 **Realtime.** `messages` is added to the `supabase_realtime` publication by
 0003, guarded so it is a no-op where that publication does not exist. Supabase

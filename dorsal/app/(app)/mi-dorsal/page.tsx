@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { copy } from '@/lib/copy/es-ES';
 import { formatLevel, getSport } from '@/lib/levels';
 import { createClient } from '@/lib/supabase/server';
+import { formatPalabra } from '@/features/reliability/palabra';
+import { getPalabra } from '@/features/reliability/queries';
 
 export const metadata: Metadata = { title: copy.nav.profile };
 export const dynamic = 'force-dynamic';
@@ -14,22 +16,17 @@ export default async function ProfilePage() {
   const { data: auth } = await supabase.auth.getUser();
   if (!auth.user) redirect('/entrar');
 
-  const [{ data: profile }, { data: sports }, { count }] = await Promise.all([
+  const [{ data: profile }, { data: sports }] = await Promise.all([
     supabase
       .from('profiles')
       .select('display_name, dorsal_number, distrito, travel_km, bio')
       .eq('id', auth.user.id)
       .maybeSingle(),
     supabase.from('user_sports').select('sport, level_norm').eq('user_id', auth.user.id),
-    supabase
-      .from('plan_participants')
-      .select('plan_id', { count: 'exact', head: true })
-      .eq('user_id', auth.user.id)
-      .eq('status', 'attended'),
   ]);
   if (!profile) redirect('/alta');
 
-  const attended = count ?? 0;
+  const palabra = await getPalabra(auth.user.id);
 
   return (
     <div className="flex flex-1 flex-col gap-6">
@@ -38,9 +35,7 @@ export default async function ProfilePage() {
         <div>
           <h1 className="font-display text-3xl font-bold leading-tight">{profile.display_name}</h1>
           {/* Positive-framed and factual. Never a red score, never a ranking. */}
-          <p className="text-tinta-60">
-            {attended === 0 ? copy.profile.newcomer : copy.profile.plansAttended(attended)}
-          </p>
+          <p className="text-tinta-60">{formatPalabra(palabra)}</p>
         </div>
       </header>
 

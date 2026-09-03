@@ -18,6 +18,8 @@ export const planFormSchema = z.object({
   levelMin: z.number().int().min(1).max(10),
   levelMax: z.number().int().min(1).max(10),
   capacity: z.number().int().min(2).max(40),
+  /** Capped at two by the database too — see migration 0004 for why. */
+  minPlansRequired: z.number().int().min(0).max(2),
   thirdHalf: z.enum(THIRD_HALVES),
   audience: z.enum(AUDIENCES),
   meetingNote: z.string().trim().max(200).nullable(),

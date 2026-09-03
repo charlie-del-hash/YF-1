@@ -50,11 +50,11 @@ insert into plans (id, host_id, sport, starts_at, distrito, level_min, level_max
   ('00000000-0000-0000-0000-00000000e003', '00000000-0000-0000-0000-0000000000d1',
    'running', now() + interval '5 days', 'Retiro', 4, 6, '10 km', 6, 'todos',
    '00000000-0000-0000-0000-0000000000f1'),
-  -- gated on 3 completed plans
+  -- gated on the maximum the schema now allows: two completed plans
   ('00000000-0000-0000-0000-00000000e004', '00000000-0000-0000-0000-0000000000a1',
    'running', now() + interval '6 days', 'Retiro', 4, 6, '5 km', 6, 'todos',
    '00000000-0000-0000-0000-0000000000f1');
-update plans set min_plans_required = 3 where id = '00000000-0000-0000-0000-00000000e004';
+update plans set min_plans_required = 2 where id = '00000000-0000-0000-0000-00000000e004';
 
 insert into blocks (blocker_id, blocked_id) values
   ('00000000-0000-0000-0000-0000000000b1', '00000000-0000-0000-0000-0000000000d1');

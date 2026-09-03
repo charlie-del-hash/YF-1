@@ -162,6 +162,19 @@ export type Database = {
       unpin_message: { Args: { p_plan: string }; Returns: undefined };
       mark_chat_read: { Args: { p_plan: string }; Returns: undefined };
       my_unread_counts: { Args: Record<string, never>; Returns: { plan_id: string; unread: number }[] };
+      public_palabra: {
+        Args: { p_user: string };
+        Returns: { plans: number; attendance_pct: number | null; is_newcomer: boolean }[];
+      };
+      public_palabra_many: {
+        Args: { p_users: string[] };
+        Returns: {
+          user_id: string; plans: number; attendance_pct: number | null; is_newcomer: boolean;
+        }[];
+      };
+      mark_attendance: { Args: { p_plan: string; p_user: string; p_came: boolean }; Returns: undefined };
+      confirm_attendance: { Args: { p_plan: string; p_came: boolean }; Returns: undefined };
+      settle_my_overdue_plans: { Args: Record<string, never>; Returns: number };
       complete_onboarding: {
         Args: {
           p_display_name: string;

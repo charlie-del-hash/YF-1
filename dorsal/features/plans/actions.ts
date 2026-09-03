@@ -173,6 +173,7 @@ export async function savePlan(
     capacity: form.capacity,
     third_half: form.thirdHalf,
     audience: form.audience,
+    min_plans_required: form.minPlansRequired,
     meeting_note: form.meetingNote || null,
   };
 

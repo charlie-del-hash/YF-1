@@ -37,6 +37,7 @@ export default async function NewPlanPage() {
         levelMin: band.min,
         levelMax: band.max,
         capacity: 8,
+        minPlansRequired: 0,
         thirdHalf: 'cafe',
         audience: 'todos',
         meetingNote: null,

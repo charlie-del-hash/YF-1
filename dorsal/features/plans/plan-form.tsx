@@ -10,6 +10,7 @@ import { attempt } from '@/lib/actions';
 import { bandsFor, formatLevelRange } from '@/lib/levels';
 import { DISTRITOS, LAUNCH_SPORTS, SPORTS, type SportKey } from '@/lib/sports';
 import { formatLongDate, formatTime, madridDateAndTime, madridInstant } from '@/lib/time';
+import { reservedPlazas } from '@/features/reliability/palabra';
 import { createVenue, savePlan } from './actions';
 import { DURATIONS, THIRD_HALVES, type PlanFormInput } from './schema';
 import type { VenueOption } from './queries';
@@ -24,6 +25,7 @@ export interface PlanFormDefaults {
   levelMin: number;
   levelMax: number;
   capacity: number;
+  minPlansRequired: number;
   thirdHalf: (typeof THIRD_HALVES)[number];
   audience: 'todos' | 'solo_mujeres';
   meetingNote: string | null;
@@ -65,6 +67,7 @@ export function PlanForm({
   const [levelMin, setLevelMin] = useState(defaults.levelMin);
   const [levelMax, setLevelMax] = useState(defaults.levelMax);
   const [capacity, setCapacity] = useState(defaults.capacity);
+  const [minPlansRequired, setMinPlansRequired] = useState(defaults.minPlansRequired);
   const [thirdHalf, setThirdHalf] = useState(defaults.thirdHalf);
   const [thirdHalfVenueId, setThirdHalfVenueId] = useState(defaults.thirdHalfVenueId ?? '');
   const [audience, setAudience] = useState(defaults.audience);
@@ -122,7 +125,7 @@ export function PlanForm({
     const input: PlanFormInput = {
       sport, date, time, durationMin, venueId,
       thirdHalfVenueId: thirdHalf === 'ninguno' || !thirdHalfVenueId ? null : thirdHalfVenueId,
-      levelMin, levelMax, capacity, thirdHalf, audience,
+      levelMin, levelMax, capacity, minPlansRequired, thirdHalf, audience,
       meetingNote: meetingNote.trim() || null,
     };
 
@@ -350,6 +353,24 @@ export function PlanForm({
           />
         )}
       </Field>
+
+      <Field label={copy.create.gateLabel} help={copy.create.gateHelp}>
+        {(props) => (
+          <select
+            {...props}
+            className={inputClass}
+            value={minPlansRequired}
+            onChange={(e) => setMinPlansRequired(Number(e.target.value))}
+          >
+            <option value={0}>{copy.create.gateOptions.none}</option>
+            <option value={1}>{copy.create.gateOptions.one}</option>
+            <option value={2}>{copy.create.gateOptions.two}</option>
+          </select>
+        )}
+      </Field>
+      {minPlansRequired === 0 && reservedPlazas(capacity, 0) > 0 ? (
+        <p className="-mt-3 text-[15px] text-tinta-60">{copy.plan.reservedPlaza}</p>
+      ) : null}
 
       <fieldset className="flex flex-col gap-3">
         <legend className="font-display text-xl font-bold">{copy.create.thirdHalfLabel}</legend>

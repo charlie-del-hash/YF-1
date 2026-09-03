@@ -3,6 +3,7 @@ import { DeckFilterBar } from '@/features/deck/deck-filters';
 import { DEFAULT_FILTERS } from '@/features/deck/filters';
 import { PlanForm } from '@/features/plans/plan-form';
 import { ChatClient } from '@/features/chat/chat-client';
+import { HostRoster, SelfCheck } from '@/features/reliability/attendance-prompts';
 import { Bib } from '@/components/ui/bib';
 import { Button } from '@/components/ui/button';
 import { PlanCard } from '@/components/plan-card';
@@ -49,7 +50,7 @@ export default function Kit() {
       <PlanForm
         defaults={{
           sport: 'running', durationMin: 60, venueId: null, thirdHalfVenueId: null,
-          levelMin: 4, levelMax: 7, capacity: 8, thirdHalf: 'cafe',
+          levelMin: 4, levelMax: 7, capacity: 8, minPlansRequired: 0, thirdHalf: 'cafe',
           audience: 'todos', meetingNote: null,
         }}
         venues={[
@@ -62,6 +63,21 @@ export default function Kit() {
         center={{ lat: 40.4168, lng: -3.7038 }}
         initialDate="2026-09-12"
       />
+      <SelfCheck
+        pending={[{ planId: 'p1', sport: 'running', startsAt: '2026-09-12T09:30:00+02:00' }]}
+      />
+      <HostRoster
+        rosters={[
+          {
+            planId: 'p2', sport: 'padel', startsAt: '2026-09-11T20:30:00+02:00',
+            people: [
+              { userId: 'u1', displayName: 'Marta', dorsalNumber: 1042, marked: null },
+              { userId: 'u2', displayName: 'Javi', dorsalNumber: 1077, marked: true },
+            ],
+          },
+        ]}
+      />
+
       <div className="border-t border-borde pt-4">
         <ChatClient
           planId="11111111-1111-5111-8111-111111111111"

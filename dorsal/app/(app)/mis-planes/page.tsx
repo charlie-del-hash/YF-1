@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { copy } from '@/lib/copy/es-ES';
 import { getMyPlans, getViewer, type MyPlan } from '@/features/plans/queries';
 import { getUnreadCounts } from '@/features/chat/queries';
+import { getPendingAttendance } from '@/features/reliability/queries';
+import { HostRoster, SelfCheck } from '@/features/reliability/attendance-prompts';
 
 export const metadata: Metadata = { title: copy.myPlans.title };
 export const dynamic = 'force-dynamic';
@@ -14,7 +16,11 @@ export default async function MyPlansPage() {
   const viewer = await getViewer();
   if (!viewer) redirect('/alta');
 
-  const [{ upcoming, past }, unread] = await Promise.all([getMyPlans(viewer), getUnreadCounts()]);
+  const [{ upcoming, past }, unread, pending] = await Promise.all([
+    getMyPlans(viewer),
+    getUnreadCounts(),
+    getPendingAttendance(viewer.id),
+  ]);
 
   return (
     <div className="flex flex-1 flex-col gap-6 pb-4">
@@ -27,6 +33,9 @@ export default async function MyPlansPage() {
           {copy.nav.create}
         </Link>
       </div>
+
+      <SelfCheck pending={pending.self} />
+      <HostRoster rosters={pending.hosting} />
 
       <section>
         <h2 className="font-display text-xl font-bold">{copy.myPlans.upcoming}</h2>
