@@ -49,7 +49,7 @@ describe('formatting', () => {
   });
 
   it('shows both ends of a plan that spans bands, and one when it does not', () => {
-    expect(formatLevelRange('running', 4, 7)).toBe('6:00–7:00 min/km – 5:00–5:30 min/km');
+    expect(formatLevelRange('running', 4, 7)).toBe('6:00–7:00 min/km a 5:00–5:30 min/km');
     expect(formatLevelRange('running', 5, 5)).toBe('5:30–6:00 min/km');
   });
 });

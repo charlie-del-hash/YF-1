@@ -26,6 +26,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       </main>
       <nav className="mt-4 flex border-t border-borde pt-2" aria-label={copy.app.name}>
         <NavLink href="/planes">{copy.nav.deck}</NavLink>
+        <NavLink href="/mis-planes">{copy.nav.myPlans}</NavLink>
+        <NavLink href="/planes/nuevo">{copy.nav.create}</NavLink>
         <NavLink href="/mi-dorsal">{copy.nav.profile}</NavLink>
       </nav>
     </div>

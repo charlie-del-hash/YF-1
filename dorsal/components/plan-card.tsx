@@ -34,6 +34,9 @@ export function PlanCard({ plan, compact = false }: { plan: PlanCardData; compac
       <p className="mt-1 text-tinta-60" data-numeric>
         {plan.levelDisplay}
       </p>
+      {plan.outOfBand ? (
+        <p className="mt-1 text-[15px] text-aviso">{copy.deck.outOfBand}</p>
+      ) : null}
 
       {!compact ? (
         <p className="mt-4 font-medium">

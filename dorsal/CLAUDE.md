@@ -182,7 +182,52 @@ intact — the Sunday pachanga stays on Sunday.
 do not line up with supabase-js 2.114, which silently degraded every typed
 `rpc()` argument to `undefined`.
 
-**11. Not yet built, and deliberately:** the photo upload in onboarding (the
-field is present and explained; storage bucket policies are their own slice),
-plan creation, chat, Palabra, report/block UI. M0 is sign in → onboard → deck →
-join → roster.
+**11. Not yet built after M0, and deliberately:** the photo upload in onboarding
+(the field is present and explained; storage bucket policies are their own
+slice), chat, Palabra, report/block UI.
+
+---
+
+## Decisions taken or changed while building M1
+
+**12. `reliability_events` ships in migration 0002**, ahead of its M3 slot, for
+the same reason `blocks` came early: `leave_plan()` has to record what a
+cancellation cost at the moment it happens, and that is not reconstructable
+afterwards. The table and its RLS are here; the derived view, the display and
+the gates are still M3.
+
+**13. The 12-hour rule exists once, in SQL.** `leave_cost()` is the only
+definition, and the plan screen asks it rather than working the answer out in
+the browser, so the sentence someone agrees to on the confirmation and the row
+written to their history cannot disagree. `cancellationCost()` was deleted from
+`lib/time.ts` for this reason — a second implementation of a rule is a second
+answer waiting to happen.
+
+**14. `solo mujeres` plan creation ships in M1**, ahead of its M4 slot. The RLS
+policy, the deck filter and the invisibility tests already existed after M0, so
+a create form that could not produce the one plan type the filter offers would
+have been incoherent. Creation is gated on the host having declared `mujer`, in
+the server action and against the same column the read policy keys off. What is
+still M4: the report/block UI, selfie verification and the moderation queue.
+
+**15. Cancelling a plan does not notify anyone yet.** The reason is required by
+the database and surfaced on the plan and in `Mis planes`, and the form says in
+as many words that the host still has to tell the group. Web push is M2;
+pretending otherwise would be worse than the sentence admitting it.
+
+**16. Filters live in the URL, not in component state.** A filtered deck can
+then be shared, bookmarked and reloaded, and the filters are applied to the
+query rather than fetched-then-hidden. The `Nivel` filter is `Mi nivel`
+(default) or `Todos los niveles`; plans outside the viewer's band are marked
+`Fuera de tu nivel` on the card, because `join_plan()` will refuse them and a
+deck full of silent dead ends is worse than one that says so.
+
+**17. `min_plans_required` is not in the create form.** The column, the gate and
+its test exist, but hosts cannot set it until M3 ships the reserved-plaza rule
+for newcomers alongside it. A gate without the escape hatch is the catch-22 the
+audit warned about.
+
+**18. Native date and time inputs render in the browser's UI language**, which a
+page cannot set — so the create form echoes the chosen moment back in Spanish
+(`sábado, 12 de septiembre · 19:30`). That also confirms the Madrid instant the
+host actually picked, which is the part that would otherwise be invisible.

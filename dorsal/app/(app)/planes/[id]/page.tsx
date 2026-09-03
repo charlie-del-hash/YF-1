@@ -6,8 +6,11 @@ import { VenueMap } from '@/components/venue-map';
 import { copy, formatThirdHalf } from '@/lib/copy/es-ES';
 import { getSport } from '@/lib/levels';
 import { formatLongDate, formatTime } from '@/lib/time';
-import { getMyStatus, getPlan, getRoster, getViewer } from '@/features/plans/queries';
+import {
+  getLeaveCost, getMyStatus, getPlan, getRoster, getViewer,
+} from '@/features/plans/queries';
 import { JoinButton } from '@/features/plans/join-button';
+import { HostControls, LeaveButton } from '@/features/plans/plan-actions';
 
 export const dynamic = 'force-dynamic';
 
@@ -33,6 +36,12 @@ export default async function PlanPage({ params }: { params: Promise<{ id: strin
   const [roster, myStatus] = await Promise.all([getRoster(id), getMyStatus(id, viewer.id)]);
   const sport = getSport(plan.sport);
   const remaining = Math.max(0, plan.capacity - plan.joinedCount);
+  const isHost = plan.host.id === viewer.id;
+  const isIn = myStatus === 'joined' || myStatus === 'waitlist' || myStatus === 'attended';
+  const isCancelled = plan.status === 'cancelled';
+  // Asked of the database rather than worked out here, so the sentence in the
+  // confirmation and the row that gets written cannot disagree.
+  const leaveCost = isIn && !isCancelled ? await getLeaveCost(id) : null;
 
   return (
     <article className="flex flex-1 flex-col gap-6 pb-4">
@@ -51,6 +60,14 @@ export default async function PlanPage({ params }: { params: Promise<{ id: strin
           </p>
         ) : null}
         {plan.isSeed ? <p className="mt-2 text-[15px] text-tinta-60">{copy.plan.seedNotice}</p> : null}
+        {isCancelled ? (
+          <p className="mt-3 border-l-4 border-aviso bg-linea p-3">
+            <span className="font-display text-xl font-bold text-aviso">{copy.plan.cancelled}</span>
+            {plan.cancelledReason ? (
+              <span className="mt-1 block">{copy.plan.cancelledBecause(plan.cancelledReason)}</span>
+            ) : null}
+          </p>
+        ) : null}
       </header>
 
       <section>
@@ -125,13 +142,28 @@ export default async function PlanPage({ params }: { params: Promise<{ id: strin
       <p className="text-[15px] text-tinta-60">{copy.safety.publicPlaces}</p>
 
       <div className="sticky bottom-0 mt-auto bg-cal pb-2 pt-3">
-        <JoinButton
-          planId={plan.id}
-          minPlansRequired={plan.minPlansRequired}
-          initialStatus={myStatus}
-          isHost={plan.host.id === viewer.id}
-          remaining={remaining}
-        />
+        {isCancelled ? null : isHost ? (
+          <HostControls planId={plan.id} />
+        ) : isIn && leaveCost ? (
+          <div className="flex flex-col gap-2">
+            {myStatus === 'waitlist' ? (
+              <p className="text-tinta-60">{copy.deck.waitlisted}</p>
+            ) : (
+              <p className="rounded-[4px] bg-cesped px-3 py-2 text-center font-display text-xl font-extrabold text-linea">
+                {copy.deck.joined}
+              </p>
+            )}
+            <LeaveButton planId={plan.id} cost={leaveCost} />
+          </div>
+        ) : (
+          <JoinButton
+            planId={plan.id}
+            minPlansRequired={plan.minPlansRequired}
+            initialStatus={myStatus}
+            isHost={isHost}
+            remaining={remaining}
+          />
+        )}
       </div>
     </article>
   );

@@ -1,4 +1,7 @@
 import type { Metadata } from 'next';
+import { DeckFilterBar } from '@/features/deck/deck-filters';
+import { DEFAULT_FILTERS } from '@/features/deck/filters';
+import { PlanForm } from '@/features/plans/plan-form';
 import { Bib } from '@/components/ui/bib';
 import { Button } from '@/components/ui/button';
 import { PlanCard } from '@/components/plan-card';
@@ -9,6 +12,7 @@ const plan: PlanCardData = {
   distrito: 'Retiro', levelMin: 4, levelMax: 6, levelDisplay: '8 km · 5:30–6:00 min/km',
   capacity: 6, joinedCount: 4, thirdHalf: 'cafe', thirdHalfVenueName: 'Café en Malasaña',
   audience: 'todos', minPlansRequired: 0, meetingNote: null, isSeed: true,
+  status: 'open', cancelledReason: null, venueId: 'v', thirdHalfVenueId: null,
   venue: { id: 'v', name: 'Parque del Retiro — Puerta de Alcalá', distrito: 'Retiro', lat: 40.42, lng: -3.688, verified: false },
   host: { id: 'h', displayName: 'Marta', dorsalNumber: 1042, photoUrl: null },
 };
@@ -36,6 +40,27 @@ export default function Kit() {
         <Bib number={7} />
         <Bib number={318} size="sm" />
       </div>
+      <DeckFilterBar
+        filters={{ ...DEFAULT_FILTERS, sport: 'running' }}
+        sports={['running', 'padel', 'escalada']}
+        canSeeWomenOnly
+      />
+      <PlanForm
+        defaults={{
+          sport: 'running', durationMin: 60, venueId: null, thirdHalfVenueId: null,
+          levelMin: 4, levelMax: 7, capacity: 8, thirdHalf: 'cafe',
+          audience: 'todos', meetingNote: null,
+        }}
+        venues={[
+          { id: '11111111-1111-5111-8111-111111111111', name: 'Parque del Retiro — Puerta de Alcalá', kind: 'parque', distrito: 'Retiro', lat: 40.42, lng: -3.688, verified: false },
+          { id: '22222222-2222-5222-8222-222222222222', name: 'Café en Malasaña', kind: 'cafe', distrito: 'Centro', lat: 40.426, lng: -3.703, verified: false },
+        ]}
+        mySports={['running', 'padel']}
+        myDistrito="Chamberí"
+        canCreateWomenOnly
+        center={{ lat: 40.4168, lng: -3.7038 }}
+        initialDate="2026-09-12"
+      />
       <div className="flex flex-wrap gap-2">
         <Button>Me apunto</Button>
         <Button variant="secondary">Paso</Button>

@@ -135,6 +135,9 @@ export type Database = {
     };
     Functions: {
       join_plan: { Args: { p_plan: string }; Returns: JoinStatus };
+      leave_plan: { Args: { p_plan: string }; Returns: string };
+      leave_cost: { Args: { p_plan: string }; Returns: string };
+      cancel_plan: { Args: { p_plan: string; p_reason: string }; Returns: undefined };
       complete_onboarding: {
         Args: {
           p_display_name: string;

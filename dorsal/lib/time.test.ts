@@ -1,12 +1,16 @@
 import { describe, expect, it } from 'vitest';
 import {
-  cancellationCost,
+  addDays,
   chatClosesAt,
   formatDayTag,
   formatLongDate,
   formatTime,
   formatWhen,
   hoursUntil,
+  madridDateAndTime,
+  madridInstant,
+  madridStartOfDay,
+  madridWeekday,
   timeOfDay,
 } from './time';
 
@@ -75,30 +79,12 @@ describe('leaving a plan', () => {
   const start = new Date('2026-09-12T09:00:00+02:00');
   const at = (hoursBefore: number) => new Date(start.getTime() - hoursBefore * 3_600_000);
 
-  it('is free two days out', () => {
-    expect(cancellationCost(start, at(48))).toBe('early_cancel');
-  });
-
-  it('is free at exactly 24 hours', () => {
-    expect(cancellationCost(start, at(24))).toBe('early_cancel');
-  });
-
-  it('is still free in the 12–24h window, because a plaza can be refilled', () => {
-    expect(cancellationCost(start, at(18))).toBe('early_cancel');
-    expect(cancellationCost(start, at(12))).toBe('early_cancel');
-  });
-
-  it('counts as a falta under 12 hours', () => {
-    expect(cancellationCost(start, at(11.9))).toBe('late_cancel');
-    expect(cancellationCost(start, at(1))).toBe('late_cancel');
-  });
-
-  it('counts as a falta after the plan has started', () => {
-    expect(cancellationCost(start, at(-1))).toBe('late_cancel');
-  });
-
+  /* The cost itself is decided by leave_cost() in the database and asserted in
+     supabase/test/02-lifecycle.test.sql. All this module still owes is the gap. */
   it('measures the gap in hours', () => {
     expect(hoursUntil(start, at(6))).toBeCloseTo(6);
+    expect(hoursUntil(start, at(0))).toBeCloseTo(0);
+    expect(hoursUntil(start, at(-2))).toBeCloseTo(-2);
   });
 });
 
@@ -106,5 +92,67 @@ describe('chat lifetime', () => {
   it('closes 48h after the plan ends, not after it starts', () => {
     const closes = chatClosesAt('2026-09-12T09:00:00+02:00', 90);
     expect(closes.toISOString()).toBe('2026-09-14T08:30:00.000Z');
+  });
+});
+
+describe('the Madrid calendar', () => {
+  it('starts the day at midnight Madrid, not midnight UTC', () => {
+    // 00:30 Madrid on 12 September is 22:30 UTC on the 11th.
+    const start = madridStartOfDay(new Date('2026-09-12T00:30:00+02:00'));
+    expect(start.toISOString()).toBe('2026-09-11T22:00:00.000Z');
+  });
+
+  it('gets the day boundary right in winter too', () => {
+    const start = madridStartOfDay(new Date('2026-12-12T10:00:00+01:00'));
+    expect(start.toISOString()).toBe('2026-12-11T23:00:00.000Z');
+  });
+
+  it('crosses the October changeover without losing an hour', () => {
+    // Spain moves to CET on 25 October 2026. The 26th starts at 23:00Z on the 25th.
+    const start = madridStartOfDay(new Date('2026-10-26T12:00:00+01:00'));
+    expect(start.toISOString()).toBe('2026-10-25T23:00:00.000Z');
+  });
+
+  it('adds days by the calendar, not by 24 hours', () => {
+    // Adding a day across the changeover is 25 hours of elapsed time.
+    const saturday = madridStartOfDay(new Date('2026-10-24T12:00:00+02:00'));
+    const sunday = addDays(saturday, 1);
+    expect(sunday.toISOString()).toBe('2026-10-24T22:00:00.000Z');
+    const monday = addDays(saturday, 2);
+    expect(monday.toISOString()).toBe('2026-10-25T23:00:00.000Z');
+  });
+
+  it('counts weekdays from Monday', () => {
+    expect(madridWeekday(new Date('2026-09-07T10:00:00+02:00'))).toBe(1); // lunes
+    expect(madridWeekday(new Date('2026-09-12T10:00:00+02:00'))).toBe(6); // sábado
+    expect(madridWeekday(new Date('2026-09-13T10:00:00+02:00'))).toBe(7); // domingo
+  });
+});
+
+describe('wall-clock time in, instant out', () => {
+  it('reads a summer time as CEST', () => {
+    expect(madridInstant('2026-09-12', '09:30').toISOString()).toBe('2026-09-12T07:30:00.000Z');
+  });
+
+  it('reads a winter time as CET', () => {
+    expect(madridInstant('2026-12-12', '09:30').toISOString()).toBe('2026-12-12T08:30:00.000Z');
+  });
+
+  it('reads the morning after the clocks change correctly', () => {
+    expect(madridInstant('2026-10-26', '09:30').toISOString()).toBe('2026-10-26T08:30:00.000Z');
+  });
+
+  it('round-trips through the edit form', () => {
+    for (const [date, time] of [
+      ['2026-09-12', '09:30'],
+      ['2026-12-12', '20:00'],
+      ['2026-10-26', '07:00'],
+    ] as const) {
+      expect(madridDateAndTime(madridInstant(date, time))).toEqual({ date, time });
+    }
+  });
+
+  it('refuses nonsense rather than inventing a date', () => {
+    expect(() => madridInstant('no-es-una-fecha', '09:30')).toThrow();
   });
 });

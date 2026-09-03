@@ -1,7 +1,16 @@
 import 'server-only';
 import { createClient } from '@/lib/supabase/server';
 import { levelInBand } from '@/lib/levels';
-import type { Audience, PlanRow, SportKey, ThirdHalf } from '@/lib/database.types';
+import { timeOfDay } from '@/lib/time';
+import {
+  DEFAULT_FILTERS,
+  matchesFilters,
+  whenRange,
+  type DeckFilters,
+} from '@/features/deck/filters';
+import type {
+  Audience, GenderDecl, JoinStatus, PlanRow, PlanStatus, SportKey, ThirdHalf,
+} from '@/lib/database.types';
 
 /** A plan with everything the card and the detail screen need, and nothing else. */
 export interface PlanCardData {
@@ -21,14 +30,20 @@ export interface PlanCardData {
   minPlansRequired: number;
   meetingNote: string | null;
   isSeed: boolean;
+  status: PlanStatus;
+  cancelledReason: string | null;
+  /** True when the viewer's own level is outside the plan's band. */
+  outOfBand?: boolean;
+  venueId: string | null;
+  thirdHalfVenueId: string | null;
   venue: { id: string; name: string; distrito: string; lat: number; lng: number; verified: boolean } | null;
   host: { id: string; displayName: string; dorsalNumber: number; photoUrl: string | null };
 }
 
 const SELECT = `
   id, sport, starts_at, duration_min, distrito, level_min, level_max, level_display,
-  capacity, joined_count, third_half, audience, min_plans_required, meeting_note,
-  status, host_id, is_seed,
+  capacity, joined_count, third_half, third_half_venue_id, venue_id, audience,
+  min_plans_required, meeting_note, status, cancelled_reason, host_id, is_seed,
   venue:venues!plans_venue_id_fkey ( id, name, distrito, lat, lng, verified ),
   third_half_venue:venues!plans_third_half_venue_id_fkey ( name ),
   host:public_profiles!plans_host_id_fkey ( id, display_name, dorsal_number, photo_url )
@@ -59,6 +74,10 @@ function toCard(row: Raw): PlanCardData | null {
     minPlansRequired: row.min_plans_required,
     meetingNote: row.meeting_note,
     isSeed: row.is_seed,
+    status: row.status,
+    cancelledReason: row.cancelled_reason,
+    venueId: row.venue_id,
+    thirdHalfVenueId: row.third_half_venue_id,
     venue: row.venue,
     host: {
       id: row.host.id,
@@ -72,6 +91,8 @@ function toCard(row: Raw): PlanCardData | null {
 export interface DeckViewer {
   id: string;
   distrito: string;
+  /** Own row only. Used to decide whether the solo mujeres controls exist at all. */
+  gender: GenderDecl | null;
   levels: Map<SportKey, number>;
 }
 
@@ -81,7 +102,7 @@ export async function getViewer(): Promise<DeckViewer | null> {
   if (!auth.user) return null;
 
   const [{ data: profile }, { data: sports }] = await Promise.all([
-    supabase.from('profiles').select('id, distrito').eq('id', auth.user.id).maybeSingle(),
+    supabase.from('profiles').select('id, distrito, gender').eq('id', auth.user.id).maybeSingle(),
     supabase.from('user_sports').select('sport, level_norm').eq('user_id', auth.user.id),
   ]);
   if (!profile) return null;
@@ -89,6 +110,7 @@ export async function getViewer(): Promise<DeckViewer | null> {
   return {
     id: profile.id,
     distrito: profile.distrito,
+    gender: profile.gender,
     levels: new Map((sports ?? []).map((s) => [s.sport, s.level_norm])),
   };
 }
@@ -107,22 +129,35 @@ export async function getViewer(): Promise<DeckViewer | null> {
  * the rest follow by start time. It is a weaker promise than the radius slider
  * implies, and it is the honest one.
  */
-export async function getDeck(viewer: DeckViewer, limit = 30): Promise<PlanCardData[]> {
-  const sports = [...viewer.levels.keys()];
+export async function getDeck(
+  viewer: DeckViewer,
+  filters: DeckFilters = DEFAULT_FILTERS,
+  limit = 30,
+): Promise<PlanCardData[]> {
+  const sports = filters.sport ? [filters.sport] : [...viewer.levels.keys()];
   if (sports.length === 0) return [];
 
   const supabase = await createClient();
+  const { from, to } = whenRange(filters.when);
+
+  let query = supabase
+    .from('plans')
+    .select(SELECT)
+    .in('sport', sports)
+    .in('status', ['open', 'full'])
+    .gte('starts_at', from.toISOString())
+    .neq('host_id', viewer.id)
+    .order('starts_at', { ascending: true })
+    .limit(limit * 3);
+
+  if (to) query = query.lt('starts_at', to.toISOString());
+  // solo mujeres plans are already invisible to everyone else at the RLS layer;
+  // this narrows to them for someone who can see them in the first place.
+  if (filters.womenOnly) query = query.eq('audience', 'solo_mujeres');
+  if (filters.withThirdHalf) query = query.neq('third_half', 'ninguno');
 
   const [{ data: rows, error }, { data: swiped }, { data: mine }] = await Promise.all([
-    supabase
-      .from('plans')
-      .select(SELECT)
-      .in('sport', sports)
-      .in('status', ['open', 'full'])
-      .gt('starts_at', new Date().toISOString())
-      .neq('host_id', viewer.id)
-      .order('starts_at', { ascending: true })
-      .limit(limit * 3),
+    query,
     supabase.from('swipes').select('plan_id').eq('user_id', viewer.id),
     supabase
       .from('plan_participants')
@@ -142,7 +177,11 @@ export async function getDeck(viewer: DeckViewer, limit = 30): Promise<PlanCardD
     .map(toCard)
     .filter((plan): plan is PlanCardData => plan !== null)
     .filter((plan) => !seen.has(plan.id))
-    .filter((plan) => levelInBand(viewer.levels.get(plan.sport), plan.levelMin, plan.levelMax))
+    .filter((plan) => matchesFilters(plan, filters, viewer.levels, timeOfDay))
+    .map((plan) => ({
+      ...plan,
+      outOfBand: !levelInBand(viewer.levels.get(plan.sport), plan.levelMin, plan.levelMax),
+    }))
     .sort((a, b) => {
       const near = Number(b.distrito === viewer.distrito) - Number(a.distrito === viewer.distrito);
       return near !== 0 ? near : a.startsAt.localeCompare(b.startsAt);
@@ -201,4 +240,99 @@ export async function getMyStatus(planId: string, userId: string): Promise<strin
     .eq('user_id', userId)
     .maybeSingle();
   return data?.status ?? null;
+}
+
+export interface VenueOption {
+  id: string;
+  name: string;
+  kind: string;
+  distrito: string;
+  lat: number;
+  lng: number;
+  verified: boolean;
+}
+
+/** The curated meeting points, own-distrito first so the common case is at the top. */
+export async function getVenues(distrito?: string): Promise<VenueOption[]> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from('venues')
+    .select('id, name, kind, distrito, lat, lng, verified')
+    .order('distrito', { ascending: true })
+    .order('name', { ascending: true });
+
+  const venues = (data ?? []) as VenueOption[];
+  if (!distrito) return venues;
+  return [...venues].sort(
+    (a, b) => Number(b.distrito === distrito) - Number(a.distrito === distrito),
+  );
+}
+
+export interface MyPlan extends PlanCardData {
+  myStatus: JoinStatus | 'host';
+}
+
+/**
+ * Mis planes: everything you host and everything you joined, upcoming and past.
+ * Cancelled plans stay visible — the reason is the only thing a participant
+ * gets until web push lands, and hiding it would be worse than showing it.
+ */
+export async function getMyPlans(
+  viewer: DeckViewer,
+): Promise<{ upcoming: MyPlan[]; past: MyPlan[] }> {
+  const supabase = await createClient();
+
+  const [{ data: hosted }, { data: memberships }] = await Promise.all([
+    supabase.from('plans').select(SELECT).eq('host_id', viewer.id).order('starts_at'),
+    supabase
+      .from('plan_participants')
+      .select('plan_id, status')
+      .eq('user_id', viewer.id)
+      .in('status', ['joined', 'waitlist', 'attended']),
+  ]);
+
+  const membershipByPlan = new Map(
+    (memberships ?? []).map((m) => [m.plan_id, m.status as JoinStatus]),
+  );
+
+  let joined: Raw[] = [];
+  if (membershipByPlan.size > 0) {
+    const { data } = await supabase
+      .from('plans')
+      .select(SELECT)
+      .in('id', [...membershipByPlan.keys()])
+      .order('starts_at');
+    joined = (data ?? []) as unknown as Raw[];
+  }
+
+  const all: MyPlan[] = [
+    ...((hosted ?? []) as unknown as Raw[]).map((row) => {
+      const card = toCard(row);
+      return card && { ...card, myStatus: 'host' as const };
+    }),
+    ...joined.map((row) => {
+      const card = toCard(row);
+      return card && { ...card, myStatus: membershipByPlan.get(row.id) ?? ('joined' as JoinStatus) };
+    }),
+  ].filter((plan): plan is MyPlan => plan !== null);
+
+  const now = Date.now();
+  const isPast = (plan: MyPlan) =>
+    new Date(plan.startsAt).getTime() + plan.durationMin * 60_000 < now;
+
+  return {
+    upcoming: all.filter((p) => !isPast(p)).sort((a, b) => a.startsAt.localeCompare(b.startsAt)),
+    past: all.filter(isPast).sort((a, b) => b.startsAt.localeCompare(a.startsAt)),
+  };
+}
+
+/**
+ * What leaving would cost, according to the database. The confirmation dialog
+ * shows this rather than working it out, so the words someone agrees to and the
+ * row that gets written cannot disagree. See migration 0002.
+ */
+export async function getLeaveCost(planId: string): Promise<'early_cancel' | 'late_cancel'> {
+  const supabase = await createClient();
+  const { data } = await supabase.rpc('leave_cost', { p_plan: planId });
+  return data === 'late_cancel' ? 'late_cancel' : 'early_cancel';
 }

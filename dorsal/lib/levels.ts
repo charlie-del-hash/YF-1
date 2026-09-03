@@ -59,7 +59,9 @@ export function formatLevelRange(sport: SportKey, min: number, max: number): str
   const low = bandForNorm(sport, min);
   const high = bandForNorm(sport, max);
   if (low.display === high.display) return withScalePrefix(getSport(sport), low.display);
-  return withScalePrefix(getSport(sport), `${low.display} – ${high.display}`);
+  // Joined with "a", not a dash: most bands are themselves ranges written with
+  // an en dash, and "6:00–7:00 – 5:00–5:30" is unreadable.
+  return withScalePrefix(getSport(sport), `${low.display} a ${high.display}`);
 }
 
 /** Pádel and tenis are the one scale people quote as a bare number. */
