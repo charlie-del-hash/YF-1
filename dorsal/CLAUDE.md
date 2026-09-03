@@ -261,3 +261,35 @@ Supabase CLI and the management API.
 **Still not done:** the Vercel deploy. It needs the two `NEXT_PUBLIC_` variables
 and an Auth redirect allow-list entry for `<site>/auth/callback`; without the
 latter, magic links fail in a way that looks like an expired link.
+
+
+---
+
+## Decisions from wiring up the live project
+
+**19. Every client call goes through `attempt()` (`lib/actions.ts`).** Server
+actions and the auth client *reject* rather than returning an error when a
+request never completes. Every call site sets a pending flag before the call
+and clears it after, so a rejection left the button on "Mandando…" or
+"Guardando…" for ever with nothing to act on — found by pointing the app at a
+project it could not reach. One wrapper, not a try/catch repeated at eight call
+sites, and `e2e/m0-sin-conexion.spec.ts` runs the whole suite against a
+configured-but-unreachable project so it cannot come back.
+
+**20. An unreachable project says so.** A request that never reached the server
+is a connection problem, and "comprueba tu conexión" is more useful than "no
+hemos podido mandarte el enlace" — one tells you what to do, the other tells you
+nothing. supabase-js reports these with no HTTP status, which is how they are
+told apart from a real rejection.
+
+**21. Either key name works.** Supabase renamed anon keys to publishable keys
+(`sb_publishable_…`), so `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` is preferred and
+`NEXT_PUBLIC_SUPABASE_ANON_KEY` still works. Both are safe in a browser; neither
+is the service-role key, which this app never needs.
+
+**22. Error, not-found and loading states now exist.** They were missing, which
+was a straight failure against the definition of done at the top of this file.
+Signed out, an unknown plan id and an unknown route both go to the door rather
+than to a 404 — telling a stranger "this plan does not exist" would tell them by
+elimination which ones do, and that is exactly what hiding `solo mujeres` plans
+is for.

@@ -6,6 +6,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { PlanCard } from '@/components/plan-card';
 import { copy } from '@/lib/copy/es-ES';
+import { attempt } from '@/lib/actions';
 import { formatDayTag } from '@/lib/time';
 import { joinPlan, passPlan } from '@/features/plans/actions';
 import type { PlanCardData } from '@/features/plans/queries';
@@ -56,13 +57,13 @@ export function DeckClient({ plans }: { plans: PlanCardData[] }) {
 
       startTransition(async () => {
         if (direction === 'left') {
-          const result = await passPlan(plan.id);
+          const result = await attempt(() => passPlan(plan.id));
           if (!result.ok) setQueue((q) => [plan, ...q]);
           return;
         }
 
-        const result = await joinPlan(plan.id, plan.minPlansRequired);
-        if (result.ok) {
+        const result = await attempt(() => joinPlan(plan.id, plan.minPlansRequired));
+        if (result.ok && 'status' in result) {
           setToast({
             tone: 'ok',
             text:

@@ -12,6 +12,18 @@ import { createClient } from '@/lib/supabase/client';
  * provider is another processor in the privacy policy (CLAUDE.md), and this is
  * the flow that survives someone scanning a QR code at a rocódromo.
  */
+/**
+ * A request that never reached the server is a connection problem, and saying
+ * so is more useful than "we couldn't send it" — one tells you to check your
+ * signal, the other tells you nothing. supabase-js reports these as a
+ * retryable fetch error with no HTTP status.
+ */
+function authErrorMessage(error: { status?: number; name?: string }): string {
+  if (error.status === 429) return copy.auth.errors.rateLimited;
+  const unreachable = !error.status || /fetch|network|retryable|unknown/i.test(error.name ?? '');
+  return unreachable ? copy.errors.network : copy.auth.errors.generic;
+}
+
 export function SignInForm({
   redirectTo,
   initialError,
@@ -33,14 +45,24 @@ export function SignInForm({
     setState('sending');
 
     const next = redirectTo ? `?volver=${encodeURIComponent(redirectTo)}` : '';
-    const { error: authError } = await createClient().auth.signInWithOtp({
-      email,
-      options: { emailRedirectTo: `${siteUrl()}/auth/callback${next}` },
-    });
+
+    // signInWithOtp *rejects* when the request never completes, rather than
+    // returning an error. Without this the button sits on "Mandando…" for ever.
+    let authError: { status?: number; name?: string } | null = null;
+    try {
+      ({ error: authError } = await createClient().auth.signInWithOtp({
+        email,
+        options: { emailRedirectTo: `${siteUrl()}/auth/callback${next}` },
+      }));
+    } catch {
+      setState('idle');
+      setError(copy.errors.network);
+      return;
+    }
 
     if (authError) {
       setState('idle');
-      setError(authError.status === 429 ? copy.auth.errors.rateLimited : copy.auth.errors.generic);
+      setError(authErrorMessage(authError));
       return;
     }
     setState('sent');

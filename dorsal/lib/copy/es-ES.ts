@@ -331,10 +331,19 @@ export const copy = {
     notAuthenticated: 'Entra en tu cuenta para seguir.',
     save: 'No hemos podido guardarlo. Vuelve a intentarlo.',
     load: 'No hemos podido cargar esto. Vuelve a intentarlo.',
+    network: 'No hemos podido conectar. Comprueba tu conexión y vuelve a intentarlo.',
     notFound: 'Esto ya no existe.',
     hostCannotLeave: 'Organizas este plan. Si no puedes ir, cancélalo con un motivo.',
     notJoined: 'No estabas apuntado a este plan.',
     generic: 'Algo ha ido mal. Vuelve a intentarlo.',
+  },
+
+  boundary: {
+    notFoundTitle: 'Esto no existe',
+    notFoundBody: 'El plan se ha cancelado, o el enlace está mal. Vuelve a los planes.',
+    errorTitle: 'Se nos ha roto algo',
+    errorBody: 'No es culpa tuya. Vuelve a intentarlo y, si sigue igual, dínoslo.',
+    backToDeck: 'Ver planes',
   },
 
   common: {

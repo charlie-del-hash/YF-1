@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Field, inputClass } from '@/components/ui/field';
 import { copy } from '@/lib/copy/es-ES';
+import { attempt } from '@/lib/actions';
 import { bandsFor, getSport } from '@/lib/levels';
 import { DISTRITOS, LAUNCH_SPORTS, SPORTS, type SportKey } from '@/lib/sports';
 import { completeOnboarding } from './actions';
@@ -64,15 +65,17 @@ export function OnboardingClient() {
     if (year > maxBirthYear()) return setError(copy.onboarding.identity.errors.under18);
 
     setSaving(true);
-    const result = await completeOnboarding({
-      displayName: trimmed,
-      birthYear: year,
-      distrito,
-      travelKm,
-      gender: gender === '' ? null : gender,
-      photoUrl: null,
-      sports: sports.map((s) => ({ sport: s, levelNorm: levels[s]! })),
-    });
+    const result = await attempt(() =>
+      completeOnboarding({
+        displayName: trimmed,
+        birthYear: year,
+        distrito,
+        travelKm,
+        gender: gender === '' ? null : gender,
+        photoUrl: null,
+        sports: sports.map((s) => ({ sport: s, levelNorm: levels[s]! })),
+      }),
+    );
     setSaving(false);
 
     if (!result.ok) return setError(result.error);

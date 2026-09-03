@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react';
 import { Button } from '@/components/ui/button';
 import { copy } from '@/lib/copy/es-ES';
+import { attempt } from '@/lib/actions';
 import { joinPlan } from './actions';
 
 /**
@@ -55,9 +56,9 @@ export function JoinButton({
         onClick={() =>
           startTransition(async () => {
             setError(undefined);
-            const result = await joinPlan(planId, minPlansRequired);
-            if (result.ok) setStatus(result.status);
-            else setError(result.error);
+            const result = await attempt(() => joinPlan(planId, minPlansRequired));
+            if (result.ok && 'status' in result) setStatus(result.status);
+            else if (!result.ok) setError(result.error);
           })
         }
       >

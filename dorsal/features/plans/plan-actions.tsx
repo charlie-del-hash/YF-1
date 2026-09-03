@@ -6,6 +6,7 @@ import { useState, useTransition } from 'react';
 import { Button } from '@/components/ui/button';
 import { Field, inputClass } from '@/components/ui/field';
 import { copy } from '@/lib/copy/es-ES';
+import { attempt } from '@/lib/actions';
 import { cancelPlan, leavePlan } from './actions';
 
 /**
@@ -56,7 +57,7 @@ export function LeaveButton({
           disabled={pending}
           onClick={() =>
             startTransition(async () => {
-              const result = await leavePlan(planId);
+              const result = await attempt(() => leavePlan(planId));
               if (!result.ok) {
                 setConfirming(false);
                 setError(result.error);
@@ -126,7 +127,7 @@ export function HostControls({ planId }: { planId: string }) {
               disabled={pending || reason.trim().length === 0}
               onClick={() =>
                 startTransition(async () => {
-                  const result = await cancelPlan(planId, reason);
+                  const result = await attempt(() => cancelPlan(planId, reason));
                   if (!result.ok) return setError(result.error);
                   setCancelling(false);
                   router.refresh();

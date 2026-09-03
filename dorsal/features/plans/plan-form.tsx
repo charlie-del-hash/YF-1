@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Field, inputClass } from '@/components/ui/field';
 import { VenueMapPicker } from '@/components/venue-map-picker';
 import { copy } from '@/lib/copy/es-ES';
+import { attempt } from '@/lib/actions';
 import { bandsFor, formatLevelRange } from '@/lib/levels';
 import { DISTRITOS, LAUNCH_SPORTS, SPORTS, type SportKey } from '@/lib/sports';
 import { formatLongDate, formatTime, madridDateAndTime, madridInstant } from '@/lib/time';
@@ -88,13 +89,16 @@ export function PlanForm({
 
   async function addPinnedVenue() {
     setError(undefined);
-    const result = await createVenue({
-      name: pinName,
-      distrito: pinDistrito,
-      lat: pinPoint.lat,
-      lng: pinPoint.lng,
-    });
+    const result = await attempt(() =>
+      createVenue({
+        name: pinName,
+        distrito: pinDistrito,
+        lat: pinPoint.lat,
+        lng: pinPoint.lng,
+      }),
+    );
     if (!result.ok) return setError(result.error);
+    if (!('id' in result)) return setError(copy.errors.save);
 
     setVenues((prev) => [
       ...prev,
@@ -123,9 +127,10 @@ export function PlanForm({
     };
 
     setSaving(true);
-    const result = await savePlan(input, defaults.id);
+    const result = await attempt(() => savePlan(input, defaults.id));
     setSaving(false);
     if (!result.ok) return setError(result.error);
+    if (!('id' in result)) return setError(copy.errors.save);
 
     router.replace(`/planes/${result.id}`);
     router.refresh();
