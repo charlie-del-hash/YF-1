@@ -89,9 +89,22 @@ Then, in the Supabase dashboard:
 1. **Settings → API** — copy the project URL and the anon/publishable key into
    `.env.local` (see `.env.example`). The service-role key is not needed by this
    app and must never be given a `NEXT_PUBLIC_` name.
-2. **Authentication → URL Configuration** — set the Site URL, and add
-   `<site>/auth/callback` to the redirect allow-list. Magic links bounce
-   silently without this, and the failure looks like "the link is expired".
+2. **Authentication → URL Configuration.** Magic links bounce silently without
+   this, and the failure looks exactly like "the link is expired".
+
+   - **Site URL** — the production origin, and the fallback when a link carries
+     no `redirect_to`. Before anything is deployed, set it to
+     `http://localhost:3000`; change it to the production origin the moment the
+     Vercel project exists, because the fallback is where a link sends someone
+     when anything else goes wrong.
+   - **Redirect URLs** — add `http://localhost:3000/**` for development and
+     `https://<production-host>/auth/callback` once deployed. The app builds its
+     redirect as `${NEXT_PUBLIC_SITE_URL}/auth/callback`, so that variable and
+     this list have to agree per environment.
+   - **Do not add `https://*.vercel.app/**`.** Every entry on this list is a
+     host Supabase will hand a live session token to, and that pattern is every
+     site on `vercel.app`, not just yours. If preview deploys need to sign in,
+     scope it to your own team: `https://dorsal-*-<team-slug>.vercel.app/**`.
 3. **SQL editor** — paste `supabase/test/03-remote-check.test.sql` and run it.
    It asserts, on the real project, that RLS is enabled on every table, that
    every table carries a policy, that the seed landed in the future, that `anon`

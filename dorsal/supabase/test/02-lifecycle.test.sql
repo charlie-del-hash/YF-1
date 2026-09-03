@@ -1,6 +1,5 @@
 -- Leaving, waitlist promotion, editing and cancelling.
 -- 02-DATA-MODEL §Domain rules 2, 3 and 4.
-\set ON_ERROR_STOP on
 
 begin;
 

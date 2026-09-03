@@ -4,7 +4,6 @@
 -- Fixtures are created as the table owner (RLS bypassed), then every assertion
 -- runs under `set role authenticated` with a JWT subject set, which is exactly
 -- how PostgREST reaches these tables.
-\set ON_ERROR_STOP on
 
 create or replace function test_as(p_user uuid) returns void
 language plpgsql as $$

@@ -258,6 +258,11 @@ hold the week-offset, which does not survive a stateless SQL call; it now
 defines and drops a function instead, so the same file works through psql, the
 Supabase CLI and the management API.
 
+**Auth redirect allow-list.** Every entry is a host Supabase will hand a live
+session token to. `https://*.vercel.app/**` is therefore not an option, however
+convenient it looks for preview deploys — it names every site on the domain.
+Scope previews to the team slug or list production exactly.
+
 **Still not done:** the Vercel deploy. It needs the two `NEXT_PUBLIC_` variables
 and an Auth redirect allow-list entry for `<site>/auth/callback`; without the
 latter, magic links fail in a way that looks like an expired link.

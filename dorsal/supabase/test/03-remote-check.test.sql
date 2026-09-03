@@ -8,8 +8,11 @@
 -- than as the owner. Everything it writes is rolled back.
 --
 -- It is also run by scripts/pgtest.sh, so the script itself is known to work
--- before anyone pastes it anywhere.
-\set ON_ERROR_STOP on
+-- before anyone pastes it anywhere. Two consequences of being written for the
+-- SQL editor as well as for psql: no psql meta-commands (the runner sets
+-- ON_ERROR_STOP on the command line), and results are collected into a table
+-- and selected at the end rather than raised as notices, which the editor does
+-- not display. A check whose output you cannot see is not a check.
 
 begin;
 
@@ -39,6 +42,12 @@ select
       and host_id <> (select id from profiles where dorsal_number = 2)
     order by starts_at limit 1) as too_fast_plan_id;
 grant select on _fixtures to authenticated, anon;
+
+-- Steps 4 onwards run as anon/authenticated, so they need INSERT here as well
+-- as SELECT on _fixtures. Without it every one of them fails with "permission
+-- denied for table _results" — which looks like a policy problem and is not.
+create temporary table _results (step text, outcome text) on commit drop;
+grant select, insert on _results to authenticated, anon;
 
 do $$
 declare f _fixtures%rowtype;
@@ -70,7 +79,7 @@ begin
      and not exists (select 1 from pg_policy p where p.polrelid = c.oid);
   assert policyless is null, 'tables with RLS but no policy: ' || policyless;
 
-  raise notice 'ok  every public table has RLS and at least one policy';
+  insert into _results values ('1. RLS on every table, a policy on every table', 'ok');
 end $$;
 
 -- ── 2. the seed landed, and it is in the future ─────────────────────────────
@@ -86,8 +95,8 @@ begin
 
   select count(*), min(starts_at) into v_past, v_min from plans where is_seed and starts_at <= now();
   assert v_past = 0, v_past || ' seeded plans are already in the past (earliest ' || v_min || ')';
-  raise notice 'ok  seed loaded: % venues, % profiles, % plans, all upcoming',
-    v_venues, v_profiles, v_plans;
+  insert into _results values ('2. seed loaded and entirely upcoming',
+    v_venues || ' venues, ' || v_profiles || ' profiles, ' || v_plans || ' plans');
 end $$;
 
 -- ── 3. seeded venues are labelled unverified ────────────────────────────────
@@ -98,7 +107,7 @@ declare n int;
 begin
   select count(*) into n from venues where is_seed and verified;
   assert n = 0, n || ' seeded venues are marked verified without being confirmed';
-  raise notice 'ok  every seeded venue is still flagged unverified';
+  insert into _results values ('3. every seeded venue still flagged unverified', 'ok');
 end $$;
 
 -- ── 4. anon sees nothing ────────────────────────────────────────────────────
@@ -108,7 +117,7 @@ do $$ begin
   assert (select count(*) from profiles)        = 0, 'anon can read profiles';
   assert (select count(*) from venues)          = 0, 'anon can read venues';
   assert (select count(*) from public_profiles) = 0, 'anon can read public_profiles';
-  raise notice 'ok  anon sees nothing';
+  insert into _results values ('4. anon sees nothing', 'ok');
 end $$;
 
 set local role authenticated;
@@ -116,7 +125,7 @@ do $$ begin
   perform test_as(null);
   assert (select count(*) from plans)    = 0, 'authenticated-with-no-subject can read plans';
   assert (select count(*) from profiles) = 0, 'authenticated-with-no-subject can read profiles';
-  raise notice 'ok  a session with no subject sees nothing';
+  insert into _results values ('5. a session with no JWT subject sees nothing', 'ok');
 end $$;
 
 -- ── 5. solo mujeres, against the real seed ──────────────────────────────────
@@ -137,7 +146,7 @@ begin
   perform test_as(f.mujer_id);
   select count(*) into n from plans where audience = 'solo_mujeres';
   assert n = 1, 'a woman cannot see the solo_mujeres plan (saw ' || n || ')';
-  raise notice 'ok  solo mujeres is invisible through every query path';
+  insert into _results values ('6. solo mujeres invisible through every query path', 'ok');
 end $$;
 
 -- ── 6. public_profiles leaks nothing ────────────────────────────────────────
@@ -149,7 +158,7 @@ begin
   assert not ('gender' = any(cols)),       'public_profiles leaks gender';
   assert not ('birth_year' = any(cols)),   'public_profiles leaks birth_year';
   assert not ('is_suspended' = any(cols)), 'public_profiles leaks moderation state';
-  raise notice 'ok  public_profiles exposes only roster fields';
+  insert into _results values ('7. public_profiles exposes only roster fields', 'ok');
 end $$;
 
 -- ── 7. joining works, and its gates hold ────────────────────────────────────
@@ -175,7 +184,12 @@ begin
       assert sqlerrm = 'level_mismatch', 'wrong error: ' || sqlerrm;
     end;
   end if;
-  raise notice 'ok  join_plan works and refuses out-of-band levels';
+  insert into _results values ('8. join_plan joins, and refuses an out-of-band level', 'ok');
 end $$;
+
+-- Eight rows means eight checks passed. Fewer means the run stopped early, and
+-- the error above says where.
+reset role;
+select step, outcome from _results order by step;
 
 rollback;
