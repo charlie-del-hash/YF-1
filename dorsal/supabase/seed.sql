@@ -8,15 +8,18 @@
 -- 01-PRD §Cold start: a deck that is mostly seed data with nobody joining is
 -- worse than a small honest deck. Delete these as real supply arrives.
 
-begin;
-
--- Weeks to add to every seeded plan so the deck always sits in the future.
-create temporary table _shift on commit drop as
-select greatest(
-         0,
-         ceil(extract(epoch from (now() + interval '12 hours' - timestamptz '2026-09-04T17:00:00.000Z'))
-              / 604800.0)
-       )::int * 7 as days;
+-- Whole weeks to add to every seeded plan so the deck always sits in the
+-- future. Written inline rather than as a temporary table so the file applies
+-- identically through psql, the Supabase CLI and the management API, none of
+-- which agree about session state.
+create or replace function seed_shift_days() returns int
+language sql stable as $fn$
+  select greatest(
+           0,
+           ceil(extract(epoch from (now() + interval '12 hours' - timestamptz '2026-09-04T17:00:00.000Z'))
+                / 604800.0)
+         )::int * 7;
+$fn$;
 
 
 -- ── venues ──────────────────────────────────────────────────────────────────
@@ -100,7 +103,7 @@ insert into plans (
   level_min, level_max, level_display, capacity, third_half, third_half_venue_id,
   audience, meeting_note, is_seed
 )
-select v.id, v.host_id, v.sport, v.starts_at + make_interval(days => (select days from _shift)),
+select v.id, v.host_id, v.sport, v.starts_at + make_interval(days => seed_shift_days()),
        v.duration_min, v.venue_id, v.distrito, v.level_min, v.level_max, v.level_display,
        v.capacity, v.third_half, v.third_half_venue_id, v.audience, v.meeting_note, true
 from (values
@@ -126,4 +129,4 @@ on conflict (id) do update set
   starts_at = excluded.starts_at, capacity = excluded.capacity,
   level_display = excluded.level_display, meeting_note = excluded.meeting_note;
 
-commit;
+drop function seed_shift_days();

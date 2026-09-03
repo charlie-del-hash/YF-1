@@ -231,3 +231,33 @@ audit warned about.
 page cannot set — so the create form echoes the chosen moment back in Spanish
 (`sábado, 12 de septiembre · 19:30`). That also confirms the Madrid instant the
 host actually picked, which is the part that would otherwise be invisible.
+
+
+---
+
+## Deployment notes
+
+**The project.** `qplddusqtxmkljoyxdhd`, region **`eu-west-1` (Ireland)**, not
+Frankfurt as the stack table says. Ireland is in the EEA, so the requirement
+that actually matters — user data does not leave the EEA without a transfer
+basis — holds. Recorded here rather than silently: `05-RGPD.md` names Frankfurt,
+and anyone auditing this later should not have to wonder whether the difference
+was noticed.
+
+**Applied so far:** migrations `0001_init` and `0002_plan_lifecycle`, and
+`supabase/seed.sql`.
+
+**Verifying a deployment.** `supabase/test/03-remote-check.test.sql` is written
+to run in the Supabase SQL editor as well as under `scripts/pgtest.sh`, so the
+script is known to work before it is pasted anywhere. It is the only thing that
+proves RLS is on in the place it matters — a local pass says nothing about the
+remote project.
+
+**The seed applies through any client.** It used to create a temporary table to
+hold the week-offset, which does not survive a stateless SQL call; it now
+defines and drops a function instead, so the same file works through psql, the
+Supabase CLI and the management API.
+
+**Still not done:** the Vercel deploy. It needs the two `NEXT_PUBLIC_` variables
+and an Auth redirect allow-list entry for `<site>/auth/callback`; without the
+latter, magic links fail in a way that looks like an expired link.

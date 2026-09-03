@@ -72,6 +72,33 @@ general knowledge and must be confirmed against a real source — OpenStreetMap,
 the club's own site, the Ayuntamiento's facilities directory — before anyone is
 told to meet there. The UI labels them until then.
 
+## Point it at your Supabase project
+
+The migrations and the seed are already applied to the project this was built
+against (`qplddusqtxmkljoyxdhd`, region `eu-west-1`). For a fresh project:
+
+```sh
+pnpm db:seed:gen                 # regenerate supabase/seed.sql if the JSON changed
+supabase link --project-ref <ref>
+pnpm db:push                     # applies supabase/migrations in order
+psql "$DATABASE_URL" -f supabase/seed.sql
+```
+
+Then, in the Supabase dashboard:
+
+1. **Settings → API** — copy the project URL and the anon/publishable key into
+   `.env.local` (see `.env.example`). The service-role key is not needed by this
+   app and must never be given a `NEXT_PUBLIC_` name.
+2. **Authentication → URL Configuration** — set the Site URL, and add
+   `<site>/auth/callback` to the redirect allow-list. Magic links bounce
+   silently without this, and the failure looks like "the link is expired".
+3. **SQL editor** — paste `supabase/test/03-remote-check.test.sql` and run it.
+   It asserts, on the real project, that RLS is enabled on every table, that
+   every table carries a policy, that the seed landed in the future, that `anon`
+   sees nothing, that `solo mujeres` is invisible to everyone else through every
+   query path, and that `join_plan()` refuses an out-of-band level. Everything
+   it writes is rolled back. Run it after any schema change.
+
 ## Configuration
 
 | Variable | Purpose |
