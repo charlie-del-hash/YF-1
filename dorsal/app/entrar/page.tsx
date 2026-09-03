@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { copy } from '@/lib/copy/es-ES';
 import { SignInForm } from '@/features/auth/sign-in-form';
 
@@ -27,6 +28,13 @@ export default async function SignInPage({
 
       <p className="mt-8 text-[15px] text-tinta-60">{copy.auth.ageNotice}</p>
       <p className="mt-2 text-[15px] text-tinta-60">{copy.safety.noDms}</p>
+      <nav className="mt-4 flex flex-wrap gap-3 text-[15px]">
+        {(['condiciones', 'privacidad', 'cookies', 'aviso'] as const).map((page) => (
+          <Link key={page} href={`/legal/${page}`} className="text-pista underline underline-offset-4">
+            {copy.legal[page]}
+          </Link>
+        ))}
+      </nav>
     </main>
   );
 }

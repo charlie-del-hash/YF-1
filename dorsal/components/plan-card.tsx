@@ -56,7 +56,9 @@ export function PlanCard({ plan, compact = false }: { plan: PlanCardData; compac
           </p>
         </div>
         <p className="text-right text-[15px] text-tinta-60">
-          {copy.plan.hostedBy(plan.host.displayName)}
+          {plan.host
+            ? copy.plan.hostedBy(plan.host.displayName)
+            : copy.safety.deletedAccount}
         </p>
       </div>
     </article>

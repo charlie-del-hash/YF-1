@@ -53,3 +53,27 @@ do $$ begin
     create publication supabase_realtime;
   end if;
 end $$;
+
+-- Enough of Supabase Storage for the bucket policies in 0006 to be exercised
+-- rather than skipped. The real schema has far more columns; these are the ones
+-- the policies actually read.
+create schema if not exists storage;
+create table if not exists storage.buckets (
+  id     text primary key,
+  name   text,
+  public boolean not null default false
+);
+create table if not exists storage.objects (
+  id         uuid primary key default gen_random_uuid(),
+  bucket_id  text references storage.buckets,
+  name       text not null,
+  owner      uuid,
+  created_at timestamptz default now()
+);
+create or replace function storage.foldername(name text) returns text[]
+language sql immutable as $$
+  select string_to_array(name, '/');
+$$;
+grant usage on schema storage to anon, authenticated;
+grant select, insert, update, delete on storage.objects to authenticated;
+grant select on storage.buckets to authenticated, anon;

@@ -39,6 +39,7 @@ export type PublicProfileRow = {
   distrito: string;
   bio: string | null;
   created_at: string;
+  is_verified: boolean;
 }
 
 export type UserSportRow = {
@@ -65,7 +66,7 @@ export type VenueRow = {
 
 export type PlanRow = {
   id: string;
-  host_id: string;
+  host_id: string | null;
   sport: SportKey;
   title: string | null;
   starts_at: string;
@@ -106,10 +107,48 @@ export type SwipeRow = {
   created_at: string;
 }
 
+export type ReportReason = 'acoso' | 'peligro' | 'no_aparecio' | 'perfil_falso' | 'spam' | 'otro';
+export type ReportStatus = 'open' | 'reviewing' | 'actioned' | 'dismissed';
+export type VerificationStatus = 'pending' | 'approved' | 'rejected';
+
+export type ReportRow = {
+  id: string;
+  reporter_id: string | null;
+  subject_user: string | null;
+  subject_plan: string | null;
+  subject_message: string | null;
+  reason: ReportReason;
+  detail: string | null;
+  status: ReportStatus;
+  resolution: string | null;
+  created_at: string;
+  resolved_at: string | null;
+  resolved_by: string | null;
+};
+
+export type VerificationRow = {
+  user_id: string;
+  kind: 'email' | 'phone' | 'selfie';
+  status: VerificationStatus;
+  selfie_path: string | null;
+  submitted_at: string;
+  reviewed_at: string | null;
+  reviewed_by: string | null;
+  reject_reason: string | null;
+};
+
+export type SafetyCheckRow = {
+  user_id: string;
+  plan_id: string;
+  ok: boolean;
+  note: string | null;
+  created_at: string;
+};
+
 export type MessageRow = {
   id: string;
   plan_id: string;
-  user_id: string;
+  user_id: string | null;
   body: string;
   is_pinned: boolean;
   created_at: string;
@@ -146,6 +185,9 @@ export type Database = {
       blocks: Table<BlockRow>;
       messages: Table<MessageRow>;
       chat_reads: Table<ChatReadRow>;
+      reports: Table<ReportRow>;
+      verifications: Table<VerificationRow>;
+      safety_checks: Table<SafetyCheckRow>;
     };
     Views: {
       public_profiles: { Row: PublicProfileRow; Relationships: [] };
@@ -175,6 +217,19 @@ export type Database = {
       mark_attendance: { Args: { p_plan: string; p_user: string; p_came: boolean }; Returns: undefined };
       confirm_attendance: { Args: { p_plan: string; p_came: boolean }; Returns: undefined };
       settle_my_overdue_plans: { Args: Record<string, never>; Returns: number };
+      is_admin: { Args: Record<string, never>; Returns: boolean };
+      block_user: { Args: { p_user: string }; Returns: { plan_id: string }[] };
+      leave_plan_safety: { Args: { p_plan: string }; Returns: string };
+      record_safety_check: { Args: { p_plan: string; p_ok: boolean; p_note?: string | null }; Returns: undefined };
+      moderate: {
+        Args: {
+          p_action: string; p_reason: string;
+          p_user?: string | null; p_plan?: string | null; p_report?: string | null;
+        };
+        Returns: undefined;
+      };
+      export_my_data: { Args: Record<string, never>; Returns: Record<string, unknown> };
+      delete_my_account: { Args: { p_reason?: string | null }; Returns: undefined };
       complete_onboarding: {
         Args: {
           p_display_name: string;

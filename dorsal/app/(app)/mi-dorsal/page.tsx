@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { Bib } from '@/components/ui/bib';
 import { Button } from '@/components/ui/button';
@@ -59,6 +60,10 @@ export default async function ProfilePage() {
           {profile.distrito} · <span data-numeric>{copy.profile.travel(profile.travel_km)}</span>
         </p>
       </section>
+
+      <Link href="/mi-cuenta" className="text-pista underline underline-offset-4">
+        {copy.account.title}
+      </Link>
 
       <form action="/auth/salir" method="post" className="mt-auto">
         <Button type="submit" variant="secondary">

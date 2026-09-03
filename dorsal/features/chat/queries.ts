@@ -3,7 +3,8 @@ import { createClient } from '@/lib/supabase/server';
 
 export interface ChatMessage {
   id: string;
-  userId: string;
+  /** null when the author deleted their account. The message stays. */
+  userId: string | null;
   body: string;
   isPinned: boolean;
   createdAt: string;
@@ -22,7 +23,7 @@ export interface ChatState {
 
 type Raw = {
   id: string;
-  user_id: string;
+  user_id: string | null;
   body: string;
   is_pinned: boolean;
   created_at: string;

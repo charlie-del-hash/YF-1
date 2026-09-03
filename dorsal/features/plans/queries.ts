@@ -37,7 +37,8 @@ export interface PlanCardData {
   venueId: string | null;
   thirdHalfVenueId: string | null;
   venue: { id: string; name: string; distrito: string; lat: number; lng: number; verified: boolean } | null;
-  host: { id: string; displayName: string; dorsalNumber: number; photoUrl: string | null };
+  /** null when the host deleted their account: the plan survives, cancelled. */
+  host: { id: string; displayName: string; dorsalNumber: number; photoUrl: string | null } | null;
 }
 
 const SELECT = `
@@ -56,7 +57,11 @@ type Raw = PlanRow & {
 };
 
 function toCard(row: Raw): PlanCardData | null {
-  if (!row.host) return null; // host blocked or suspended: the plan is not shown
+  // Two different absences. A host_id that is still set but whose profile did
+  // not come back is blocked or suspended, and the plan is not shown at all. A
+  // host_id of null is an account that was deleted, and 0007 keeps the plan —
+  // cancelled — precisely so the people who had committed still see it.
+  if (row.host_id !== null && !row.host) return null;
   return {
     id: row.id,
     sport: row.sport,
@@ -79,12 +84,14 @@ function toCard(row: Raw): PlanCardData | null {
     venueId: row.venue_id,
     thirdHalfVenueId: row.third_half_venue_id,
     venue: row.venue,
-    host: {
-      id: row.host.id,
-      displayName: row.host.display_name,
-      dorsalNumber: row.host.dorsal_number,
-      photoUrl: row.host.photo_url,
-    },
+    host: row.host
+      ? {
+          id: row.host.id,
+          displayName: row.host.display_name,
+          dorsalNumber: row.host.dorsal_number,
+          photoUrl: row.host.photo_url,
+        }
+      : null,
   };
 }
 

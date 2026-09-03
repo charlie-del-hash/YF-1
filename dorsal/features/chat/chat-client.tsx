@@ -6,6 +6,7 @@ import { copy } from '@/lib/copy/es-ES';
 import { attempt } from '@/lib/actions';
 import { createClient } from '@/lib/supabase/client';
 import { formatLongDate, formatTime, madridDateAndTime } from '@/lib/time';
+import { SafetyMenu } from '@/features/safety/safety-menu';
 import { deleteMessage, markChatRead, pinMessage, sendMessage, unpinMessage } from './actions';
 import type { ChatMessage } from './queries';
 
@@ -43,8 +44,11 @@ export function ChatClient({
   const bottom = useRef<HTMLDivElement>(null);
 
   const nameOf = useCallback(
-    (userId: string, fallback: string) =>
-      userId === viewerId ? copy.chat.you : (authors[userId]?.name ?? fallback),
+    (userId: string | null, fallback: string) => {
+      // 0007 keeps the words and drops the author when an account is deleted.
+      if (userId === null) return copy.chat.deletedAuthor;
+      return userId === viewerId ? copy.chat.you : (authors[userId]?.name ?? fallback);
+    },
     [authors, viewerId],
   );
 
@@ -234,6 +238,14 @@ export function ChatClient({
                     >
                       {copy.chat.pin}
                     </Button>
+                  ) : null}
+                  {!mine && message.userId ? (
+                    <SafetyMenu
+                      userId={message.userId}
+                      displayName={nameOf(message.userId, message.authorName)}
+                      planId={planId}
+                      messageId={message.id}
+                    />
                   ) : null}
                   {mine ? (
                     <Button

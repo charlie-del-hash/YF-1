@@ -14,6 +14,7 @@ import { formatPalabra, reservedPlazas } from '@/features/reliability/palabra';
 import { getPalabraMany } from '@/features/reliability/queries';
 import { JoinButton } from '@/features/plans/join-button';
 import { HostControls, LeaveButton } from '@/features/plans/plan-actions';
+import { SafetyMenu } from '@/features/safety/safety-menu';
 
 export const dynamic = 'force-dynamic';
 
@@ -39,14 +40,17 @@ export default async function PlanPage({ params }: { params: Promise<{ id: strin
   const [roster, myStatus] = await Promise.all([getRoster(id), getMyStatus(id, viewer.id)]);
   const sport = getSport(plan.sport);
   const remaining = Math.max(0, plan.capacity - plan.joinedCount);
-  const isHost = plan.host.id === viewer.id;
+  const isHost = plan.host?.id === viewer.id;
   const isIn = myStatus === 'joined' || myStatus === 'waitlist' || myStatus === 'attended';
   const isCancelled = plan.status === 'cancelled';
   // Asked of the database rather than worked out here, so the sentence in the
   // confirmation and the row that gets written cannot disagree.
   const leaveCost = isIn && !isCancelled ? await getLeaveCost(id) : null;
   const unread = isIn || isHost ? ((await getUnreadCounts()).get(id) ?? 0) : 0;
-  const palabras = await getPalabraMany([plan.host.id, ...roster.map((p) => p.userId)]);
+  const palabras = await getPalabraMany([
+    ...(plan.host ? [plan.host.id] : []),
+    ...roster.map((p) => p.userId),
+  ]);
 
   return (
     <article className="flex flex-1 flex-col gap-6 pb-4">
@@ -126,24 +130,31 @@ export default async function PlanPage({ params }: { params: Promise<{ id: strin
           </span>
         </h2>
         <ul className="mt-3 flex flex-col gap-3">
-          <li className="flex items-center gap-3">
-            <Bib number={plan.host.dorsalNumber} size="sm" />
-            <span>
-              <span className="font-medium">{plan.host.displayName}</span>
-              <span className="block text-[15px] text-tinta-60">
-                {copy.plan.hostedBy(plan.host.displayName)}
-                {palabras.has(plan.host.id) ? (
-                  <> · {formatPalabra(palabras.get(plan.host.id)!)}</>
-                ) : null}
+          {plan.host ? (
+            <li className="flex items-center gap-3">
+              <Bib number={plan.host.dorsalNumber} size="sm" />
+              <span className="flex-1">
+                <span className="font-medium">{plan.host.displayName}</span>
+                <span className="block text-[15px] text-tinta-60">
+                  {copy.plan.hostedBy(plan.host.displayName)}
+                  {palabras.has(plan.host.id) ? (
+                    <> · {formatPalabra(palabras.get(plan.host.id)!)}</>
+                  ) : null}
+                </span>
               </span>
-            </span>
-          </li>
+              {plan.host.id === viewer.id ? null : (
+                <SafetyMenu userId={plan.host.id} displayName={plan.host.displayName} planId={plan.id} />
+              )}
+            </li>
+          ) : (
+            <li className="text-tinta-60">{copy.safety.deletedAccount}</li>
+          )}
           {roster.map((person) => (
             <li key={person.userId} className="flex items-center gap-3">
               <span className="font-display text-lg font-bold text-tinta-60" data-numeric>
                 {person.dorsalNumber}
               </span>
-              <span>
+              <span className="flex-1">
                 {person.displayName}
                 {palabras.has(person.userId) ? (
                   <span className="block text-[15px] text-tinta-60">
@@ -151,6 +162,13 @@ export default async function PlanPage({ params }: { params: Promise<{ id: strin
                   </span>
                 ) : null}
               </span>
+              {person.userId === viewer.id ? null : (
+                <SafetyMenu
+                  userId={person.userId}
+                  displayName={person.displayName}
+                  planId={plan.id}
+                />
+              )}
             </li>
           ))}
         </ul>

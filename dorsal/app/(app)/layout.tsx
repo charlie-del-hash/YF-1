@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { copy } from '@/lib/copy/es-ES';
 import { createClient } from '@/lib/supabase/server';
+import { isAdmin } from '@/features/safety/queries';
 
 /**
  * The authed shell. Middleware already redirects signed-out requests; this
@@ -19,6 +20,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     .maybeSingle();
   if (!profile) redirect('/alta');
 
+  const moderator = await isAdmin();
+
   return (
     <div className="mx-auto flex min-h-dvh max-w-md flex-col px-5 pb-2 pt-5">
       <main id="main" className="flex flex-1 flex-col">
@@ -29,6 +32,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         <NavLink href="/mis-planes">{copy.nav.myPlans}</NavLink>
         <NavLink href="/planes/nuevo">{copy.nav.create}</NavLink>
         <NavLink href="/mi-dorsal">{copy.nav.profile}</NavLink>
+        {moderator ? <NavLink href="/admin">{copy.admin.title}</NavLink> : null}
       </nav>
     </div>
   );

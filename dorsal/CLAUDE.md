@@ -322,6 +322,66 @@ makes it a cooldown rather than a ban.
 
 ---
 
+## Decisions taken or changed while building M4
+
+**35. Blocking ejects nobody.** The case that matters is blocking someone you
+are about to stand in a park with, and both obvious answers are wrong. Ejecting
+the blocked person is weaponisable — block a rival, free a plaza, remove someone
+from a plan they committed to — and it tells them they were blocked. Doing
+nothing leaves two people who cannot see each other turning up to the same
+meeting point. So `block_user()` returns the upcoming plans now shared and the
+blocker decides for themselves; `leave_plan_safety()` makes that exit free,
+because 01-PRD's own copy says "sal del plan sin dar explicaciones".
+
+**36. A deleted account leaves the plan and the conversation standing.** The
+test caught this: `plans.host_id` cascaded, so deleting an account deleted every
+plan that account had hosted, and with them the roster and the whole chat, for
+everyone else who had been there. Both foreign keys are now `on delete set
+null`, and 0007 cancels the host's future plans first so people find out.
+Messages keep their words and lose their author, which is the decision 05-RGPD
+§5 asks to be made in advance, and the privacy policy says so in as many words.
+
+**37. There is no cookie banner, and the cookies page explains why precisely.**
+The only client storage is the Supabase session cookie and one UI preference the
+user chose themselves (cards or list), both exempt. A banner where there is
+nothing to consent to trains people to dismiss banners. The page also commits to
+what happens the day that changes: reject exactly as easy as accept.
+
+**38. The legal pages are drafts, and say so on the page.** The operator's
+identifying details are visible `[PLACEHOLDERS]` rather than invented — a
+plausible-looking fake NIF would be worse than an obvious gap. 05-RGPD is right
+that a Spanish abogado has to review these; what is done here is the useful
+half, which is writing down the decisions the code actually makes.
+
+**39. Verification is manual, and the schema cannot become otherwise by
+accident.** Nothing in it compares two images. The selfie is a path to a private
+object, `moderate()` clears that path in the same statement as the decision, the
+server action deletes the bytes, and only the badge survives. 05-RGPD §2 is the
+reason: a person comparing two photographs is not biometric processing, and an
+algorithm doing it is Article 9 data with a DPIA attached.
+
+**40. Every moderation action carries a typed reason and is logged in the same
+transaction.** A moderation log without a why is not a log, it is a list of
+things that happened to people.
+
+**41. `/admin` is a 404 for everyone else, not a 403.** Someone who is not a
+moderator has no business learning the screen exists, and its contents are the
+most sensitive rows in the database.
+
+**42. The post-plan check is asked once per plan and never by the host.** Asking
+after every plan trains people to tap through it, which destroys the value of
+the rare "no"; and the promise that the host cannot see it is on the screen,
+because that is what decides whether anyone says anything at all.
+
+**43. Still outstanding: profile photo upload.** It was deferred in M0 and is
+still deferred. The `dorsales` bucket and its policies exist, but nothing
+uploads to it — which means a reviewer comparing a selfie against a profile
+photo currently has nothing to compare it to, and verification only confirms
+that a real person took a selfie. This is the next thing worth doing, and it is
+not on the M5 list.
+
+---
+
 ## Deployment notes
 
 **The project.** `qplddusqtxmkljoyxdhd`, region **`eu-west-1` (Ireland)**, not
@@ -331,8 +391,12 @@ basis — holds. Recorded here rather than silently: `05-RGPD.md` names Frankfur
 and anyone auditing this later should not have to wonder whether the difference
 was noticed.
 
-**Applied so far:** migrations `0001_init`, `0002_plan_lifecycle`, `0003_chat`
-and `0004_palabra`, and `supabase/seed.sql`.
+**Applied so far:** migrations `0001_init`, `0002_plan_lifecycle`, `0003_chat`,
+`0004_palabra`, `0005_safety`, `0006_storage` and `0007_data_rights`, and
+`supabase/seed.sql`.
+
+**Making the first moderator.** Nothing in the app grants the flag, on purpose:
+`update profiles set is_admin = true where id = '…';` in the SQL editor, once.
 
 **Realtime.** `messages` is added to the `supabase_realtime` publication by
 0003, guarded so it is a no-op where that publication does not exist. Supabase

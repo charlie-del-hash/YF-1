@@ -4,6 +4,8 @@ import { DEFAULT_FILTERS } from '@/features/deck/filters';
 import { PlanForm } from '@/features/plans/plan-form';
 import { ChatClient } from '@/features/chat/chat-client';
 import { HostRoster, SelfCheck } from '@/features/reliability/attendance-prompts';
+import { SafetyMenu } from '@/features/safety/safety-menu';
+import { SafetyCheck } from '@/features/safety/safety-check';
 import { Bib } from '@/components/ui/bib';
 import { Button } from '@/components/ui/button';
 import { PlanCard } from '@/components/plan-card';
@@ -63,6 +65,13 @@ export default function Kit() {
         center={{ lat: 40.4168, lng: -3.7038 }}
         initialDate="2026-09-12"
       />
+      <SafetyCheck
+        pending={[{ planId: 'p9', sport: 'running', startsAt: '2026-09-12T09:30:00+02:00' }]}
+      />
+      <div className="flex items-center justify-between gap-3">
+        <span>Marta</span>
+        <SafetyMenu userId="u1" displayName="Marta" planId="p1" />
+      </div>
       <SelfCheck
         pending={[{ planId: 'p1', sport: 'running', startsAt: '2026-09-12T09:30:00+02:00' }]}
       />

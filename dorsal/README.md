@@ -7,11 +7,11 @@ Working codename. The product spec, data model, design brief, build plan and
 compliance floor are the `0*.md` files this was built from; `CLAUDE.md` is the
 repo constitution and carries the running list of decisions that have changed.
 
-**Status: M3.** Sign in → onboarding → deck with filters → `Me apunto` → roster
-→ group chat → attendance → Palabra. Plus creating, editing, cancelling and
-leaving plans, waitlist promotion, `Mis planes`, unread counts, the
-minimum-plans gate and reserved plazas for newcomers. The trust-and-safety
-surfaces are M4; web push is deferred to M6 — see `CLAUDE.md`.
+**Status: M4.** The whole loop, plus the trust-and-safety layer: report and
+block, the private post-plan check, selfie verification with a human review
+queue, a moderation queue with a logged reason on every action, the four legal
+pages, and data export and account deletion from inside the app. Web push is
+deferred to M6, and profile photo upload is still outstanding — see `CLAUDE.md`.
 
 ## Run it
 
@@ -57,6 +57,17 @@ and the seed, and then asserts the things the product promises:
   held for someone with no history, and two faltas in thirty days closes the
   nearly-full plans without closing the product;
 - one person sees another's record as three numbers and never as events;
+- a report is visible to its author and to moderators and to nobody else, cannot
+  be filed in someone else's name, and cannot be resolved by a non-moderator;
+- moderation requires the admin flag and a typed reason, and writes the log
+  entry in the same transaction as the change;
+- the post-plan check is invisible to the host, and a "no" opens a report;
+- a verification selfie is readable only by its owner and the queue, and only
+  the badge survives the decision;
+- blocking surfaces the plans you already share and lets you leave them for
+  free, and ejects nobody;
+- deleting an account deletes it — and the conversation keeps the words without
+  the author, and a hosted plan is cancelled rather than vanishing;
 - `solo mujeres` plans are invisible to everyone else through every query path,
   including by direct id and via the roster;
 - blocked pairs disappear from each other's profiles, plans and rosters;

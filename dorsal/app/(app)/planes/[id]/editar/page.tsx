@@ -18,7 +18,7 @@ export default async function EditPlanPage({ params }: { params: Promise<{ id: s
   if (!plan) notFound();
   // Not an error page: someone else's plan is simply not editable, and saying
   // "you are not the host" to a stranger tells them the plan exists.
-  if (plan.host.id !== viewer.id) notFound();
+  if (plan.host?.id !== viewer.id) notFound();
   if (plan.status === 'cancelled') redirect(`/planes/${id}`);
 
   const venues = await getVenues(viewer.distrito);

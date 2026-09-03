@@ -27,9 +27,9 @@ export default async function ChatPage({ params }: { params: Promise<{ id: strin
   // would confirm the thread exists.
   if (!plan || !chat.canUse) notFound();
 
-  const names: Record<string, { name: string; dorsal: number }> = {
-    [plan.host.id]: { name: plan.host.displayName, dorsal: plan.host.dorsalNumber },
-  };
+  const names: Record<string, { name: string; dorsal: number }> = plan.host
+    ? { [plan.host.id]: { name: plan.host.displayName, dorsal: plan.host.dorsalNumber } }
+    : {};
   for (const person of roster) {
     names[person.userId] = { name: person.displayName, dorsal: person.dorsalNumber };
   }

@@ -8,6 +8,8 @@ import { getMyPlans, getViewer, type MyPlan } from '@/features/plans/queries';
 import { getUnreadCounts } from '@/features/chat/queries';
 import { getPendingAttendance } from '@/features/reliability/queries';
 import { HostRoster, SelfCheck } from '@/features/reliability/attendance-prompts';
+import { getPendingSafetyChecks } from '@/features/safety/queries';
+import { SafetyCheck } from '@/features/safety/safety-check';
 
 export const metadata: Metadata = { title: copy.myPlans.title };
 export const dynamic = 'force-dynamic';
@@ -16,10 +18,11 @@ export default async function MyPlansPage() {
   const viewer = await getViewer();
   if (!viewer) redirect('/alta');
 
-  const [{ upcoming, past }, unread, pending] = await Promise.all([
+  const [{ upcoming, past }, unread, pending, safetyChecks] = await Promise.all([
     getMyPlans(viewer),
     getUnreadCounts(),
     getPendingAttendance(viewer.id),
+    getPendingSafetyChecks(viewer.id),
   ]);
 
   return (
@@ -34,6 +37,7 @@ export default async function MyPlansPage() {
         </Link>
       </div>
 
+      <SafetyCheck pending={safetyChecks} />
       <SelfCheck pending={pending.self} />
       <HostRoster rosters={pending.hosting} />
 
