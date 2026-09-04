@@ -4,7 +4,7 @@ import { useEffect, useState, useTransition } from 'react';
 import { Button } from '@/components/ui/button';
 import { copy } from '@/lib/copy/es-ES';
 import { attempt } from '@/lib/actions';
-import { removeSubscription, saveSubscription } from './actions';
+import { removeSubscription, saveSubscription, sendTestPush } from './actions';
 
 type State = 'loading' | 'on' | 'off' | 'denied' | 'unsupported' | 'needs-install';
 
@@ -46,6 +46,7 @@ function toApplicationServerKey(base64Url: string): ArrayBuffer {
 export function PushPanel({ vapidPublicKey }: { vapidPublicKey: string }) {
   const [state, setState] = useState<State>('loading');
   const [error, setError] = useState<string>();
+  const [said, setSaid] = useState<string>();
   const [busy, startTransition] = useTransition();
 
   useEffect(() => {
@@ -131,9 +132,34 @@ export function PushPanel({ vapidPublicKey }: { vapidPublicKey: string }) {
       ) : state === 'on' ? (
         <>
           <p>{copy.push.on}</p>
-          <Button variant="secondary" className="self-start" disabled={busy} onClick={disable}>
-            {copy.push.disable}
-          </Button>
+          {said ? (
+            <p role="status" className="text-cesped">
+              {said}
+            </p>
+          ) : null}
+          <div className="flex flex-wrap gap-3">
+            {/* Every real notification goes to somebody else, so this is the
+                only way to find out whether they arrive on this phone without
+                arranging for a stranger to cancel a plan on you. */}
+            <Button
+              variant="secondary"
+              disabled={busy}
+              onClick={() =>
+                startTransition(async () => {
+                  setError(undefined);
+                  setSaid(undefined);
+                  const result = await attempt(() => sendTestPush());
+                  if (result.ok) setSaid(copy.push.testSent);
+                  else setError(result.error);
+                })
+              }
+            >
+              {copy.push.test}
+            </Button>
+            <Button variant="secondary" disabled={busy} onClick={disable}>
+              {copy.push.disable}
+            </Button>
+          </div>
         </>
       ) : (
         <>

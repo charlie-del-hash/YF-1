@@ -73,11 +73,19 @@ test.describe('el service worker', () => {
 
   test('se registra al cargar la app', async ({ page }) => {
     await page.goto('/entrar');
-    const registered = await page.evaluate(async () => {
-      const registration = await navigator.serviceWorker.getRegistration('/');
-      return Boolean(registration);
+    // Waited for rather than sampled: registration is kicked off by an effect
+    // after hydration, so asking once races the page and fails only when the
+    // machine is busy — which is exactly when a flake is least welcome.
+    //
+    // `ready` resolves as soon as there is an active worker, which may still
+    // be running its own activate handler, so the claim is that one exists at
+    // the root scope — not which millisecond of its lifecycle we caught it in.
+    const registration = await page.evaluate(async () => {
+      const r = await navigator.serviceWorker.ready;
+      return { scope: r.scope, hasActive: r.active !== null };
     });
-    expect(registered).toBe(true);
+    expect(registration.hasActive).toBe(true);
+    expect(new URL(registration.scope).pathname).toBe('/');
   });
 });
 

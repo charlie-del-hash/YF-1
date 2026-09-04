@@ -500,6 +500,11 @@ export const copy = {
     failed: 'No hemos podido activar los avisos. Inténtalo otra vez.',
     privacy:
       'Guardamos una dirección que apunta a este navegador. El aviso va cifrado: quien lo transporta no puede leerlo.',
+    test: 'Mandarme uno de prueba',
+    testSent: 'Mandado. Si no llega en unos segundos, algo falla.',
+    testFailed: 'No ha salido. Puede que este dispositivo ya no esté suscrito.',
+    testTitle: 'Funciona',
+    testBody: 'Así se verá un aviso de Dorsal.',
     /** What the notifications themselves say. Short: this is a lock screen. */
     promoted: {
       title: 'Tienes plaza',
