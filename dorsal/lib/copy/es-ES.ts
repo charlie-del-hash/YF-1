@@ -479,6 +479,58 @@ export const copy = {
   },
 
   /**
+   * Notifications and installing. The two questions of M6, and both of them
+   * are asked once and answerable with "no" — a permission prompt fired on
+   * arrival is how an app gets its notifications blocked at the browser level
+   * for ever.
+   */
+  push: {
+    title: 'Avisos',
+    help: 'Te avisamos si se cae alguien y tienes plaza, si se cancela un plan tuyo, y cuando escriben en el chat de un plan al que vas.',
+    enable: 'Activar avisos',
+    enabling: 'Activando…',
+    disable: 'Quitar los avisos',
+    on: 'Avisos activados en este dispositivo.',
+    off: 'No te avisamos de nada.',
+    denied:
+      'Los has bloqueado en el navegador. Se cambia desde los ajustes del sitio, no desde aquí.',
+    unsupported: 'Este navegador no puede mandarte avisos.',
+    needsInstall:
+      'En iPhone hay que añadir Dorsal a la pantalla de inicio antes de poder activarlos.',
+    failed: 'No hemos podido activar los avisos. Inténtalo otra vez.',
+    privacy:
+      'Guardamos una dirección que apunta a este navegador. El aviso va cifrado: quien lo transporta no puede leerlo.',
+    /** What the notifications themselves say. Short: this is a lock screen. */
+    promoted: {
+      title: 'Tienes plaza',
+      body: (sport: string) => `Se ha caído alguien en ${sport}. Estás dentro.`,
+    },
+    cancelled: {
+      title: 'Plan cancelado',
+      body: (sport: string, reason: string) => `${sport}: ${reason}`,
+    },
+    message: {
+      title: (name: string) => `${name} ha escrito`,
+      body: (text: string) => text,
+    },
+  },
+
+  install: {
+    title: 'Ponlo en tu pantalla de inicio',
+    help: 'Se abre como una app y va más rápido. No ocupa casi nada.',
+    action: 'Añadir a la pantalla de inicio',
+    later: 'Ahora no',
+    ios: 'Dale a Compartir y luego a "Añadir a pantalla de inicio".',
+    done: 'Ya lo tienes instalado.',
+  },
+
+  offline: {
+    title: 'Sin conexión',
+    body: 'No hemos podido cargar esto. Vuelve a intentarlo cuando tengas cobertura.',
+    retry: 'Reintentar',
+  },
+
+  /**
    * The share page: the only screen someone without an account ever reads.
    * It sells the plan, not the app — the plan is the reason they clicked.
    */

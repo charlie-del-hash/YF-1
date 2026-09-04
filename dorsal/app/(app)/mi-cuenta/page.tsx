@@ -4,6 +4,8 @@ import { redirect } from 'next/navigation';
 import { copy } from '@/lib/copy/es-ES';
 import { createClient } from '@/lib/supabase/server';
 import { AccountPanel } from '@/features/account/account-panel';
+import { PushPanel } from '@/features/push/push-panel';
+import { InstallPrompt } from '@/features/pwa/install-prompt';
 import { VerificationPanel } from '@/features/verification/verification-panel';
 import { getMyReports } from '@/features/safety/queries';
 import { formatShortDate } from '@/lib/time';
@@ -15,6 +17,9 @@ export default async function AccountPage() {
   const supabase = await createClient();
   const { data: auth } = await supabase.auth.getUser();
   if (!auth.user) redirect('/entrar');
+
+  // Read on the server so the page decides whether the feature exists at all.
+  const vapidPublicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ?? '';
 
   const [{ data: verification }, reports] = await Promise.all([
     supabase
@@ -29,6 +34,12 @@ export default async function AccountPage() {
   return (
     <div className="flex flex-1 flex-col gap-6 pb-4">
       <h1 className="font-display text-2xl font-bold">{copy.account.title}</h1>
+
+      <InstallPrompt />
+
+      {/* Absent rather than broken where the deployment has no VAPID keys:
+          offering a switch that cannot be flipped is worse than no switch. */}
+      {vapidPublicKey ? <PushPanel vapidPublicKey={vapidPublicKey} /> : null}
 
       <VerificationPanel initialStatus={verification?.status ?? null} />
 

@@ -30,9 +30,14 @@ grant execute on function public_plan_preview(uuid) to anon;
 -- guarded below instead, which is the part that matters.
 grant execute on function has_verified_selfie(uuid) to anon;
 
--- Anything added later starts closed and has to say who may call it. A
--- migration that forgets now breaks loudly for signed-in users instead of
--- quietly opening a function to the internet.
+-- This was meant to make anything added later start closed. It does not: in
+-- Postgres 16, ALTER DEFAULT PRIVILEGES … REVOKE EXECUTE ON FUNCTIONS FROM
+-- PUBLIC records no row in pg_default_acl and has no effect at all, which was
+-- discovered when 0011 added five functions and 08-privileges.test.sql found
+-- every one of them open to anon. Left in place because it is harmless and
+-- because deleting it would hide the lesson; the thing that actually holds
+-- this line is the explicit revoke at the end of each migration, and the test
+-- that fails when one is forgotten.
 alter default privileges in schema public revoke execute on functions from public;
 
 -- ── the three that answered anyone ──────────────────────────────────────────

@@ -71,6 +71,8 @@ pnpm format           # prettier --check
 pnpm typecheck        # tsc --noEmit
 pnpm test             # vitest
 pnpm test:e2e         # playwright
+pnpm icons:gen        # regenerate the app icons from the design tokens
+pnpm push:keys        # print a VAPID keypair for notifications
 pnpm db:seed:gen      # seed-madrid.json -> supabase/seed.sql
 pnpm db:push          # apply migrations to the linked Supabase project
 pnpm db:reset         # local reset + migrate + seed
@@ -465,6 +467,78 @@ policy is fine right up until the path is predictable.
 
 ---
 
+## Decisions taken or changed while building M6
+
+**53. Web push is written out, not pulled in.** M2 deferred it partly because
+`web-push` would be a new dependency, and the stack table says a dependency is
+a data-protection question before it is a bundle-size one — this one would sit
+in the path of every message the product sends. RFC 8291 over RFC 8188 is about
+sixty lines of `node:crypto`, and being ours means it is tested against **the
+RFC's own published vector** (`lib/push/encrypt.test.ts`) rather than trusted.
+That matters more than usual here: a mistake in this code produces a
+notification the browser silently drops, with no error anywhere.
+
+**54. Every notification is sent by the person who caused it.** There is no
+scheduler and no job runner (decision 32), so the send happens inside the
+server action that did the thing. That constraint turned out to be a feature:
+each notification goes out with the sender's own permissions, so the database's
+existing rules about who may see whom apply to notifications too, with no
+second set of checks to keep in step. `push_targets_for_plan()` cannot be
+pointed at a user id — only at a plan the caller is in — and a block stops a
+notification exactly as it stops everything else.
+
+**55. The one exception is the waitlist promotion, and it marks itself.**
+"Se ha caído alguien y tienes plaza" has existed as a string since M1 with
+nothing able to deliver it: promotion happens inside `leave_plan()` under a row
+lock and the promoted id comes back to nobody. A trigger stamps
+`promoted_at`, and `notify_promotion()` claims and clears it in one statement,
+so it is sent once however many people ask — normally by the person who left,
+one statement later. A trigger rather than an edit to `leave_plan()` and
+`leave_plan_safety()`, so it also covers whatever promotes somebody next.
+
+**56. Permission is asked by a tap, on `Mi cuenta`, never on arrival.** A
+browser-level notification block is permanent and cannot be undone from inside
+the app, so asking at the wrong moment does not cost one notification, it costs
+all of them. With no VAPID keys configured the panel does not render at all:
+the feature is absent rather than broken.
+
+**57. The service worker caches no page that has anybody's data on it.** Only
+the offline page and content-hashed build output. Every screen here is
+somebody's roster, chat or profile, and a worker that served a stale one — or
+served one person's page to the next person on the device — would be a worse
+bug than any amount of offline breakage. The e2e run asserts the cache list
+rather than trusting the comment.
+
+**58. `ALTER DEFAULT PRIVILEGES … REVOKE EXECUTE … FROM PUBLIC` does nothing,**
+and decision 50's claim that it would close future functions was wrong. In
+Postgres 16 it records no `pg_default_acl` row and has no effect; 0011 added
+five functions and `08-privileges.test.sql` found every one of them open to
+`anon`. What actually holds the line is an explicit revoke at the end of each
+migration that adds a function, and the test that fails when one is forgotten —
+which is the mechanism that caught this. The line stays in 0009, corrected in
+its comment, because deleting it would hide the lesson.
+
+**59. The cookies page changed, because what is stored changed.** Decision 37
+said the only client storage was the session cookie and one UI preference.
+There are now two preferences, a service-worker cache of the logo, the fonts
+and the offline page, and — if someone turns them on — a push subscription. All
+still exempt, none of it sent anywhere, and the page says so specifically
+rather than keeping a claim that had quietly stopped being true. The privacy
+policy gained a section naming the push service as a recipient and saying
+exactly what it can and cannot see.
+
+**60. Still not done after M6.** No `screenshots` or `shortcuts` in the
+manifest — both want real screens rather than placeholders, and an install
+dialog with a broken thumbnail is worse than one without. No notification for a
+new plan matching your filters, which is the one people will ask for and which
+needs a scheduler or a trigger-driven fan-out that this project does not have.
+And push itself has been verified only as far as a container with no network
+can verify it: the crypto against the RFC vector, the shell against a real
+browser. The round trip through Google's or Apple's push service to a real
+phone has to be done by hand on the deploy.
+
+---
+
 ## Deployment notes
 
 **The project.** `qplddusqtxmkljoyxdhd`, region **`eu-west-1` (Ireland)**, not
@@ -476,8 +550,8 @@ was noticed.
 
 **Applied so far:** migrations `0001_init`, `0002_plan_lifecycle`, `0003_chat`,
 `0004_palabra`, `0005_safety`, `0006_storage`, `0007_data_rights`,
-`0008_fill_the_deck`, `0009_least_privilege` and `0010_photo_reads`, and
-`supabase/seed.sql`.
+`0008_fill_the_deck`, `0009_least_privilege`, `0010_photo_reads` and
+`0011_push`, and `supabase/seed.sql`.
 
 **Making the first moderator.** Nothing in the app grants the flag, on purpose:
 `update profiles set is_admin = true where id = '…';` in the SQL editor, once.
@@ -504,6 +578,14 @@ Supabase CLI and the management API.
 session token to. `https://*.vercel.app/**` is therefore not an option, however
 convenient it looks for preview deploys — it names every site on the domain.
 Scope previews to the team slug or list production exactly.
+
+**Notifications need three environment variables**, and do nothing without
+them: `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY` and `VAPID_SUBJECT`
+(a `mailto:` a push service can complain to). `pnpm push:keys` prints a pair.
+The private key is a signing key: server-side environment only, never in a
+`NEXT_PUBLIC_` variable. With none of them set the notifications panel does not
+render and `sendPush()` returns without touching the network, so an environment
+that has not been given keys behaves exactly as it did before push existed.
 
 **Live at `https://dorsal-chi.vercel.app`,** root directory `dorsal`,
 production branch `dorsal`, region `fra1`. Every push to `dorsal` deploys.

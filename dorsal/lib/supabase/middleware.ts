@@ -16,6 +16,10 @@ const PUBLIC_PATHS = [
   // allowed to execute and nothing else (migration 0009), so the gate below
   // would only turn a shared plan into a sign-in wall.
   '/p',
+  // The service worker precaches this at install time, which is a fetch like
+  // any other: gated, it would cache a redirect to the sign-in page and serve
+  // that to everyone who went into a tunnel.
+  '/sin-conexion',
 ];
 
 const isPublic = (pathname: string) =>

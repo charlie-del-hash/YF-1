@@ -165,6 +165,16 @@ export type ChatReadRow = {
   last_read_at: string;
 };
 
+export type PushSubscriptionRow = {
+  user_id: string;
+  /** The push service's URL for one browser on one device. Personal data. */
+  endpoint: string;
+  p256dh: string;
+  auth: string;
+  created_at: string;
+  last_ok_at: string | null;
+}
+
 export type BlockRow = {
   blocker_id: string;
   blocked_id: string;
@@ -193,6 +203,7 @@ export type Database = {
       reports: Table<ReportRow>;
       verifications: Table<VerificationRow>;
       safety_checks: Table<SafetyCheckRow>;
+      push_subscriptions: Table<PushSubscriptionRow>;
     };
     Views: {
       public_profiles: { Row: PublicProfileRow; Relationships: [] };
@@ -269,6 +280,17 @@ export type Database = {
           host_name: string | null;
         }[];
       };
+      /** Migration 0011. Endpoints and keys are never returned to the browser. */
+      plan_audience: { Args: { p_plan: string }; Returns: string[] };
+      push_targets_for_plan: {
+        Args: { p_plan: string; p_users: string[] };
+        Returns: { user_id: string; endpoint: string; p256dh: string; auth: string }[];
+      };
+      notify_promotion: {
+        Args: { p_plan: string };
+        Returns: { user_id: string; endpoint: string; p256dh: string; auth: string }[];
+      };
+      forget_push_endpoint: { Args: { p_endpoint: string }; Returns: undefined };
       complete_onboarding: {
         Args: {
           p_display_name: string;

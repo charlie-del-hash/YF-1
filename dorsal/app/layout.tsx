@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Archivo, Barlow_Condensed } from 'next/font/google';
 import { copy } from '@/lib/copy/es-ES';
+import { ServiceWorker } from '@/features/pwa/service-worker';
 import './globals.css';
 
 /* Two families, clearly distinct in width and personality. Barlow Condensed is
@@ -28,6 +29,11 @@ export const metadata: Metadata = {
   applicationName: copy.app.name,
   formatDetection: { telephone: false },
   robots: { index: false, follow: false },
+  manifest: '/manifest.webmanifest',
+  // iOS ignores the manifest for both of these, so they are declared twice on
+  // purpose: once for every other browser, once for Safari.
+  appleWebApp: { capable: true, title: copy.app.name, statusBarStyle: 'default' },
+  icons: { apple: '/icons/apple-touch-icon.png' },
 };
 
 export const viewport: Viewport = {
@@ -48,6 +54,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {copy.app.skipToContent}
         </a>
         {children}
+        <ServiceWorker />
       </body>
     </html>
   );

@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/server';
 import { copy, joinErrorMessage } from '@/lib/copy/es-ES';
 import { formatLevelRange } from '@/lib/levels';
 import { madridInstant } from '@/lib/time';
+import { announceCancellation, announcePromotion } from '@/features/push/notify';
 import { planFormSchema, venuePinSchema, type PlanFormInput, type VenuePinInput } from './schema';
 import type { JoinStatus } from '@/lib/database.types';
 
@@ -68,6 +69,10 @@ export async function leavePlan(planId: string): Promise<LeaveResult> {
   const { data, error } = await supabase.rpc('leave_plan', { p_plan: planId });
   if (error) return { ok: false, error: leaveErrorMessage(error.message.trim()) };
 
+  // Leaving is what frees the plaza, so leaving is what tells whoever got it.
+  // Claimed once, by whoever asks first — see notify_promotion in 0011.
+  await announcePromotion(planId);
+
   revalidatePath('/planes');
   revalidatePath('/mis-planes');
   revalidatePath(`/planes/${planId}`);
@@ -105,6 +110,10 @@ export async function cancelPlan(
             : copy.errors.generic,
     };
   }
+
+  // The reason has been the only thing participants received since M1, and it
+  // only reached the people who happened to open the app. Now it arrives.
+  await announceCancellation(planId, reason);
 
   revalidatePath('/planes');
   revalidatePath('/mis-planes');
