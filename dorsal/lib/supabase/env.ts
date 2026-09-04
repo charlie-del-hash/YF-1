@@ -35,5 +35,29 @@ export const supabaseConfigured = (): boolean =>
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY),
   );
 
-export const siteUrl = (): string =>
-  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, '') ?? 'http://localhost:3000';
+/**
+ * Where a magic link comes back to.
+ *
+ * `NEXT_PUBLIC_SITE_URL` used to be required, which made the first deploy
+ * circular: you cannot know the address until Vercel has given you one, so the
+ * first deploy always had the wrong value and sign-in failed in the way that
+ * looks exactly like an expired link.
+ *
+ * Vercel exposes its own system variables, so production can answer this
+ * itself. `PROJECT_PRODUCTION_URL` is the stable domain and is preferred;
+ * `VERCEL_URL` is unique per deployment and is only a fallback, because a
+ * per-deployment address can never be on Supabase's redirect allow-list. An
+ * explicit `NEXT_PUBLIC_SITE_URL` still wins, for a custom domain.
+ */
+export const siteUrl = (): string => {
+  const explicit = process.env.NEXT_PUBLIC_SITE_URL;
+  if (explicit) return explicit.replace(/\/$/, '');
+
+  const production = process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL;
+  if (production) return `https://${production.replace(/\/$/, '')}`;
+
+  const deployment = process.env.NEXT_PUBLIC_VERCEL_URL;
+  if (deployment) return `https://${deployment.replace(/\/$/, '')}`;
+
+  return 'http://localhost:3000';
+};

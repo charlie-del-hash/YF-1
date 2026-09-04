@@ -5,6 +5,11 @@ code on it — there is no link anyone can open. This is the whole procedure,
 once, about ten minutes of clicking.
 
 You need: the GitHub account that holds this repo, and the Supabase project.
+Nothing needs installing.
+
+It has been checked from a clean checkout — `pnpm install --frozen-lockfile`
+followed by a production build, which is what Vercel runs — so a failure here
+is configuration, not code.
 
 ## 1. Import the repo into Vercel
 
@@ -20,25 +25,27 @@ You need: the GitHub account that holds this repo, and the Supabase project.
 
 ## 2. Environment variables
 
-**Settings → Environment Variables**, applied to all environments:
+**Settings → Environment Variables**, applied to all environments. Two:
 
 | Name | Where to get it |
 |---|---|
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase → Settings → API → Project URL |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Same page. The publishable / anon key, **not** the service role key |
-| `NEXT_PUBLIC_SITE_URL` | The address Vercel gives you, e.g. `https://dorsal.vercel.app` |
 
-`NEXT_PUBLIC_SITE_URL` is circular — you don't know the address until the first
-deploy. Deploy once, copy the address Vercel shows, put it in, and redeploy.
-The second deploy is the one that works.
+That is all. The app works out its own address from Vercel's system variables,
+so there is no third variable and no deploy-then-fix-then-redeploy dance. You
+only need to set `NEXT_PUBLIC_SITE_URL` if you put a custom domain on it later,
+in which case set it to that domain.
 
-The service-role key is not needed. Don't put it anywhere.
+The service-role key is not needed anywhere. Don't add it.
+
+Now deploy.
 
 ## 3. Tell Supabase where the sign-in links come back to
 
 **Supabase → Authentication → URL Configuration.**
 
-- **Site URL**: the Vercel address, exactly as above.
+- **Site URL**: the address Vercel gave you, e.g. `https://dorsal.vercel.app`.
 - **Redirect URLs**: add `https://<your-address>/auth/callback`, and
   `http://localhost:3000/**` if you also want to sign in while developing.
 
