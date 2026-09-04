@@ -28,6 +28,30 @@ test.describe('sin conexión con el proyecto', () => {
     await expect(page.getByText(/mírate el correo/i)).toHaveCount(0);
   });
 
+  test('el enlace vuelve al sitio donde estás, no a uno de configuración', async ({ page }) => {
+    // The redirect used to be assembled from an environment variable, which is
+    // the one thing that can be wrong on a fresh deploy without anything
+    // saying so: the mail arrives and the link goes somewhere else, and it
+    // reads as "expired". Now it comes from the browser's own origin, so this
+    // asserts what actually leaves the page.
+    let redirect: string | null = null;
+    await page.route('**/auth/v1/otp**', async (route) => {
+      const url = new URL(route.request().url());
+      const body = route.request().postDataJSON?.() ?? {};
+      redirect =
+        url.searchParams.get('redirect_to') ??
+        (body as { options?: { emailRedirectTo?: string } }).options?.emailRedirectTo ??
+        null;
+      await route.abort();
+    });
+
+    await page.goto('/entrar');
+    await page.getByLabel('Tu correo').fill('charlie@example.com');
+    await page.getByRole('button', { name: 'Mandarme el enlace' }).click();
+    await expect.poll(() => redirect, { timeout: 15_000 }).toContain('/auth/callback');
+    expect(redirect).toContain(new URL(page.url()).origin);
+  });
+
   test('la app sigue cerrada, no medio abierta', async ({ page }) => {
     await page.goto('/planes');
     await expect(page).toHaveURL(/\/entrar/);
