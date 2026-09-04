@@ -1,12 +1,33 @@
 'use client';
 
-import { useEffect, useState, useTransition } from 'react';
+import { useCallback, useEffect, useRef, useState, useTransition } from 'react';
 import { Button } from '@/components/ui/button';
 import { copy } from '@/lib/copy/es-ES';
 import { attempt } from '@/lib/actions';
 import { removeSubscription, saveSubscription, sendTestPush } from './actions';
 
-type State = 'loading' | 'on' | 'off' | 'denied' | 'unsupported' | 'needs-install';
+type State = 'loading' | 'on' | 'off' | 'asking' | 'denied' | 'unsupported' | 'needs-install';
+
+/**
+ * The permission prompt, as a promise that always settles.
+ *
+ * Two problems with calling `Notification.requestPermission()` directly.
+ * Safari before 16 only takes a callback and returns nothing to await. And in
+ * a browser that suppresses the prompt — a managed profile, some automation —
+ * the promise can simply never settle, which is how a button ends up saying
+ * "Activando…" for ever. The same failure the sign-in form had, and the same
+ * answer: never leave the person with no way out (decision 19).
+ */
+function requestPermission(): Promise<NotificationPermission> {
+  return new Promise((resolve, reject) => {
+    try {
+      const maybe = Notification.requestPermission(resolve);
+      if (maybe && typeof maybe.then === 'function') maybe.then(resolve, reject);
+    } catch (cause) {
+      reject(cause instanceof Error ? cause : new Error('permission_failed'));
+    }
+  });
+}
 
 const isIos = () => /iphone|ipad|ipod/i.test(window.navigator.userAgent);
 const isStandalone = () =>
@@ -48,6 +69,9 @@ export function PushPanel({ vapidPublicKey }: { vapidPublicKey: string }) {
   const [error, setError] = useState<string>();
   const [said, setSaid] = useState<string>();
   const [busy, startTransition] = useTransition();
+  // Set when the person gives up waiting for a prompt that never appeared, so
+  // a promise that settles afterwards does not yank the panel back.
+  const abandoned = useRef(false);
 
   useEffect(() => {
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
@@ -64,38 +88,85 @@ export function PushPanel({ vapidPublicKey }: { vapidPublicKey: string }) {
       .catch(() => setState('off'));
   }, []);
 
+  /** Everything after the permission is granted. Separate because it also runs
+   *  when the answer arrives outside the promise — see the focus listener. */
+  const subscribe = useCallback(async () => {
+    try {
+      const registration = await navigator.serviceWorker.ready;
+      const subscription = await registration.pushManager.subscribe({
+        // Web Push requires this to be true: a subscription that can send
+        // silent pushes is one browsers refuse to create.
+        userVisibleOnly: true,
+        applicationServerKey: toApplicationServerKey(vapidPublicKey),
+      });
+
+      const result = await attempt(() =>
+        saveSubscription({
+          endpoint: subscription.endpoint,
+          p256dh: toBase64Url(subscription.getKey('p256dh')),
+          auth: toBase64Url(subscription.getKey('auth')),
+        }),
+      );
+      if (!result.ok) {
+        // Do not leave a subscription the server does not know about: the
+        // browser would be waiting for messages nothing will ever send.
+        await subscription.unsubscribe();
+        setState('off');
+        return setError(result.error);
+      }
+      setState('on');
+    } catch {
+      setState('off');
+      setError(copy.push.failed);
+    }
+  }, [vapidPublicKey]);
+
+  /**
+   * While the browser is asking, the answer may arrive without the promise
+   * ever settling — the person answers a prompt the page cannot see, or the
+   * browser decides on its own. Coming back to the tab is the moment to look.
+   */
+  useEffect(() => {
+    if (state !== 'asking') return;
+    const check = () => {
+      if (abandoned.current) return;
+      if (Notification.permission === 'granted') void subscribe();
+      else if (Notification.permission === 'denied') setState('denied');
+    };
+    window.addEventListener('focus', check);
+    document.addEventListener('visibilitychange', check);
+    return () => {
+      window.removeEventListener('focus', check);
+      document.removeEventListener('visibilitychange', check);
+    };
+  }, [state, subscribe]);
+
   function enable() {
     setError(undefined);
+    setSaid(undefined);
+    abandoned.current = false;
+    if (Notification.permission === 'denied') return setState('denied');
+
+    setState('asking');
     startTransition(async () => {
+      let permission: NotificationPermission;
       try {
-        const permission = await Notification.requestPermission();
-        if (permission !== 'granted') return setState('denied');
-
-        const registration = await navigator.serviceWorker.ready;
-        const subscription = await registration.pushManager.subscribe({
-          // Web Push requires this to be true: a subscription that can send
-          // silent pushes is one browsers refuse to create.
-          userVisibleOnly: true,
-          applicationServerKey: toApplicationServerKey(vapidPublicKey),
-        });
-
-        const result = await attempt(() =>
-          saveSubscription({
-            endpoint: subscription.endpoint,
-            p256dh: toBase64Url(subscription.getKey('p256dh')),
-            auth: toBase64Url(subscription.getKey('auth')),
-          }),
-        );
-        if (!result.ok) {
-          // Do not leave a subscription the server does not know about: the
-          // browser would be waiting for messages nothing will ever send.
-          await subscription.unsubscribe();
-          return setError(result.error);
-        }
-        setState('on');
+        permission = await requestPermission();
       } catch {
-        setError(copy.push.failed);
+        // Whatever went wrong, the browser's own record of the answer is the
+        // truth. Never leave the panel mid-question because of a rejection.
+        permission = Notification.permission;
       }
+      if (abandoned.current) return;
+
+      if (permission === 'denied') return setState('denied');
+      if (permission !== 'granted') {
+        // Dismissed rather than blocked. Saying "you blocked these" to someone
+        // who tapped outside the prompt is both wrong and a dead end.
+        setState('off');
+        return setError(copy.push.dismissed);
+      }
+      await subscribe();
     });
   }
 
@@ -123,7 +194,24 @@ export function PushPanel({ vapidPublicKey }: { vapidPublicKey: string }) {
       <h2 className="font-display text-xl font-bold">{copy.push.title}</h2>
       <p className="text-tinta-60">{copy.push.help}</p>
 
-      {state === 'denied' ? (
+      {state === 'asking' ? (
+        <>
+          <p>{copy.push.asking}</p>
+          <p className="text-[15px] text-tinta-60">{copy.push.askingHelp}</p>
+          {/* The way out. A prompt that never appears must not leave the panel
+              saying "Activando…" for the rest of the session. */}
+          <Button
+            variant="secondary"
+            className="self-start"
+            onClick={() => {
+              abandoned.current = true;
+              setState('off');
+            }}
+          >
+            {copy.push.cancel}
+          </Button>
+        </>
+      ) : state === 'denied' ? (
         <p className="text-aviso">{copy.push.denied}</p>
       ) : state === 'unsupported' ? (
         <p className="text-tinta-60">{copy.push.unsupported}</p>

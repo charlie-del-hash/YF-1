@@ -492,6 +492,11 @@ export const copy = {
     disable: 'Quitar los avisos',
     on: 'Avisos activados en este dispositivo.',
     off: 'No te avisamos de nada.',
+    asking: 'Te lo está preguntando el navegador',
+    askingHelp:
+      'Busca la pregunta arriba del todo, al lado de la dirección. Si no la ves, puede que este navegador no las enseñe.',
+    cancel: 'Dejarlo',
+    dismissed: 'No has contestado a la pregunta del navegador. Puedes volver a intentarlo.',
     denied:
       'Los has bloqueado en el navegador. Se cambia desde los ajustes del sitio, no desde aquí.',
     unsupported: 'Este navegador no puede mandarte avisos.',

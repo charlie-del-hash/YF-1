@@ -7,6 +7,12 @@ import { HostRoster, SelfCheck } from '@/features/reliability/attendance-prompts
 import { SafetyMenu } from '@/features/safety/safety-menu';
 import { SafetyCheck } from '@/features/safety/safety-check';
 import { PhotoPicker } from '@/features/profile/photo-picker';
+import { DeckClient } from '@/features/deck/deck-client';
+import { InstallPrompt } from '@/features/pwa/install-prompt';
+import { PushPanel } from '@/features/push/push-panel';
+import { AccountPanel } from '@/features/account/account-panel';
+import { VerificationPanel } from '@/features/verification/verification-panel';
+import { Avatar } from '@/components/ui/avatar';
 import { Bib } from '@/components/ui/bib';
 import { Button } from '@/components/ui/button';
 import { PlanCard } from '@/components/plan-card';
@@ -71,6 +77,16 @@ export default function Kit() {
       {/* No handlers: the kit has no session, and the point here is the resting
           state — the control exists and says what it does. */}
       <PhotoPicker path={null} />
+      {/* The deck is the product's main screen and was the one thing missing
+          from the reference. It is here so the card stack can be screenshotted
+          and, more usefully, so an automated pass can catch a hydration
+          mismatch on it without a session. */}
+      <DeckClient plans={[plan, plan2]} needPeople={[plan2]} />
+      <InstallPrompt />
+      <VerificationPanel initialStatus={null} />
+      <AccountPanel />
+      <Avatar url={null} size="lg" />
+      <PushPanel vapidPublicKey="BAFHUZ9CmqDOA2JhmZueBDMwdMM9MqVeDnKnDfEevmJnEHpHpqvXt1qy6Lrq1Ue5tScECSJF9OevfQLHdDQDWqs" />
       <SafetyCheck
         pending={[{ planId: 'p9', sport: 'running', startsAt: '2026-09-12T09:30:00+02:00' }]}
       />

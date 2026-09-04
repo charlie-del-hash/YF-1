@@ -15,7 +15,8 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const OUT = join(dirname(fileURLToPath(import.meta.url)), '..', 'public', 'icons');
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
+const OUT = join(ROOT, 'public', 'icons');
 
 const PISTA = [0x0e, 0x5c, 0x8c];
 const DORSAL = [0xe4, 0xff, 0x3f];
@@ -119,3 +120,35 @@ for (const [name, size, pixel] of files) {
   writeFileSync(join(OUT, name), png(size, pixel));
   console.log(`icons/${name}  ${size}×${size}`);
 }
+
+/*
+ * The browser tab.
+ *
+ * `.ico` rather than `app/icon.png`, because Next serves that one through a
+ * <link> it injects with a script after parse — so the browser has already
+ * asked for /favicon.ico and got a 404 by then, on every page load, which is
+ * noise in exactly the place someone looks for real errors. `app/favicon.ico`
+ * is served at that path directly.
+ *
+ * An ICO is a 22-byte header round a PNG; the format has allowed an embedded
+ * PNG since Vista. At 32px the pin holes disappear into a smudge, so this one
+ * is the plain bib.
+ */
+const favicon = (x, y) =>
+  inRoundedRect(x, y, 0.08, 0.11, 0.92, 0.89, 0.1) ? [...DORSAL, 255] : [...PISTA, 255];
+
+const faviconPng = png(32, favicon);
+const ico = Buffer.alloc(22);
+ico.writeUInt16LE(0, 0);              // reserved
+ico.writeUInt16LE(1, 2);              // type: icon
+ico.writeUInt16LE(1, 4);              // one image
+ico.writeUInt8(32, 6);                // width
+ico.writeUInt8(32, 7);                // height
+ico.writeUInt8(0, 8);                 // palette: none
+ico.writeUInt8(0, 9);                 // reserved
+ico.writeUInt16LE(1, 10);             // colour planes
+ico.writeUInt16LE(32, 12);            // bits per pixel
+ico.writeUInt32LE(faviconPng.length, 14);
+ico.writeUInt32LE(22, 18);            // offset to the PNG
+writeFileSync(join(ROOT, 'app', 'favicon.ico'), Buffer.concat([ico, faviconPng]));
+console.log('app/favicon.ico  32×32');
