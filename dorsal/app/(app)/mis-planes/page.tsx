@@ -4,7 +4,10 @@ import { redirect } from 'next/navigation';
 import { PlanCard } from '@/components/plan-card';
 import { Button } from '@/components/ui/button';
 import { copy } from '@/lib/copy/es-ES';
-import { getMyPlans, getViewer, type MyPlan } from '@/features/plans/queries';
+import {
+  getMyPlans, getMyRegulars, getViewer, rollForwardMyRecurring, type MyPlan,
+} from '@/features/plans/queries';
+import { Bib } from '@/components/ui/bib';
 import { getUnreadCounts } from '@/features/chat/queries';
 import { getPendingAttendance } from '@/features/reliability/queries';
 import { HostRoster, SelfCheck } from '@/features/reliability/attendance-prompts';
@@ -18,11 +21,16 @@ export default async function MyPlansPage() {
   const viewer = await getViewer();
   if (!viewer) redirect('/alta');
 
-  const [{ upcoming, past }, unread, pending, safetyChecks] = await Promise.all([
+  // Before the plans are read, not beside them: a weekly plan that rolled
+  // forward this second should be in the list it just created.
+  const rolled = await rollForwardMyRecurring();
+
+  const [{ upcoming, past }, unread, pending, safetyChecks, regulars] = await Promise.all([
     getMyPlans(viewer),
     getUnreadCounts(),
     getPendingAttendance(viewer.id),
     getPendingSafetyChecks(viewer.id),
+    getMyRegulars(),
   ]);
 
   return (
@@ -36,6 +44,12 @@ export default async function MyPlansPage() {
           {copy.nav.create}
         </Link>
       </div>
+
+      {rolled > 0 ? (
+        <p role="status" className="rounded-[4px] bg-cesped px-3 py-2 text-linea">
+          {copy.myPlans.rolledForward(rolled)}
+        </p>
+      ) : null}
 
       <SafetyCheck pending={safetyChecks} />
       <SelfCheck pending={pending.self} />
@@ -62,6 +76,24 @@ export default async function MyPlansPage() {
           </ul>
         )}
       </section>
+
+      {regulars.length > 0 ? (
+        <section>
+          <h2 className="font-display text-xl font-bold">{copy.myPlans.regulars}</h2>
+          <p className="mt-1 text-[15px] text-tinta-60">{copy.myPlans.regularsHelp}</p>
+          <ul className="mt-3 flex flex-col gap-3">
+            {regulars.map((person) => (
+              <li key={person.userId} className="flex items-center gap-3">
+                <Bib number={person.dorsalNumber} size="sm" />
+                <span className="flex-1">{person.displayName}</span>
+                <span className="text-[15px] text-tinta-60" data-numeric>
+                  {copy.myPlans.regularsAttended(person.attended)}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
 
       <section>
         <h2 className="font-display text-xl font-bold">{copy.myPlans.past}</h2>

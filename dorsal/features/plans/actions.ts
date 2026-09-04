@@ -174,6 +174,7 @@ export async function savePlan(
     third_half: form.thirdHalf,
     audience: form.audience,
     min_plans_required: form.minPlansRequired,
+    recurring_rule: form.repeatWeekly ? 'weekly' : null,
     meeting_note: form.meetingNote || null,
   };
 

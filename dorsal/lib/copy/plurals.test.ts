@@ -28,6 +28,21 @@ describe('counts read as Spanish', () => {
     expect(copy.plan.gate(3)).toBe('Para gente con 3 planes o más');
   });
 
+  it('how many times a regular has turned up', () => {
+    expect(copy.myPlans.regularsAttended(1)).toBe('1 vez');
+    expect(copy.myPlans.regularsAttended(4)).toBe('4 veces');
+  });
+
+  it('weekly plans rolled forward', () => {
+    expect(copy.myPlans.rolledForward(1)).toContain('tu plan fijo');
+    expect(copy.myPlans.rolledForward(3)).toContain('3 planes fijos');
+  });
+
+  it('plazas left on a share link', () => {
+    expect(copy.publicPlan.remaining(1)).toBe('Queda 1 plaza');
+    expect(copy.publicPlan.remaining(5)).toBe('Quedan 5 plazas');
+  });
+
   it('the newcomer gate error', () => {
     expect(copy.errors.needsMorePlans(1)).toContain('1 plan ');
     expect(copy.errors.needsMorePlans(3)).toContain('3 planes');

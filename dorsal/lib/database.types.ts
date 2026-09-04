@@ -85,7 +85,12 @@ export type PlanRow = {
   min_plans_required: number;
   status: PlanStatus;
   cancelled_reason: string | null;
+  /** 'weekly' or null. Constrained to those two by migration 0008. */
   recurring_rule: string | null;
+  /** Occurrences of one weekly plan share this. Null for a one-off. */
+  series_id: string | null;
+  /** When it first reached capacity. Never rewritten — see migration 0008. */
+  filled_at: string | null;
   is_seed: boolean;
   created_at: string;
 }
@@ -230,6 +235,40 @@ export type Database = {
       };
       export_my_data: { Args: Record<string, never>; Returns: Record<string, unknown> };
       delete_my_account: { Args: { p_reason?: string | null }; Returns: undefined };
+      fill_metrics: {
+        Args: Record<string, never>;
+        Returns: {
+          plans_created: number;
+          plans_filled: number;
+          median_hours_to_fill: number | null;
+          median_hours_of_notice: number | null;
+        }[];
+      };
+      materialise_my_recurring: { Args: Record<string, never>; Returns: number };
+      my_regulars: {
+        Args: Record<string, never>;
+        Returns: {
+          user_id: string; display_name: string; dorsal_number: number; attended: number;
+        }[];
+      };
+      plans_needing_people: { Args: { p_within_hours?: number }; Returns: string[] };
+      /** The only function `anon` may call. Migration 0009. */
+      public_plan_preview: {
+        Args: { p_plan: string };
+        Returns: {
+          id: string;
+          sport: SportKey;
+          starts_at: string;
+          duration_min: number;
+          distrito: string;
+          level_display: string;
+          capacity: number;
+          joined_count: number;
+          third_half: ThirdHalf;
+          venue_name: string | null;
+          host_name: string | null;
+        }[];
+      };
       complete_onboarding: {
         Args: {
           p_display_name: string;

@@ -22,6 +22,12 @@ export const planFormSchema = z.object({
   minPlansRequired: z.number().int().min(0).max(2),
   thirdHalf: z.enum(THIRD_HALVES),
   audience: z.enum(AUDIENCES),
+  /**
+   * Weekly or one-off, and nothing in between. A full RRULE is more than any
+   * host here has asked for; migration 0008 has the reasoning, and a check
+   * constraint that refuses anything else.
+   */
+  repeatWeekly: z.boolean(),
   meetingNote: z.string().trim().max(200).nullable(),
 });
 

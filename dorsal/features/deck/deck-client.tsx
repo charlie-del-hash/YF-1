@@ -30,7 +30,14 @@ const COMMIT_DISTANCE = 96;
  * `Me apunto` means the same thing in both, and both go through the same
  * server action, which goes through join_plan().
  */
-export function DeckClient({ plans }: { plans: PlanCardData[] }) {
+export function DeckClient({
+  plans,
+  needPeople = [],
+}: {
+  plans: PlanCardData[];
+  /** Close, short of people, and worth a second look. See migration 0008. */
+  needPeople?: PlanCardData[];
+}) {
   const [queue, setQueue] = useState(plans);
   const [toast, setToast] = useState<Toast>(null);
   const [view, setView] = useState<View>('cards');
@@ -97,12 +104,33 @@ export function DeckClient({ plans }: { plans: PlanCardData[] }) {
     }
   };
 
+  // The end of the deck is exactly where a plan someone passed on earns
+  // another look: there is nothing else to show them, and the plan being short
+  // of people two days out is new information rather than a second guess at
+  // the same question. It is the only place this list appears.
   if (queue.length === 0) {
     return (
-      <EmptyState
-        title={plans.length === 0 ? copy.deck.empty.title : copy.deck.exhausted.title}
-        body={plans.length === 0 ? copy.deck.empty.body : copy.deck.exhausted.body}
-      />
+      <div className="flex flex-1 flex-col gap-6">
+        <EmptyState
+          title={plans.length === 0 ? copy.deck.empty.title : copy.deck.exhausted.title}
+          body={plans.length === 0 ? copy.deck.empty.body : copy.deck.exhausted.body}
+        />
+        {needPeople.length > 0 ? (
+          <section>
+            <h2 className="font-display text-xl font-bold">{copy.deck.needPeople.title}</h2>
+            <p className="mt-1 text-tinta-60">{copy.deck.needPeople.body}</p>
+            <ul className="mt-3 flex flex-col gap-3 pb-4">
+              {needPeople.map((plan) => (
+                <li key={plan.id}>
+                  <Link href={`/planes/${plan.id}`} className="block">
+                    <PlanCard plan={plan} compact />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
+      </div>
     );
   }
 

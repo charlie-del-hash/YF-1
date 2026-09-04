@@ -12,6 +12,10 @@ const PUBLIC_PATHS = [
   // The component reference. No user data, noindexed — it exists so the design
   // pass in 03-DESIGN-BRIEF can be screenshotted and criticised repeatably.
   '/kit',
+  // Share links. The page reads one security definer function that `anon` is
+  // allowed to execute and nothing else (migration 0009), so the gate below
+  // would only turn a shared plan into a sign-in wall.
+  '/p',
 ];
 
 const isPublic = (pathname: string) =>

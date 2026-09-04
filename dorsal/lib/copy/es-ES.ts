@@ -133,6 +133,10 @@ export const copy = {
       body: 'Vuelve mañana o amplía el radio desde tu perfil.',
       cta: 'Ampliar mi zona',
     },
+    needPeople: {
+      title: 'A estos les falta gente',
+      body: 'Son pronto y van cortos. Alguno lo habías pasado; te lo enseñamos otra vez porque ahora hay sitio.',
+    },
     filters: {
       title: 'Filtros',
       sport: 'Deporte',
@@ -181,7 +185,14 @@ export const copy = {
     leftWaitlist: 'Has dejado la lista de espera.',
     promoted: 'Se ha caído alguien y tienes plaza.',
     edit: 'Editar el plan',
+    duplicate: 'Repetir este plan',
     cancelPlan: 'Cancelar el plan',
+    share: 'Compartir',
+    shareCopied: 'Enlace copiado.',
+    shareFailed: 'No hemos podido copiar el enlace.',
+    shareHelp: 'Quien lo abra verá el día, el sitio y el nivel. La lista de quién va, no.',
+    shareWomenOnly: 'Los planes solo para mujeres no se comparten fuera de la app.',
+    repeatsWeekly: 'Se repite cada semana',
     cancelTitle: '¿Por qué se cancela?',
     cancelHelp: 'Lo verá la gente que se había apuntado. Sé concreto.',
     cancelReasonLabel: 'Motivo',
@@ -239,6 +250,11 @@ export const copy = {
       one: 'Con un plan a la espalda',
       two: 'Con dos planes a la espalda',
     },
+    repeatLabel: '¿Se repite?',
+    repeatHelp:
+      'Cada semana, el mismo día y a la misma hora. Creamos el siguiente cuando empiece este, y lo puedes parar cuando quieras.',
+    repeatOnce: 'Es un plan suelto',
+    repeatWeekly: 'Todas las semanas',
     thirdHalfLabel: '¿Y después?',
     thirdHalfVenueLabel: '¿Dónde quedáis después?',
     audienceLabel: 'Quién puede apuntarse',
@@ -251,6 +267,8 @@ export const copy = {
     save: 'Guardar los cambios',
     saving: 'Guardando…',
     created: 'Plan creado. Ya se puede apuntar la gente.',
+    duplicatedTitle: 'Repetir el plan',
+    duplicatedHelp: 'Mismo sitio, mismo nivel, misma gente invitada. Elige el día.',
     saved: 'Guardado.',
     errors: {
       sport: 'Elige un deporte.',
@@ -275,6 +293,13 @@ export const copy = {
     emptyUpcoming: 'No tienes ningún plan a la vista. Busca uno o crea el tuyo.',
     emptyPast: 'Aquí aparecerán los planes a los que hayas ido.',
     findPlans: 'Ver planes',
+    rolledForward: (n: number) =>
+      n === 1
+        ? 'Hemos creado la siguiente semana de tu plan fijo.'
+        : `Hemos creado la siguiente semana de ${n} planes fijos tuyos.`,
+    regulars: 'Los de siempre',
+    regularsHelp: 'Gente que ha venido a tus planes más de una vez.',
+    regularsAttended: (n: number) => (n === 1 ? '1 vez' : `${n} veces`),
   },
 
   profile: {
@@ -424,6 +449,16 @@ export const copy = {
     reportedBy: (name: string) => `Lo reporta ${name}`,
     about: 'Sobre',
     notAdmin: 'Esta parte no es para ti.',
+    metrics: {
+      title: 'Cómo se están llenando',
+      help: 'Solo planes reales; los de ejemplo no cuentan.',
+      created: 'Planes creados',
+      filled: 'Se han llenado',
+      medianFill: 'Mediana en llenarse',
+      medianNotice: 'Mediana de antelación',
+      hours: (h: number) => `${h} h`,
+      none: 'Todavía no',
+    },
   },
 
   legal: {
@@ -434,6 +469,27 @@ export const copy = {
     condiciones: 'Condiciones de uso',
     draftWarning:
       'Borrador. Antes de aceptar registros reales tiene que revisarlo un abogado o una consultora de protección de datos.',
+  },
+
+  /**
+   * The share page: the only screen someone without an account ever reads.
+   * It sells the plan, not the app — the plan is the reason they clicked.
+   */
+  publicPlan: {
+    kicker: 'Te han pasado este plan',
+    join: 'Apuntarme',
+    joinHelp: 'Necesitas una cuenta. Se tarda un minuto y no pedimos contraseña.',
+    whatIsThis: '¿Qué es Dorsal?',
+    pitch:
+      'Quedadas deportivas en Madrid. Buscas un plan que te encaje, te apuntas y luego os tomáis algo.',
+    rosterHidden: 'Quién va se ve al apuntarse.',
+    gone: {
+      title: 'Este plan ya no está.',
+      body: 'Puede que se haya cancelado, que ya haya pasado o que el enlace esté mal.',
+      cta: 'Ver los planes de esta semana',
+    },
+    remaining: (n: number) => (n === 1 ? 'Queda 1 plaza' : `Quedan ${n} plazas`),
+    full: 'Completo, pero hay lista de espera',
   },
 
   errors: {

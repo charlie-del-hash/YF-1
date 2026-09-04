@@ -80,7 +80,13 @@ export function LeaveButton({
  * without one — because until web push lands in M2 the reason is the only thing
  * the people who had made plans actually receive.
  */
-export function HostControls({ planId }: { planId: string }) {
+export function HostControls({
+  planId,
+  repeatsWeekly,
+}: {
+  planId: string;
+  repeatsWeekly: boolean;
+}) {
   const router = useRouter();
   const [cancelling, setCancelling] = useState(false);
   const [reason, setReason] = useState('');
@@ -90,17 +96,30 @@ export function HostControls({ planId }: { planId: string }) {
   return (
     <div className="flex flex-col gap-3">
       {!cancelling ? (
-        <div className="flex gap-3">
-          <Link
-            href={`/planes/${planId}/editar`}
-            className="tap inline-flex flex-1 items-center justify-center rounded-[4px] border border-borde bg-linea px-4 font-medium"
-          >
-            {copy.plan.edit}
-          </Link>
-          <Button variant="destructive" className="flex-1" onClick={() => setCancelling(true)}>
+        <>
+          {repeatsWeekly ? (
+            <p className="text-[15px] text-tinta-60">{copy.plan.repeatsWeekly}</p>
+          ) : null}
+          <div className="flex gap-3">
+            <Link
+              href={`/planes/${planId}/editar`}
+              className="tap inline-flex flex-1 items-center justify-center rounded-[4px] border border-borde bg-linea px-4 font-medium"
+            >
+              {copy.plan.edit}
+            </Link>
+            {/* One more of the same, next week. The form does the work; this is
+                only the shortcut to it. */}
+            <Link
+              href={`/planes/nuevo?copiar=${planId}`}
+              className="tap inline-flex flex-1 items-center justify-center rounded-[4px] border border-borde bg-linea px-4 font-medium"
+            >
+              {copy.plan.duplicate}
+            </Link>
+          </div>
+          <Button variant="destructive" className="w-full" onClick={() => setCancelling(true)}>
             {copy.plan.cancelPlan}
           </Button>
-        </div>
+        </>
       ) : (
         <div className="flex flex-col gap-3 border border-borde bg-linea p-3">
           <h2 className="font-display text-xl font-bold">{copy.plan.cancelTitle}</h2>

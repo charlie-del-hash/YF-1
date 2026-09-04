@@ -382,6 +382,71 @@ not on the M5 list.
 
 ---
 
+## Decisions taken or changed while building M5
+
+**44. Time-to-fill is a stamped column, not a derived number.** It is
+reconstructable from the participant history right up until someone leaves the
+plan, and then it is gone. `plans.filled_at` is written by the counts trigger
+the first time a plan reaches capacity and is never rewritten — dropping below
+capacity again does not reset it, because the question is "how long did this
+take to fill", not "is it full now". `fill_metrics()` reads it, is
+moderator-only, and excludes seed plans.
+
+**45. Measuring the product needed no analytics vendor.** M5's definition of
+done is that median time-to-fill is *measurable*, and four numbers computed in
+Postgres from rows already kept answers it. Adding a third-party analytics SDK
+would have been a new processor receiving every user's behaviour (`05-RGPD` §1)
+to learn something the database already knows. If a vendor is ever proposed, it
+is a conversation before it is a commit.
+
+**46. Recurring means weekly, and nothing else.** `recurring_rule` existed from
+0001 and was unused. A full RRULE is more than any host here has asked for; the
+thing they have is a fixed weekly session. A check constraint refuses anything
+but `'weekly'`, and occurrences share a `series_id` so "the Sunday pachanga" is
+one thing with a history rather than forty unrelated rows.
+
+**47. The next occurrence is created lazily, when the host opens `Mis
+planes`.** Same reason as attendance settlement (decision 32): there is no
+scheduler in this project. `materialise_my_recurring()` is idempotent — a
+series that already has a future occurrence gets nothing — and catches up if
+the host has been away for weeks. Copying a plan never inherits the weekly
+flag, so a host who duplicates a fixed session gets one more occurrence rather
+than a second series rolling forward beside the first.
+
+**48. The rescue list is the only query that reaches past a left swipe.**
+01-PRD asks for exactly this, and the justification is narrow: passing on one
+Tuesday run is not a standing instruction about running, and the plan being
+short of people two days out is new information. It stays honest by never
+reaching past a *right* swipe or an existing membership, only returning people
+whose level actually fits, and never showing a `solo mujeres` plan to anyone
+who cannot see it. It appears in exactly one place — the end of the deck, where
+there is nothing else to show and the second look is earned.
+
+**49. A share link is the only page that renders without a session, and the
+database decides what it may say.** `public_plan_preview()` refuses
+`solo_mujeres` plans outright rather than filtering them, because a URL
+travels; and it returns no roster, no coordinates and no meeting note. The page
+does no filtering of its own — there is nothing left to filter. `/p/:id` is
+open in the middleware for the same reason: the gate would turn a shared plan
+into a sign-in wall, which is the opposite of what a share link is for.
+
+**50. `anon` could execute every function in the schema, and now executes
+one.** Postgres grants EXECUTE on a new function to PUBLIC, and Supabase's
+`anon` inherits PUBLIC — so every `grant execute … to authenticated` written in
+migrations 0001–0008 read like a decision and was not one. Most of it was noise
+rather than exposure (anything touching a person's own data opens by refusing a
+null `auth.uid()`), but three read-only helpers written for use inside RLS
+policies answered anyone who asked: `is_blocked()` exposed the block graph for
+any pair of ids, `completed_plan_count()` anyone's attendance count, and
+`has_verified_selfie()` whether a given id had sent us a photograph of their
+face. Migration 0009 revokes the lot, grants back deliberately, guards those
+three, and sets default privileges so the next function starts closed.
+`supabase/test/08-privileges.test.sql` pins the anon-executable set to exactly
+what it should be, by asking the catalogue rather than reading the grants —
+which is how this was found in the first place.
+
+---
+
 ## Deployment notes
 
 **The project.** `qplddusqtxmkljoyxdhd`, region **`eu-west-1` (Ireland)**, not
@@ -392,8 +457,8 @@ and anyone auditing this later should not have to wonder whether the difference
 was noticed.
 
 **Applied so far:** migrations `0001_init`, `0002_plan_lifecycle`, `0003_chat`,
-`0004_palabra`, `0005_safety`, `0006_storage` and `0007_data_rights`, and
-`supabase/seed.sql`.
+`0004_palabra`, `0005_safety`, `0006_storage`, `0007_data_rights`,
+`0008_fill_the_deck` and `0009_least_privilege`, and `supabase/seed.sql`.
 
 **Making the first moderator.** Nothing in the app grants the flag, on purpose:
 `update profiles set is_admin = true where id = '…';` in the SQL editor, once.
@@ -421,9 +486,18 @@ session token to. `https://*.vercel.app/**` is therefore not an option, however
 convenient it looks for preview deploys — it names every site on the domain.
 Scope previews to the team slug or list production exactly.
 
-**Still not done:** the Vercel deploy. It needs the two `NEXT_PUBLIC_` variables
-and an Auth redirect allow-list entry for `<site>/auth/callback`; without the
-latter, magic links fail in a way that looks like an expired link.
+**Live at `https://dorsal-chi.vercel.app`,** root directory `dorsal`,
+production branch `dorsal`, region `fra1`. Every push to `dorsal` deploys.
+
+**The domain is a liability before real sign-ups.** `*.vercel.app` subdomains
+are blocked outright by some corporate networks and stripped by some email
+security scanners, because they are commonly abused for phishing. That is a
+plausible cause of "the magic link never arrived" and "the link won't open"
+reports that has nothing to do with the redirect bug fixed in `0512af9`, and no
+amount of application code can diagnose it from the inside. A custom domain —
+set as the Vercel production domain, as the Supabase Site URL, and in the
+redirect allow-list — is worth having before anyone is asked to sign up for
+real.
 
 
 ---

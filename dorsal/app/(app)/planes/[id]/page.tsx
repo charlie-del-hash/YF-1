@@ -14,6 +14,7 @@ import { formatPalabra, reservedPlazas } from '@/features/reliability/palabra';
 import { getPalabraMany } from '@/features/reliability/queries';
 import { JoinButton } from '@/features/plans/join-button';
 import { HostControls, LeaveButton } from '@/features/plans/plan-actions';
+import { ShareButton } from '@/features/plans/share-button';
 import { SafetyMenu } from '@/features/safety/safety-menu';
 
 export const dynamic = 'force-dynamic';
@@ -188,11 +189,20 @@ export default async function PlanPage({ params }: { params: Promise<{ id: strin
         </Link>
       ) : null}
 
+      {/* A share link is a URL that travels, so it is offered only for the
+          plans public_plan_preview will actually show — never a solo mujeres
+          plan, and never one that is cancelled or already run. */}
+      {!isCancelled && plan.audience === 'todos' ? (
+        <ShareButton planId={plan.id} />
+      ) : !isCancelled && isHost ? (
+        <p className="text-[15px] text-tinta-60">{copy.plan.shareWomenOnly}</p>
+      ) : null}
+
       <p className="text-[15px] text-tinta-60">{copy.safety.publicPlaces}</p>
 
       <div className="sticky bottom-0 mt-auto bg-cal pb-2 pt-3">
         {isCancelled ? null : isHost ? (
-          <HostControls planId={plan.id} />
+          <HostControls planId={plan.id} repeatsWeekly={plan.recurringRule === 'weekly'} />
         ) : isIn && leaveCost ? (
           <div className="flex flex-col gap-2">
             {myStatus === 'waitlist' ? (
