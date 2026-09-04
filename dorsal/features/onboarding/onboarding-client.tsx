@@ -8,6 +8,7 @@ import { copy } from '@/lib/copy/es-ES';
 import { attempt } from '@/lib/actions';
 import { bandsFor, getSport } from '@/lib/levels';
 import { DISTRITOS, LAUNCH_SPORTS, SPORTS, type SportKey } from '@/lib/sports';
+import { PhotoPicker } from '@/features/profile/photo-picker';
 import { completeOnboarding } from './actions';
 import { maxBirthYear } from './schema';
 
@@ -29,6 +30,7 @@ export function OnboardingClient() {
   const [displayName, setDisplayName] = useState('');
   const [birthYear, setBirthYear] = useState('');
   const [gender, setGender] = useState<Gender | ''>('');
+  const [photoPath, setPhotoPath] = useState<string | null>(null);
   const [error, setError] = useState<string>();
   const [saving, setSaving] = useState(false);
 
@@ -72,7 +74,7 @@ export function OnboardingClient() {
         distrito,
         travelKm,
         gender: gender === '' ? null : gender,
-        photoUrl: null,
+        photoUrl: photoPath,
         sports: sports.map((s) => ({ sport: s, levelNorm: levels[s]! })),
       }),
     );
@@ -263,7 +265,14 @@ export function OnboardingClient() {
                 </select>
               )}
             </Field>
-            <p className="text-[15px] text-tinta-60">{copy.onboarding.identity.photoSkip}</p>
+            <div className="flex flex-col gap-2">
+              <PhotoPicker path={photoPath} onChange={setPhotoPath} onError={setError} />
+              <p className="text-[15px] text-tinta-60">
+                {photoPath
+                  ? copy.onboarding.identity.photoPrivate
+                  : copy.onboarding.identity.photoSkip}
+              </p>
+            </div>
           </section>
         ) : null}
       </div>

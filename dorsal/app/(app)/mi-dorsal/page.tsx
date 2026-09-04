@@ -8,6 +8,9 @@ import { formatLevel, getSport } from '@/lib/levels';
 import { createClient } from '@/lib/supabase/server';
 import { formatPalabra } from '@/features/reliability/palabra';
 import { getPalabra } from '@/features/reliability/queries';
+import { Avatar } from '@/components/ui/avatar';
+import { PhotoPanel } from '@/features/profile/photo-panel';
+import { signPhoto } from '@/features/profile/photo';
 
 export const metadata: Metadata = { title: copy.nav.profile };
 export const dynamic = 'force-dynamic';
@@ -20,18 +23,22 @@ export default async function ProfilePage() {
   const [{ data: profile }, { data: sports }] = await Promise.all([
     supabase
       .from('profiles')
-      .select('display_name, dorsal_number, distrito, travel_km, bio')
+      .select('display_name, dorsal_number, distrito, travel_km, bio, photo_url')
       .eq('id', auth.user.id)
       .maybeSingle(),
     supabase.from('user_sports').select('sport, level_norm').eq('user_id', auth.user.id),
   ]);
   if (!profile) redirect('/alta');
 
-  const palabra = await getPalabra(auth.user.id);
+  const [palabra, photoUrl] = await Promise.all([
+    getPalabra(auth.user.id),
+    signPhoto(profile.photo_url),
+  ]);
 
   return (
     <div className="flex flex-1 flex-col gap-6">
       <header className="flex items-center gap-4">
+        <Avatar url={photoUrl} size="lg" />
         <Bib number={profile.dorsal_number} size="lg" />
         <div>
           <h1 className="font-display text-3xl font-bold leading-tight">{profile.display_name}</h1>
@@ -39,6 +46,8 @@ export default async function ProfilePage() {
           <p className="text-tinta-60">{formatPalabra(palabra)}</p>
         </div>
       </header>
+
+      <PhotoPanel initialPath={profile.photo_url} initialUrl={photoUrl} />
 
       <section>
         <h2 className="font-display text-xl font-bold">{copy.profile.sports}</h2>

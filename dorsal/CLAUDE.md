@@ -378,7 +378,7 @@ still deferred. The `dorsales` bucket and its policies exist, but nothing
 uploads to it — which means a reviewer comparing a selfie against a profile
 photo currently has nothing to compare it to, and verification only confirms
 that a real person took a selfie. This is the next thing worth doing, and it is
-not on the M5 list.
+not on the M5 list. **Resolved after M5 — see decision 51.**
 
 ---
 
@@ -445,6 +445,24 @@ three, and sets default privileges so the next function starts closed.
 what it should be, by asking the catalogue rather than reading the grants —
 which is how this was found in the first place.
 
+**51. The profile photo exists now, and it is a path rather than a URL.** It
+was deferred twice (decisions 11 and 43) while the onboarding copy went on
+promising it — "puedes añadirla luego" under no control at all, which a
+walkthrough of the live deploy caught. `dorsales` stays private, so
+`profiles.photo_url` holds `<user id>/perfil` and every render mints a
+short-lived signed URL, batched per roster. The column keeps its misleading
+name; `features/profile/schema.ts` refuses anything that is not that exact
+shape, and a test says why — validating it as a URL would accept a link to
+somebody else's server and turn every profile render into a request to it.
+
+**52. Blocking now covers the photograph.** 0006 let any signed-in caller read
+any object in `dorsales`, and paths are `<user id>/perfil` with ids visible on
+every roster — so anyone who had seen an id could fetch the face of someone who
+had blocked them, while the app refused to return that profile at all. 0010
+narrows the read to objects owned by a profile that is neither suspended nor in
+a block with the viewer. Found while building decision 51: a bucket-wide read
+policy is fine right up until the path is predictable.
+
 ---
 
 ## Deployment notes
@@ -458,7 +476,8 @@ was noticed.
 
 **Applied so far:** migrations `0001_init`, `0002_plan_lifecycle`, `0003_chat`,
 `0004_palabra`, `0005_safety`, `0006_storage`, `0007_data_rights`,
-`0008_fill_the_deck` and `0009_least_privilege`, and `supabase/seed.sql`.
+`0008_fill_the_deck`, `0009_least_privilege` and `0010_photo_reads`, and
+`supabase/seed.sql`.
 
 **Making the first moderator.** Nothing in the app grants the flag, on purpose:
 `update profiles set is_admin = true where id = '…';` in the SQL editor, once.

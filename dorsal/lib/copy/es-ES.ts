@@ -81,6 +81,13 @@ export const copy = {
       photoLabel: 'Foto',
       photoAdd: 'Añadir foto',
       photoChange: 'Cambiar foto',
+      photoRemove: 'Quitar la foto',
+      photoUploading: 'Subiendo…',
+      photoAdded: 'Foto añadida.',
+      photoFailed: 'No hemos podido subir la foto. Inténtalo otra vez.',
+      photoTooBig: 'La foto pesa demasiado. Tiene que ser de menos de 5 MB.',
+      photoNotAnImage: 'Eso no es una imagen.',
+      photoPrivate: 'Solo la ve la gente que ha entrado en Dorsal. No sale en Google.',
       photoSkip: 'Puedes añadirla luego, pero mucha gente no se apunta a un plan sin ver quién va.',
       genderLabel: 'Género',
       genderHelp:

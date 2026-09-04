@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
+import { Avatar } from '@/components/ui/avatar';
 import { Bib } from '@/components/ui/bib';
 import { VenueMap } from '@/components/venue-map';
 import { copy, formatThirdHalf } from '@/lib/copy/es-ES';
@@ -16,6 +17,7 @@ import { JoinButton } from '@/features/plans/join-button';
 import { HostControls, LeaveButton } from '@/features/plans/plan-actions';
 import { ShareButton } from '@/features/plans/share-button';
 import { SafetyMenu } from '@/features/safety/safety-menu';
+import { signPhotos } from '@/features/profile/photo';
 
 export const dynamic = 'force-dynamic';
 
@@ -48,9 +50,12 @@ export default async function PlanPage({ params }: { params: Promise<{ id: strin
   // confirmation and the row that gets written cannot disagree.
   const leaveCost = isIn && !isCancelled ? await getLeaveCost(id) : null;
   const unread = isIn || isHost ? ((await getUnreadCounts()).get(id) ?? 0) : 0;
-  const palabras = await getPalabraMany([
-    ...(plan.host ? [plan.host.id] : []),
-    ...roster.map((p) => p.userId),
+  const [palabras, photos] = await Promise.all([
+    getPalabraMany([...(plan.host ? [plan.host.id] : []), ...roster.map((p) => p.userId)]),
+    // One batched call for the whole roster: eight people should not be eight
+    // round trips to storage. See features/profile/photo.ts for why the URLs
+    // are minted here rather than stored.
+    signPhotos([plan.host?.photoUrl, ...roster.map((p) => p.photoUrl)]),
   ]);
 
   return (
@@ -133,6 +138,7 @@ export default async function PlanPage({ params }: { params: Promise<{ id: strin
         <ul className="mt-3 flex flex-col gap-3">
           {plan.host ? (
             <li className="flex items-center gap-3">
+              <Avatar url={photos.get(plan.host.photoUrl ?? '') ?? null} size="sm" />
               <Bib number={plan.host.dorsalNumber} size="sm" />
               <span className="flex-1">
                 <span className="font-medium">{plan.host.displayName}</span>
@@ -152,6 +158,7 @@ export default async function PlanPage({ params }: { params: Promise<{ id: strin
           )}
           {roster.map((person) => (
             <li key={person.userId} className="flex items-center gap-3">
+              <Avatar url={photos.get(person.photoUrl ?? '') ?? null} size="sm" />
               <span className="font-display text-lg font-bold text-tinta-60" data-numeric>
                 {person.dorsalNumber}
               </span>

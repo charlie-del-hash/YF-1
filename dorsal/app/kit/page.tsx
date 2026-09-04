@@ -6,6 +6,7 @@ import { ChatClient } from '@/features/chat/chat-client';
 import { HostRoster, SelfCheck } from '@/features/reliability/attendance-prompts';
 import { SafetyMenu } from '@/features/safety/safety-menu';
 import { SafetyCheck } from '@/features/safety/safety-check';
+import { PhotoPicker } from '@/features/profile/photo-picker';
 import { Bib } from '@/components/ui/bib';
 import { Button } from '@/components/ui/button';
 import { PlanCard } from '@/components/plan-card';
@@ -67,6 +68,9 @@ export default function Kit() {
         center={{ lat: 40.4168, lng: -3.7038 }}
         initialDate="2026-09-12"
       />
+      {/* No handlers: the kit has no session, and the point here is the resting
+          state — the control exists and says what it does. */}
+      <PhotoPicker path={null} />
       <SafetyCheck
         pending={[{ planId: 'p9', sport: 'running', startsAt: '2026-09-12T09:30:00+02:00' }]}
       />

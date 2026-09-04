@@ -105,5 +105,41 @@ begin
   raise notice 'ok  signed-in reads still evaluate their policy helpers';
 end $$;
 
+-- ── 6. a blocked person's photo is not readable either ──────────────────────
+-- Paths are `<user id>/perfil` and ids are on every roster, so a bucket-wide
+-- read policy would let anyone who had seen an id fetch the face of someone
+-- who had blocked them.
+do $$
+declare n int;
+begin
+  reset role;
+  insert into storage.objects (bucket_id, name, owner) values
+    ('dorsales', '00000000-0000-0000-0000-0000000008a2/perfil',
+     '00000000-0000-0000-0000-0000000008a2'),
+    ('dorsales', 'no-es-un-perfil/perfil', null);
+  alter table storage.objects enable row level security;
+  set role authenticated;
+
+  perform test_as('00000000-0000-0000-0000-0000000008a1');
+  select count(*) into n from storage.objects
+   where name = '00000000-0000-0000-0000-0000000008a2/perfil';
+  assert n = 1, 'someone with an account cannot see a profile photo';
+
+  -- G2 blocked G3 in the fixtures above.
+  perform test_as('00000000-0000-0000-0000-0000000008a3');
+  select count(*) into n from storage.objects
+   where name = '00000000-0000-0000-0000-0000000008a2/perfil';
+  assert n = 0, 'a blocked person can still fetch the face that blocked them';
+
+  perform test_as('00000000-0000-0000-0000-0000000008a1');
+  select count(*) into n from storage.objects where name = 'no-es-un-perfil/perfil';
+  assert n = 0, 'an object not owned by a profile is readable';
+
+  perform test_as(null);
+  select count(*) into n from storage.objects where bucket_id = 'dorsales';
+  assert n = 0, 'profile photos are readable without a session';
+  raise notice 'ok  a photo is for people with an account, minus the ones who blocked you';
+end $$;
+
 reset role;
 rollback;
