@@ -186,7 +186,8 @@ export const copy = {
     leaveCancel: 'Me quedo',
     leaveConfirm: 'Salirme',
     left: 'Te has salido del plan.',
-    seedNotice: 'Plan de ejemplo mientras arrancamos en tu zona.',
+    seedNotice:
+      'Plan de ejemplo mientras arrancamos en tu zona. No te puedes apuntar: no hay nadie al otro lado.',
     cancelled: 'Plan cancelado',
     cancelledBecause: (reason: string) => `Cancelado: ${reason}`,
     leftWaitlist: 'Has dejado la lista de espera.',
@@ -573,6 +574,8 @@ export const copy = {
     planStarted: 'Este plan ya ha empezado.',
     blocked: 'No puedes apuntarte a este plan.',
     removedByHost: 'Quien organiza te ha sacado de este plan.',
+    seedPlan:
+      'Es un plan de ejemplo, para que veas cómo funciona. No hay nadie al otro lado, así que no te dejamos apuntarte.',
     cooldown:
       'Has faltado a dos planes este mes. Los que están casi llenos se te cierran unos días; el resto siguen abiertos.',
     suspended: 'Tu cuenta está suspendida. Escríbenos si crees que es un error.',
@@ -641,6 +644,8 @@ export function joinErrorMessage(code: string, minPlans = 0): string {
     case 'needs_more_plans':  return copy.errors.needsMorePlans(minPlans);
     case 'level_mismatch':    return copy.errors.levelMismatch;
     case 'host_cannot_join':  return copy.errors.hostCannotJoin;
+    case 'seed_plan':         return copy.errors.seedPlan;
+    case 'cooldown':          return copy.errors.cooldown;
     case 'plan_closed':       return copy.errors.planClosed;
     case 'plan_started':      return copy.errors.planStarted;
     case 'blocked':           return copy.errors.blocked;

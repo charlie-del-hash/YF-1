@@ -62,6 +62,14 @@ export function DeckClient({
       setQueue((q) => q.filter((p) => p.id !== plan.id));
       setToast(null);
 
+      // An example plan is passed over rather than joined: it exists to show
+      // what the deck looks like, and nobody is on the other side of it.
+      if (direction === 'right' && plan.isSeed) {
+        setToast({ tone: 'error', text: copy.errors.seedPlan });
+        setQueue((q) => [plan, ...q]);
+        return;
+      }
+
       startTransition(async () => {
         if (direction === 'left') {
           const result = await attempt(() => passPlan(plan.id));

@@ -227,6 +227,7 @@ export default async function PlanPage({ params }: { params: Promise<{ id: strin
             minPlansRequired={plan.minPlansRequired}
             initialStatus={myStatus}
             isHost={isHost}
+            isSeed={plan.isSeed}
             remaining={remaining}
           />
         )}

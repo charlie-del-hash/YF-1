@@ -33,7 +33,31 @@ insert into plans (id, host_id, sport, starts_at, distrito, level_min, level_max
    'running', now() + interval '20 hours', 'Retiro', 4, 6, '8 km', 8,
    '00000000-0000-0000-0000-0000000007f0', null, 'solo_mujeres');
 
+-- An example plan, for the seed assertion at the end.
+insert into plans (id, host_id, sport, starts_at, distrito, level_min, level_max,
+                   level_display, capacity, venue_id, is_seed) values
+  ('00000000-0000-0000-0000-0000000007a4', '00000000-0000-0000-0000-000000000701',
+   'running', now() + interval '4 days', 'Retiro', 4, 6, '8 km', 8,
+   '00000000-0000-0000-0000-0000000007f0', true);
+
 set role authenticated;
+
+-- ── 0. an example plan is for looking at ────────────────────────────────────
+-- The seed is permanently in the future and hosted by nobody. Joining one is
+-- the only case in the product where standing alone in a park is guaranteed.
+do $$
+declare v_joined boolean := false;
+begin
+  perform test_as('00000000-0000-0000-0000-000000000705');
+  begin
+    perform join_plan('00000000-0000-0000-0000-0000000007a4');
+    v_joined := true;
+  exception when others then
+    assert sqlerrm = 'seed_plan', 'refused for the wrong reason: ' || sqlerrm;
+  end;
+  assert not v_joined, 'someone joined an example plan';
+  raise notice 'ok  an example plan cannot be joined';
+end $$;
 
 -- ── 1. time to fill is stamped when it happens ──────────────────────────────
 do $$

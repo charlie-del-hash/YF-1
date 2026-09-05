@@ -141,5 +141,43 @@ begin
   raise notice 'ok  a photo is for people with an account, minus the ones who blocked you';
 end $$;
 
+-- ── 7. no view leaks past the policies underneath it ────────────────────────
+-- A view without `security_invoker` runs with its owner's rights and ignores
+-- the RLS on its own tables. Supabase then grants SELECT on it to `anon` by
+-- default, and the result is a REST endpoint serving the lot. That is what
+-- happened to `user_reliability`, and asking the catalogue is the only way to
+-- see it — the view definition itself looks perfectly innocent.
+do $$
+declare v_leaky text[];
+begin
+  reset role;
+  select coalesce(array_agg(c.relname order by c.relname), '{}')
+    into v_leaky
+    from pg_class c join pg_namespace n on n.oid = c.relnamespace
+   where n.nspname = 'public' and c.relkind = 'v'
+     and coalesce(array_to_string(c.reloptions, ','), '') not like '%security_invoker=on%';
+  assert v_leaky = '{}', 'views that ignore RLS: ' || array_to_string(v_leaky, ', ');
+  raise notice 'ok  every view runs as the person querying it';
+end $$;
+
+do $$
+declare n int;
+begin
+  set role anon;
+  begin
+    select count(*) into n from user_reliability;
+    assert false, 'anon read the reliability table directly';
+  exception when insufficient_privilege then null; end;
+  reset role;
+
+  set role authenticated;
+  begin
+    select count(*) into n from user_reliability;
+    assert false, 'a signed-in stranger read the reliability table directly';
+  exception when insufficient_privilege then null; end;
+  reset role;
+  raise notice 'ok  reliability counts are reachable only through public_palabra';
+end $$;
+
 reset role;
 rollback;

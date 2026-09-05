@@ -569,6 +569,67 @@ phone has to be done by hand on the deploy.
 
 ---
 
+## Decisions taken or changed while building M7
+
+**64. The reliability view was readable by anyone with the publishable key.**
+`user_reliability` aggregates `reliability_events` into per-person counts —
+attendances, commitments, faltas in the last thirty days, disputes — so that
+`public_palabra()` can reduce it to the three sanitised numbers decision 30
+allows. It was created without `security_invoker`, so it ran with its owner's
+rights and ignored the RLS on the tables underneath; Supabase's default grant
+of SELECT to `anon` did the rest. `GET /rest/v1/user_reliability` returned one
+row per account in the system. That is the raw material for exactly the rank,
+badge, colour and comparison decision 30 says the product cannot produce, plus
+the disputes column that 05-RGPD treats as a moderation record. 0012 makes the
+view `security_invoker` and revokes it from both API roles — nothing selects it
+directly except two security definer functions, and nothing should.
+
+Found by Supabase's own database advisors, which had never been run. The single
+`ERROR` in that report was this. Worth running after every schema change.
+
+**65. Views are now covered by the privileges test.** The rule that catches
+this class is structural rather than case-by-case: no view in `public` may
+exist without `security_invoker=on`. `08-privileges.test.sql` asserts it from
+the catalogue, the same way it asserts the anon-executable function set — which
+is twice now that a Supabase default grant has decided something nobody chose.
+
+**66. Example plans refuse to be joined, rather than being deleted.** The seed
+is shifted forward by whole weeks at apply time (decision 9), so it is
+permanently in the future and was permanently joinable — hosted by ten profiles
+that do not correspond to people. Everything else in this product is designed
+around a physical failure mode; a seed plan is the one case where standing
+alone in a park is guaranteed for everyone who joins. The card has said
+`Plan de ejemplo` since M0, and a label is not a control.
+
+Deleting the seed is what a launch checklist would normally say, and it is the
+wrong trade at three real accounts and one real plan: it leaves the next person
+to sign up looking at an empty app. So 0013 refuses the join in `join_plan()`,
+clears the memberships real people had already taken on example plans, and the
+deck and detail screen both say why rather than offering a button the database
+will reject. `docs/LAUNCH.md` has the deletion for when the city has plans of
+its own.
+
+**67. Rewriting a function from memory nearly removed two rules.** The first
+draft of 0013 reproduced `join_plan()` from memory with the seed check added,
+and silently dropped the two-falta cooldown (decision 34) and the `swipes` row
+that stops a joined plan reappearing in the deck. Neither would have failed a
+test that existed at the time. The migration now carries the live definition
+verbatim with four lines added, and says so at the top. When a change is one
+line inside sixty, fetch the sixty.
+
+**68. `cooldown` was never mapped to a message.** `joinErrorMessage()` had no
+case for it, so someone in a cooldown got the generic "something went wrong"
+instead of the sentence that had been written for them since M3. Found while
+adding `seed_plan` beside it.
+
+**69. There is a moderator.** `dorsal 1000`. Until now `/admin` was a 404 for
+everybody, which meant every report and every verification submitted since M4
+had no queue anyone could open. Nothing in the app grants the flag and nothing
+should — decision 41 — so it stays a deliberate statement in the SQL editor,
+recorded in `docs/LAUNCH.md`.
+
+---
+
 ## Deployment notes
 
 **The project.** `qplddusqtxmkljoyxdhd`, region **`eu-west-1` (Ireland)**, not
@@ -580,11 +641,17 @@ was noticed.
 
 **Applied so far:** migrations `0001_init`, `0002_plan_lifecycle`, `0003_chat`,
 `0004_palabra`, `0005_safety`, `0006_storage`, `0007_data_rights`,
-`0008_fill_the_deck`, `0009_least_privilege`, `0010_photo_reads` and
-`0011_push`, and `supabase/seed.sql`.
+`0008_fill_the_deck`, `0009_least_privilege`, `0010_photo_reads`,
+`0011_push`, `0012_reliability_view` and `0013_seed_is_not_joinable`, and
+`supabase/seed.sql`.
 
-**Making the first moderator.** Nothing in the app grants the flag, on purpose:
+**Moderators.** Nothing in the app grants the flag, on purpose:
 `update profiles set is_admin = true where id = '…';` in the SQL editor, once.
+`dorsal 1000` has it as of M7; before that `/admin` was a 404 for everybody and
+nothing submitted to it could be read.
+
+**Going live.** `docs/LAUNCH.md` is the checklist: what is done, what needs a
+card or a phone or a lawyer, and what to re-run after a schema change.
 
 **Realtime.** `messages` is added to the `supabase_realtime` publication by
 0003, guarded so it is a no-op where that publication does not exist. Supabase
