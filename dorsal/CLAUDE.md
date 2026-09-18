@@ -630,6 +630,46 @@ recorded in `docs/LAUNCH.md`.
 
 ---
 
+## Decisions from the review after M7
+
+**70. A person may write only the columns the form writes.** Every own-row
+policy in the schema said *whose* row may be written and nothing about *which
+columns*, so `update profiles set is_admin = true where id = auth.uid()` was
+one REST call with the publishable key — and `is_suspended = false`, undoing a
+moderator. `participants_update_own` let a participant mark themselves
+`attended`, answer the roster for the host through `host_marked`, or move from
+`waitlist` to `joined` past the plaza held for a newcomer; a host could rewrite
+`joined_count`, `filled_at` and `created_at`, and cancel with no reason past
+`cancel_plan()`; anyone could insert a `verified` venue, pin their own message
+by inserting it pinned, backdate one, or file a report already `actioned` and
+`resolved_by` a moderator. Every one of those was reproduced against the shim.
+None is reachable from the app, which writes through functions or sends a
+fixed set of columns — but the app is not the API surface, PostgREST is.
+Migration 0014 revokes table-level INSERT and UPDATE from the API roles and
+grants back exactly the columns the app writes; a request naming any other
+column is refused before RLS is consulted. `10-column-privileges.test.sql`
+asserts both halves from the catalogue — nothing forbidden is open, nothing
+the app writes is closed — and then tries the writes anyway. Found by asking
+what the API *could* write rather than what the app *did* write: the third
+time, after decisions 50 and 64, that a default grant decided something nobody
+chose.
+
+**71. Tables only functions write are read-only to the API.**
+`plan_participants`, `reliability_events` and `moderation_actions` have no
+INSERT, UPDATE or DELETE for `authenticated` at all, and the two participant
+UPDATE policies are gone: they had no caller inside the app and, it turned
+out, one caller outside it. A policy nothing calls is a door kept open for
+whoever finds it.
+
+**72. The counts trigger runs as the owner.** Found while reproducing decision
+70: a participant's direct update fired `sync_plan_counts()`, which then
+updated `plans` under the *participant's* policies and changed nothing,
+silently. Four rows said joined; the card said three. Every write path that
+remains runs as the owner already, and 0014 makes the trigger `security
+definer` so its own write never again depends on who fired it.
+
+---
+
 ## Deployment notes
 
 **The project.** `qplddusqtxmkljoyxdhd`, region **`eu-west-1` (Ireland)**, not

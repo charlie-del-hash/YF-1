@@ -215,8 +215,10 @@ export async function savePlan(
  *
  * It is stored unverified and labelled as such everywhere it appears, because
  * an unconfirmed coordinate is exactly how someone ends up standing on the
- * wrong side of a park. `is_public` is forced true and enforced by a check
- * constraint: there is no code path that stores a private address.
+ * wrong side of a park. `verified` is not sent at all: the column defaults to
+ * false and, since migration 0014, is not the caller's to write. `is_public`
+ * is forced true and enforced by a check constraint: there is no code path
+ * that stores a private address.
  */
 export async function createVenue(
   input: VenuePinInput,
@@ -237,7 +239,6 @@ export async function createVenue(
       lat: parsed.data.lat,
       lng: parsed.data.lng,
       is_public: true,
-      verified: false,
       created_by: auth.user.id,
     })
     .select('id')

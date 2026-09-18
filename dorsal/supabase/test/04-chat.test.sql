@@ -201,10 +201,13 @@ begin
     assert false, 'a participant pinned a message';
   exception when others then assert sqlerrm = 'not_host', 'wrong error: ' || sqlerrm; end;
 
-  -- And not by editing the row directly: there is no UPDATE policy at all.
-  update messages set is_pinned = true where id = v_a;
-  get diagnostics n = row_count;
-  assert n = 0, 'is_pinned was changed by a direct update';
+  -- And not by editing the row directly: there is no UPDATE policy at all,
+  -- and since 0014 no UPDATE grant either.
+  begin
+    update messages set is_pinned = true where id = v_a;
+    get diagnostics n = row_count;
+    assert n = 0, 'is_pinned was changed by a direct update';
+  exception when insufficient_privilege then null; end;
   raise notice 'ok  pinning is the host''s, and there is only ever one pin';
 end $$;
 
@@ -217,9 +220,11 @@ begin
   values ('00000000-0000-0000-0000-0000000000c1', '00000000-0000-0000-0000-0000000000c4', 'voy')
   returning id into v_id;
 
-  update messages set body = 'no voy' where id = v_id;
-  get diagnostics n = row_count;
-  assert n = 0, 'a message was edited after the fact';
+  begin
+    update messages set body = 'no voy' where id = v_id;
+    get diagnostics n = row_count;
+    assert n = 0, 'a message was edited after the fact';
+  exception when insufficient_privilege then null; end;
 
   delete from messages where id = v_id;
   get diagnostics n = row_count;

@@ -188,12 +188,20 @@ begin
   -- Cancelling twice is a no-op, not an error: the host tapped twice.
   perform cancel_plan('00000000-0000-0000-0000-00000000ee04', 'Aviso de lluvia');
 
+  -- Since 0014 `status` is not the host's column to write at all …
   begin
     update plans set status = 'open' where id = '00000000-0000-0000-0000-00000000ee04';
     assert false, 'a cancelled plan was reopened';
+  exception when insufficient_privilege then null; end;
+  -- … and the trigger still stands behind that, for whoever can.
+  reset role;
+  begin
+    update plans set status = 'open' where id = '00000000-0000-0000-0000-00000000ee04';
+    assert false, 'a cancelled plan was reopened by the owner';
   exception when others then
     assert sqlerrm = 'plan_already_cancelled', 'wrong error: ' || sqlerrm;
   end;
+  set role authenticated;
   raise notice 'ok  cancelling needs a reason, a host, and is final';
 end $$;
 
