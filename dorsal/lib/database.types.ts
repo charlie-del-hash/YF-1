@@ -291,6 +291,8 @@ export type Database = {
         Returns: { user_id: string; endpoint: string; p256dh: string; auth: string }[];
       };
       forget_push_endpoint: { Args: { p_endpoint: string }; Returns: undefined };
+      /** Migration 0016. Stamps the subscriptions a notification reached. */
+      touch_push_endpoints: { Args: { p_endpoints: string[] }; Returns: undefined };
       /** Migration 0015. The one way a selfie is submitted, first time or retry. */
       submit_selfie: { Args: { p_path: string }; Returns: undefined };
       complete_onboarding: {

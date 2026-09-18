@@ -676,6 +676,14 @@ otra vez` failed with an RLS error for everyone it was shown to, since M4.
 never after an approval, and a resubmission clears the previous verdict and
 restarts the clock. The direct INSERT policy went with the upsert.
 
+**74. `last_ok_at` is stamped through a function.** `sendPush()` bumped it with
+a plain update as the sender, which `push_own_update` narrows to the sender's
+own rows: for every notification that went to somebody else it matched nothing
+and said nothing, so the column only ever recorded test notifications.
+`touch_push_endpoints()` (0016) has the same shape and the same justification
+as `forget_push_endpoint()`: the sender is the only code that learns the
+outcome and is not the owner of the row.
+
 ---
 
 ## Deployment notes
