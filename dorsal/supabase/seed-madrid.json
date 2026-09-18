@@ -1,0 +1,171 @@
+{
+  "_readme": "Seed data for Dorsal, Madrid launch. IMPORTANT: every venue has a 'verified' flag. Entries with verified:false have approximate coordinates written from general knowledge and MUST be confirmed against a real source (OpenStreetMap, the club's own site, the Ayuntamiento de Madrid facilities directory) before being shown to a user as a meeting point. Demo profiles and plans exist only so the deck is never empty in development — every one carries \"is_seed\": true so they can be deleted in one query once real supply arrives.",
+  "city": {
+    "name": "Madrid",
+    "timezone": "Europe/Madrid",
+    "locale": "es-ES",
+    "center": { "lat": 40.4168, "lng": -3.7038 }
+  },
+  "distritos": [
+    "Centro", "Arganzuela", "Retiro", "Salamanca", "Chamartín", "Tetuán",
+    "Chamberí", "Fuencarral-El Pardo", "Moncloa-Aravaca", "Latina",
+    "Carabanchel", "Usera", "Puente de Vallecas", "Moratalaz",
+    "Ciudad Lineal", "Hortaleza", "Villaverde", "Villa de Vallecas",
+    "Vicálvaro", "San Blas-Canillejas", "Barajas"
+  ],
+  "launch_focus": {
+    "distritos": ["Chamberí", "Centro", "Salamanca"],
+    "sports": ["running", "padel", "futbol", "escalada"],
+    "note": "Everything else is available but not promoted. Concentrate supply before widening."
+  },
+  "sports": [
+    {
+      "key": "running",
+      "label_es": "Running",
+      "level_scale": "pace_min_km",
+      "levels": [
+        { "norm": 2, "display": "Más de 7:00 min/km", "note": "Empezando o volviendo" },
+        { "norm": 4, "display": "6:00–7:00 min/km" },
+        { "norm": 5, "display": "5:30–6:00 min/km" },
+        { "norm": 7, "display": "5:00–5:30 min/km" },
+        { "norm": 8, "display": "4:30–5:00 min/km" },
+        { "norm": 10, "display": "Menos de 4:30 min/km" }
+      ],
+      "extra_fields": [{ "key": "distance_km", "label_es": "Distancia", "unit": "km" }]
+    },
+    {
+      "key": "padel",
+      "label_es": "Pádel",
+      "level_scale": "padel_1_7",
+      "levels": [
+        { "norm": 2, "display": "1,0–2,0", "note": "Primeras veces" },
+        { "norm": 4, "display": "2,5–3,0" },
+        { "norm": 6, "display": "3,5–4,0" },
+        { "norm": 8, "display": "4,5–5,0" },
+        { "norm": 10, "display": "5,5–7,0", "note": "Competición" }
+      ]
+    },
+    {
+      "key": "tenis",
+      "label_es": "Tenis",
+      "level_scale": "padel_1_7",
+      "levels": [
+        { "norm": 3, "display": "1,0–2,5" },
+        { "norm": 6, "display": "3,0–4,5" },
+        { "norm": 9, "display": "5,0–7,0" }
+      ]
+    },
+    {
+      "key": "futbol",
+      "label_es": "Fútbol 7 / 11",
+      "level_scale": "football_tier",
+      "levels": [
+        { "norm": 3, "display": "Recreativo" },
+        { "norm": 6, "display": "He jugado federado" },
+        { "norm": 5, "display": "Veteranos" }
+      ]
+    },
+    {
+      "key": "baloncesto",
+      "label_es": "Baloncesto",
+      "level_scale": "football_tier",
+      "levels": [
+        { "norm": 3, "display": "Recreativo" },
+        { "norm": 6, "display": "He jugado federado" }
+      ]
+    },
+    {
+      "key": "ciclismo",
+      "label_es": "Ciclismo",
+      "level_scale": "speed_kmh",
+      "levels": [
+        { "norm": 3, "display": "Menos de 22 km/h" },
+        { "norm": 5, "display": "22–26 km/h" },
+        { "norm": 7, "display": "26–30 km/h" },
+        { "norm": 9, "display": "Más de 30 km/h" }
+      ],
+      "extra_fields": [
+        { "key": "distance_km", "label_es": "Distancia", "unit": "km" },
+        { "key": "surface", "label_es": "Tipo", "options": ["carretera", "gravel", "MTB"] }
+      ]
+    },
+    {
+      "key": "escalada",
+      "label_es": "Escalada / Boulder",
+      "level_scale": "climb_grade",
+      "levels": [
+        { "norm": 2, "display": "4–5 / V0–V1", "note": "Primeras sesiones" },
+        { "norm": 5, "display": "6a–6c / V2–V4" },
+        { "norm": 8, "display": "7a–7c / V5–V8" },
+        { "norm": 10, "display": "8a+ / V9+" }
+      ]
+    },
+    { "key": "natacion",  "label_es": "Natación",         "level_scale": "generic_3" },
+    { "key": "hyrox",     "label_es": "Hyrox / funcional", "level_scale": "generic_3" },
+    { "key": "senderismo","label_es": "Senderismo",        "level_scale": "generic_3" },
+    { "key": "yoga",      "label_es": "Yoga / pilates",    "level_scale": "generic_3" },
+    { "key": "fuerza",    "label_es": "Gimnasio / fuerza", "level_scale": "generic_3" }
+  ],
+  "generic_levels": [
+    { "norm": 3, "display": "Principiante" },
+    { "norm": 6, "display": "Intermedio" },
+    { "norm": 9, "display": "Avanzado" }
+  ],
+  "venues": [
+    { "id": "v_retiro_alcala",   "name": "Parque del Retiro — Puerta de Alcalá", "kind": "parque",       "distrito": "Retiro",        "lat": 40.4200, "lng": -3.6883, "verified": false },
+    { "id": "v_retiro_estanque", "name": "Parque del Retiro — Estanque Grande",  "kind": "parque",       "distrito": "Retiro",        "lat": 40.4180, "lng": -3.6830, "verified": false },
+    { "id": "v_debod",           "name": "Templo de Debod",                      "kind": "parque",       "distrito": "Moncloa-Aravaca","lat": 40.4240, "lng": -3.7175, "verified": false },
+    { "id": "v_madrid_rio",      "name": "Madrid Río — Puente de Toledo",        "kind": "parque",       "distrito": "Arganzuela",    "lat": 40.3960, "lng": -3.7130, "verified": false },
+    { "id": "v_matadero",        "name": "Matadero Madrid",                      "kind": "parque",       "distrito": "Arganzuela",    "lat": 40.3920, "lng": -3.6980, "verified": false },
+    { "id": "v_casa_campo_lago", "name": "Casa de Campo — Lago",                 "kind": "parque",       "distrito": "Moncloa-Aravaca","lat": 40.4180, "lng": -3.7280, "verified": false },
+    { "id": "v_parque_oeste",    "name": "Parque del Oeste — Rosaleda",          "kind": "parque",       "distrito": "Moncloa-Aravaca","lat": 40.4310, "lng": -3.7230, "verified": false },
+    { "id": "v_dehesa_villa",    "name": "Dehesa de la Villa",                   "kind": "parque",       "distrito": "Moncloa-Aravaca","lat": 40.4570, "lng": -3.7220, "verified": false },
+    { "id": "v_berlin",          "name": "Parque de Berlín",                     "kind": "parque",       "distrito": "Chamartín",     "lat": 40.4640, "lng": -3.6790, "verified": false },
+    { "id": "v_juan_carlos",     "name": "Parque Juan Carlos I",                 "kind": "parque",       "distrito": "Barajas",       "lat": 40.4620, "lng": -3.6100, "verified": false },
+    { "id": "v_cuna_verde",      "name": "Cuña Verde de O'Donnell",              "kind": "parque",       "distrito": "Moratalaz",     "lat": 40.4230, "lng": -3.6350, "verified": false },
+    { "id": "v_cdm_vallehermoso","name": "CDM Vallehermoso",                     "kind": "polideportivo","distrito": "Chamberí",      "lat": 40.4420, "lng": -3.7060, "verified": false },
+    { "id": "v_padel_chamberi",  "name": "Pistas de pádel — Chamberí (por confirmar)", "kind": "pista",  "distrito": "Chamberí",      "lat": 40.4380, "lng": -3.7030, "verified": false, "placeholder": true },
+    { "id": "v_padel_salamanca", "name": "Pistas de pádel — Salamanca (por confirmar)", "kind": "pista", "distrito": "Salamanca",     "lat": 40.4290, "lng": -3.6790, "verified": false, "placeholder": true },
+    { "id": "v_futbol7_centro",  "name": "Campo de fútbol 7 — Centro (por confirmar)",  "kind": "pista", "distrito": "Centro",        "lat": 40.4150, "lng": -3.7050, "verified": false, "placeholder": true },
+    { "id": "v_rocodromo_1",     "name": "Rocódromo — Chamberí (por confirmar)",  "kind": "rocodromo",   "distrito": "Chamberí",      "lat": 40.4400, "lng": -3.6980, "verified": false, "placeholder": true },
+    { "id": "v_cafe_malasana",   "name": "Café en Malasaña",                      "kind": "cafe",        "distrito": "Centro",        "lat": 40.4260, "lng": -3.7030, "verified": false, "placeholder": true },
+    { "id": "v_cafe_chamberi",   "name": "Café en Chamberí",                      "kind": "cafe",        "distrito": "Chamberí",      "lat": 40.4360, "lng": -3.7020, "verified": false, "placeholder": true },
+    { "id": "v_bar_lavapies",    "name": "Bar en Lavapiés",                       "kind": "cafe",        "distrito": "Centro",        "lat": 40.4090, "lng": -3.7010, "verified": false, "placeholder": true }
+  ],
+  "demo_profiles": [
+    { "id": "p1",  "is_seed": true, "display_name": "Marta",   "dorsal_number": 1,  "birth_year": 1996, "gender": "mujer",   "distrito": "Chamberí",  "travel_km": 6,  "bio": "Corro por Chamberí. Siempre me quedo al café.",        "sports": [{ "sport": "running", "level_norm": 5 }, { "sport": "escalada", "level_norm": 5 }] },
+    { "id": "p2",  "is_seed": true, "display_name": "Javi",    "dorsal_number": 2,  "birth_year": 1993, "gender": "hombre",  "distrito": "Salamanca", "travel_km": 8,  "bio": "Pádel tres veces por semana. Nivel honesto, prometo.", "sports": [{ "sport": "padel", "level_norm": 6 }, { "sport": "running", "level_norm": 4 }] },
+    { "id": "p3",  "is_seed": true, "display_name": "Lucía",   "dorsal_number": 3,  "birth_year": 1999, "gender": "mujer",   "distrito": "Centro",    "travel_km": 5,  "bio": "Recién llegada a Madrid, buscando gente para entrenar.", "sports": [{ "sport": "running", "level_norm": 4 }, { "sport": "yoga", "level_norm": 3 }] },
+    { "id": "p4",  "is_seed": true, "display_name": "Dani",    "dorsal_number": 4,  "birth_year": 1991, "gender": "hombre",  "distrito": "Arganzuela","travel_km": 10, "bio": "Organizo la pachanga del domingo desde hace cuatro años.", "sports": [{ "sport": "futbol", "level_norm": 6 }] },
+    { "id": "p5",  "is_seed": true, "display_name": "Nerea",   "dorsal_number": 5,  "birth_year": 1997, "gender": "mujer",   "distrito": "Chamberí",  "travel_km": 6,  "bio": "Boulder y series. No corro rápido pero llego.",         "sports": [{ "sport": "escalada", "level_norm": 8 }, { "sport": "running", "level_norm": 5 }] },
+    { "id": "p6",  "is_seed": true, "display_name": "Álvaro",  "dorsal_number": 6,  "birth_year": 1989, "gender": "hombre",  "distrito": "Chamartín", "travel_km": 12, "bio": "Salidas largas en carretera los sábados.",              "sports": [{ "sport": "ciclismo", "level_norm": 7 }] },
+    { "id": "p7",  "is_seed": true, "display_name": "Claudia", "dorsal_number": 7,  "birth_year": 1995, "gender": "mujer",   "distrito": "Retiro",    "travel_km": 5,  "bio": "Rodajes suaves y desayuno después. Ese es el plan.",     "sports": [{ "sport": "running", "level_norm": 4 }] },
+    { "id": "p8",  "is_seed": true, "display_name": "Iker",    "dorsal_number": 8,  "birth_year": 1994, "gender": "hombre",  "distrito": "Centro",    "travel_km": 7,  "bio": "Pádel, y si hace bueno, bici.",                         "sports": [{ "sport": "padel", "level_norm": 4 }, { "sport": "ciclismo", "level_norm": 5 }] },
+    { "id": "p9",  "is_seed": true, "display_name": "Sara",    "dorsal_number": 9,  "birth_year": 1998, "gender": "mujer",   "distrito": "Tetuán",    "travel_km": 8,  "bio": "Hyrox y todo lo que duela un rato.",                    "sports": [{ "sport": "hyrox", "level_norm": 6 }, { "sport": "running", "level_norm": 7 }] },
+    { "id": "p10", "is_seed": true, "display_name": "Pablo",   "dorsal_number": 10, "birth_year": 1992, "gender": "hombre",  "distrito": "Salamanca", "travel_km": 6,  "bio": "Baloncesto 3x3 y cañas después, en ese orden.",          "sports": [{ "sport": "baloncesto", "level_norm": 5 }] }
+  ],
+  "demo_plans": [
+    { "is_seed": true, "host": "p1",  "sport": "running",    "starts_at": "2026-09-05T09:30:00+02:00", "duration_min": 70, "venue": "v_retiro_alcala",   "distrito": "Retiro",     "level_min": 4, "level_max": 6, "level_display": "8 km · 5:30–6:00 min/km", "capacity": 8,  "third_half": "cafe",     "third_half_venue": "v_cafe_malasana", "audience": "todos",        "meeting_note": "Nos vemos en la puerta, salimos puntuales." },
+    { "is_seed": true, "host": "p7",  "sport": "running",    "starts_at": "2026-09-06T10:00:00+02:00", "duration_min": 60, "venue": "v_madrid_rio",      "distrito": "Arganzuela", "level_min": 2, "level_max": 4, "level_display": "6 km · más de 6:00 min/km", "capacity": 10, "third_half": "desayuno", "third_half_venue": "v_cafe_chamberi", "audience": "todos",       "meeting_note": "Ritmo de charla. Si hace falta, paramos." },
+    { "is_seed": true, "host": "p5",  "sport": "running",    "starts_at": "2026-09-08T20:00:00+02:00", "duration_min": 60, "venue": "v_debod",           "distrito": "Moncloa-Aravaca", "level_min": 5, "level_max": 8, "level_display": "Series · 5:00–5:30 min/km", "capacity": 6, "third_half": "ninguno", "third_half_venue": null, "audience": "todos",        "meeting_note": "6x800. Traed agua." },
+    { "is_seed": true, "host": "p3",  "sport": "running",    "starts_at": "2026-09-10T19:30:00+02:00", "duration_min": 55, "venue": "v_parque_oeste",    "distrito": "Moncloa-Aravaca", "level_min": 3, "level_max": 5, "level_display": "7 km suaves", "capacity": 8, "third_half": "cana", "third_half_venue": "v_bar_lavapies", "audience": "solo_mujeres", "meeting_note": "Grupo de chicas, primera vez bienvenida." },
+    { "is_seed": true, "host": "p2",  "sport": "padel",      "starts_at": "2026-09-04T19:00:00+02:00", "duration_min": 90, "venue": "v_padel_salamanca", "distrito": "Salamanca",  "level_min": 5, "level_max": 7, "level_display": "Nivel 3,5–4,0", "capacity": 4, "third_half": "cana", "third_half_venue": null, "audience": "todos", "meeting_note": "Falta uno. Pista pagada, se divide entre cuatro." },
+    { "is_seed": true, "host": "p8",  "sport": "padel",      "starts_at": "2026-09-07T11:00:00+02:00", "duration_min": 90, "venue": "v_padel_chamberi",  "distrito": "Chamberí",   "level_min": 3, "level_max": 5, "level_display": "Nivel 2,5–3,0", "capacity": 4, "third_half": "cafe", "third_half_venue": "v_cafe_chamberi", "audience": "todos", "meeting_note": "Partido tranquilo de domingo." },
+    { "is_seed": true, "host": "p2",  "sport": "padel",      "starts_at": "2026-09-11T20:30:00+02:00", "duration_min": 90, "venue": "v_padel_salamanca", "distrito": "Salamanca",  "level_min": 5, "level_max": 7, "level_display": "Nivel 3,5–4,0", "capacity": 4, "third_half": "cana", "third_half_venue": null, "audience": "todos", "meeting_note": "Viernes, y luego caña obligatoria." },
+    { "is_seed": true, "host": "p4",  "sport": "futbol",     "starts_at": "2026-09-06T18:00:00+02:00", "duration_min": 90, "venue": "v_futbol7_centro",  "distrito": "Centro",     "level_min": 3, "level_max": 7, "level_display": "Fútbol 7 · recreativo", "capacity": 14, "third_half": "cana", "third_half_venue": "v_bar_lavapies", "audience": "todos", "meeting_note": "Traigo petos y balón. 5 € cada uno por el campo." },
+    { "is_seed": true, "host": "p4",  "sport": "futbol",     "starts_at": "2026-09-13T18:00:00+02:00", "duration_min": 90, "venue": "v_futbol7_centro",  "distrito": "Centro",     "level_min": 3, "level_max": 7, "level_display": "Fútbol 7 · recreativo", "capacity": 14, "third_half": "cana", "third_half_venue": "v_bar_lavapies", "audience": "todos", "meeting_note": "La de todos los domingos." },
+    { "is_seed": true, "host": "p5",  "sport": "escalada",   "starts_at": "2026-09-09T19:00:00+02:00", "duration_min": 120, "venue": "v_rocodromo_1",    "distrito": "Chamberí",   "level_min": 3, "level_max": 7, "level_display": "Boulder · 5 a 6c", "capacity": 6, "third_half": "cana", "third_half_venue": null, "audience": "todos", "meeting_note": "Si no has escalado nunca, mejor. Te enseñamos." },
+    { "is_seed": true, "host": "p1",  "sport": "escalada",   "starts_at": "2026-09-16T19:00:00+02:00", "duration_min": 120, "venue": "v_rocodromo_1",    "distrito": "Chamberí",   "level_min": 2, "level_max": 5, "level_display": "Boulder · iniciación", "capacity": 6, "third_half": "cafe", "third_half_venue": "v_cafe_chamberi", "audience": "todos", "meeting_note": "Alquiler de pies de gato en el propio rocódromo." },
+    { "is_seed": true, "host": "p6",  "sport": "ciclismo",   "starts_at": "2026-09-12T08:00:00+02:00", "duration_min": 210, "venue": "v_casa_campo_lago","distrito": "Moncloa-Aravaca", "level_min": 6, "level_max": 8, "level_display": "70 km · 26–30 km/h · carretera", "capacity": 8, "third_half": "desayuno", "third_half_venue": null, "audience": "todos", "meeting_note": "Salida puntual, nadie se queda solo." },
+    { "is_seed": true, "host": "p9",  "sport": "hyrox",      "starts_at": "2026-09-05T07:30:00+02:00", "duration_min": 60, "venue": "v_dehesa_villa",    "distrito": "Moncloa-Aravaca", "level_min": 5, "level_max": 8, "level_display": "Intermedio", "capacity": 10, "third_half": "cafe", "third_half_venue": null, "audience": "todos", "meeting_note": "Antes de trabajar. Sí, a las 7:30." },
+    { "is_seed": true, "host": "p10", "sport": "baloncesto", "starts_at": "2026-09-07T19:00:00+02:00", "duration_min": 90, "venue": "v_berlin",          "distrito": "Chamartín",  "level_min": 3, "level_max": 6, "level_display": "3x3 · recreativo", "capacity": 10, "third_half": "cana", "third_half_venue": null, "audience": "todos", "meeting_note": "Pistas de arriba. Si llueve, se cancela." },
+    { "is_seed": true, "host": "p3",  "sport": "senderismo", "starts_at": "2026-09-13T08:30:00+02:00", "duration_min": 360, "venue": "v_juan_carlos",    "distrito": "Barajas",    "level_min": 3, "level_max": 6, "level_display": "Sierra · 14 km · desnivel medio", "capacity": 12, "third_half": "comida", "third_half_venue": null, "audience": "todos", "meeting_note": "Punto de encuentro para compartir coche. Salimos a la Sierra." }
+  ],
+  "third_half_labels": {
+    "cafe": "Después: café",
+    "cana": "Después: caña",
+    "desayuno": "Después: desayuno",
+    "comida": "Después: comida",
+    "ninguno": "Sin plan después"
+  }
+}

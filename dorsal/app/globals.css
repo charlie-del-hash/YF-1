@@ -1,0 +1,112 @@
+@import 'tailwindcss';
+
+/* Tokens. The reasoning behind each one, and what the critique pass changed,
+   is in docs/DESIGN-TOKENS.md. Two rules that are easy to break by accident:
+
+   1. --dorsal is a FILL, never an ink. It is 1.3:1 on the surface. It appears
+      once per screen, behind --tinta, on the dorsal-number chip.
+   2. Nothing separates itself from the page with a shadow. Hierarchy is
+      painted lines. The single exception is the top card of the deck stack,
+      where a card being physically lifted is literally what is happening. */
+@theme {
+  --color-cal: #f1f4ef;
+  --color-linea: #ffffff;
+  --color-pista: #0e5c8c;
+  --color-pista-dark: #0a4569;
+  --color-cesped: #17794a;
+  --color-dorsal: #e4ff3f;
+  --color-tinta: #071b2a;
+  --color-tinta-60: #40566b;
+  --color-aviso: #c2410c;
+  --color-borde: #c9d2cb;
+
+  --font-display: var(--font-barlow-condensed), 'Arial Narrow', 'Helvetica Neue', sans-serif;
+  --font-sans: var(--font-archivo), system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --radius-card: 4px;
+  --radius-chip: 2px;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--color-cal);
+    color: var(--color-tinta);
+    font-family: var(--font-sans);
+    /* 03-DESIGN-BRIEF quality floor: never below 15px. */
+    font-size: 16px;
+    line-height: 1.5;
+    /* Safe areas, because the primary action sits in the bottom third. */
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Numbers that change must not jitter: plazas counting down, clocks, paces. */
+  .num,
+  time,
+  [data-numeric] {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum' 1;
+  }
+
+  /* Visible keyboard focus everywhere. CLAUDE.md rule 10. */
+  :focus-visible {
+    outline: 3px solid var(--color-pista);
+    outline-offset: 2px;
+  }
+  /* …but not a mouse ring on things you just clicked. */
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  ::selection {
+    background: var(--color-dorsal);
+    color: var(--color-tinta);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  /* A card is a rectangle painted on the surface: a white ground, a hairline,
+     and the lane marking down its left edge. No shadow. */
+  .painted {
+    background: var(--color-linea);
+    border: 1px solid var(--color-borde);
+    border-left: 4px solid var(--color-pista);
+    border-radius: var(--radius-card);
+  }
+
+  /* The one loud object on any screen. --tinta on --dorsal is 16.4:1. */
+  .bib {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 3.25rem;
+    padding: 0.125rem 0.5rem;
+    background: var(--color-dorsal);
+    color: var(--color-tinta);
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.01em;
+    border-radius: var(--radius-chip);
+  }
+
+  /* Touch targets: 44px minimum, no exceptions. */
+  .tap {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
