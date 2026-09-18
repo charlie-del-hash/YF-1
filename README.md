@@ -11,7 +11,12 @@ every push.
 npm install
 npm run dev        # → http://localhost:8080, rebuilds on save
 npm run build      # one-off build into _site/
+npm run build:pages  # same, but under the GitHub Pages URL prefix
 ```
+
+`build:pages` takes the prefix from the folder name, which is what the deploy
+workflow does with the repository name — so a local preview matches the
+published site, and renaming the repository needs no edit here.
 
 ## Go live (once)
 

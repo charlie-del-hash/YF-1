@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "eleventy --serve",
     "build": "eleventy",
-    "build:pages": "eleventy --pathprefix \"/sitrep-journal/\""
+    "build:pages": "eleventy --pathprefix \"/$(basename \"$PWD\")/\""
   },
   "devDependencies": {
     "@11ty/eleventy": "^3.0.0",
