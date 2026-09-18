@@ -684,6 +684,13 @@ and said nothing, so the column only ever recorded test notifications.
 as `forget_push_endpoint()`: the sender is the only code that learns the
 outcome and is not the owner of the row.
 
+**75. Two things the chat said that were not true.** A message arriving over
+Realtime was stamped with the moment the tab heard about it, because the
+handler read `createdAt` from a row that has `created_at`. And
+`deleteMessage()` reported success when the five-minute policy had matched
+nothing, so the thread dropped a message everyone else could still see — it
+now returns the deleted row or a sentence saying the window has passed.
+
 ---
 
 ## Deployment notes
