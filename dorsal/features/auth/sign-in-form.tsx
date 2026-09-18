@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Field, inputClass } from '@/components/ui/field';
 import { copy } from '@/lib/copy/es-ES';
-import { siteUrl } from '@/lib/supabase/env';
 import { createClient } from '@/lib/supabase/client';
 
 /**
@@ -46,13 +45,24 @@ export function SignInForm({
 
     const next = redirectTo ? `?volver=${encodeURIComponent(redirectTo)}` : '';
 
+    // The origin the person is actually on, rather than one assembled from
+    // environment variables. This runs in their browser, so it is correct by
+    // construction — on production, on a preview, on a custom domain, and on
+    // localhost — and it cannot silently disagree with reality the way a
+    // misconfigured NEXT_PUBLIC_SITE_URL can. That failure mode is nasty: the
+    // link arrives, it just goes somewhere else, and it reads as "expired".
+    //
+    // The one requirement is that the origin is on Supabase's redirect
+    // allow-list, which is true of exactly the origins that should work.
+    const origin = window.location.origin;
+
     // signInWithOtp *rejects* when the request never completes, rather than
     // returning an error. Without this the button sits on "Mandando…" for ever.
     let authError: { status?: number; name?: string } | null = null;
     try {
       ({ error: authError } = await createClient().auth.signInWithOtp({
         email,
-        options: { emailRedirectTo: `${siteUrl()}/auth/callback${next}` },
+        options: { emailRedirectTo: `${origin}/auth/callback${next}` },
       }));
     } catch {
       setState('idle');

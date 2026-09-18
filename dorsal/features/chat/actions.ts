@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { copy } from '@/lib/copy/es-ES';
 import { createClient } from '@/lib/supabase/server';
+import { announceMessage } from '@/features/push/notify';
 
 const bodySchema = z.string().trim().min(1).max(1000);
 
@@ -33,6 +34,10 @@ export async function sendMessage(planId: string, body: string): Promise<SendRes
   // closed. Both are things the person can see for themselves once the screen
   // refreshes, so the message says what happened rather than guessing which.
   if (error || !data) return { ok: false, error: copy.chat.sendFailed };
+
+  // Realtime already updates everyone who has the thread open; this is for the
+  // people who do not. Best effort, and never allowed to fail the send.
+  await announceMessage(planId, parsed.data);
 
   revalidatePath(`/planes/${planId}/chat`);
   return { ok: true, id: data.id };

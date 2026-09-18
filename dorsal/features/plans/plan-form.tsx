@@ -28,6 +28,7 @@ export interface PlanFormDefaults {
   minPlansRequired: number;
   thirdHalf: (typeof THIRD_HALVES)[number];
   audience: 'todos' | 'solo_mujeres';
+  repeatWeekly: boolean;
   meetingNote: string | null;
 }
 
@@ -44,6 +45,7 @@ export function PlanForm({
   canCreateWomenOnly,
   center,
   initialDate,
+  initialTime,
 }: {
   defaults: PlanFormDefaults;
   venues: VenueOption[];
@@ -53,6 +55,8 @@ export function PlanForm({
   center: { lat: number; lng: number };
   /** Prefilled when creating; the plan's own date wins when editing. */
   initialDate?: string;
+  /** Only set when copying a plan, so the hour carries over with the rest. */
+  initialTime?: string;
 }) {
   const router = useRouter();
   const isEdit = Boolean(defaults.id);
@@ -61,7 +65,7 @@ export function PlanForm({
   const [venues, setVenues] = useState(initialVenues);
   const [sport, setSport] = useState<SportKey>(defaults.sport);
   const [date, setDate] = useState(prefill?.date ?? initialDate ?? '');
-  const [time, setTime] = useState(prefill?.time ?? '19:30');
+  const [time, setTime] = useState(prefill?.time ?? initialTime ?? '19:30');
   const [durationMin, setDurationMin] = useState(defaults.durationMin);
   const [venueId, setVenueId] = useState(defaults.venueId ?? '');
   const [levelMin, setLevelMin] = useState(defaults.levelMin);
@@ -71,6 +75,7 @@ export function PlanForm({
   const [thirdHalf, setThirdHalf] = useState(defaults.thirdHalf);
   const [thirdHalfVenueId, setThirdHalfVenueId] = useState(defaults.thirdHalfVenueId ?? '');
   const [audience, setAudience] = useState(defaults.audience);
+  const [repeatWeekly, setRepeatWeekly] = useState(defaults.repeatWeekly);
   const [meetingNote, setMeetingNote] = useState(defaults.meetingNote ?? '');
 
   const [pinning, setPinning] = useState(false);
@@ -125,7 +130,7 @@ export function PlanForm({
     const input: PlanFormInput = {
       sport, date, time, durationMin, venueId,
       thirdHalfVenueId: thirdHalf === 'ninguno' || !thirdHalfVenueId ? null : thirdHalfVenueId,
-      levelMin, levelMax, capacity, minPlansRequired, thirdHalf, audience,
+      levelMin, levelMax, capacity, minPlansRequired, thirdHalf, audience, repeatWeekly,
       meetingNote: meetingNote.trim() || null,
     };
 
@@ -210,6 +215,19 @@ export function PlanForm({
             })()}
           </p>
         ) : null}
+        <Field label={copy.create.repeatLabel} help={copy.create.repeatHelp}>
+          {(props) => (
+            <select
+              {...props}
+              className={inputClass}
+              value={repeatWeekly ? 'weekly' : 'once'}
+              onChange={(e) => setRepeatWeekly(e.target.value === 'weekly')}
+            >
+              <option value="once">{copy.create.repeatOnce}</option>
+              <option value="weekly">{copy.create.repeatWeekly}</option>
+            </select>
+          )}
+        </Field>
         <Field label={copy.create.durationLabel}>
           {(props) => (
             <select

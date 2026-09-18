@@ -1,8 +1,11 @@
 # Putting Dorsal on the internet
 
-Nothing is deployed yet. Until it is, the app only runs on a laptop with the
-code on it — there is no link anyone can open. This is the whole procedure,
-once, about ten minutes of clicking.
+**It is live at https://dorsal-chi.vercel.app**, deployed from the `dorsal`
+branch of `charlie-del-hash/YF-1` with root directory `dorsal`. Every push to
+that branch deploys.
+
+What follows is how it was set up, kept because it is also how to set it up
+again — a second environment, a custom domain, or a fresh account.
 
 You need: the GitHub account that holds this repo, and the Supabase project.
 Nothing needs installing.
@@ -58,6 +61,8 @@ the domain, not just yours.
 
 ## 4. Make yourself the moderator
 
+**Not done yet on the live project.**
+
 Nothing in the app can grant this — deliberately. Once, in the Supabase SQL
 editor, after you have signed in at least once so your account exists:
 
@@ -90,9 +95,9 @@ Be honest with them about what they are looking at:
 - **Signing in is a link by email.** They type an address, get a mail, tap the
   link. No password. On a phone this is the easiest kind of sign-in there is,
   but they do have to go and open the mail.
-- **The plans they will see are made up.** The seed data exists so the screen
-  isn't empty. Nobody will turn up to any of them. Before real people use this
-  for real, delete it:
+- **The plans they will see are made up.** The seed data is still in the live
+  database. It exists so the screen isn't empty, and nobody will turn up to any
+  of it. Before real people use this for real, delete it:
   ```sql
   delete from plans where is_seed;
   delete from profiles where is_seed;

@@ -4,6 +4,7 @@ import { copy } from '@/lib/copy/es-ES';
 import { createClient } from '@/lib/supabase/server';
 import { formatShortDate } from '@/lib/time';
 import { isAdmin } from '@/features/safety/queries';
+import { getFillMetrics } from '@/features/plans/queries';
 import { ModerationQueue } from '@/features/safety/moderation-queue';
 
 export const metadata: Metadata = { title: copy.admin.title, robots: { index: false } };
@@ -15,6 +16,8 @@ export default async function AdminPage() {
   if (!(await isAdmin())) notFound();
 
   const supabase = await createClient();
+
+  const metrics = await getFillMetrics();
 
   const [{ data: reports }, { data: verifications }] = await Promise.all([
     supabase
@@ -61,6 +64,37 @@ export default async function AdminPage() {
   return (
     <div className="flex flex-1 flex-col gap-6 pb-4">
       <h1 className="font-display text-2xl font-bold">{copy.admin.title}</h1>
+
+      {/* 04-BUILD-PLAN's definition of done for M5. Four numbers, computed by
+          the database from rows we already keep — no analytics vendor, and so
+          no third party receiving anybody's behaviour (05-RGPD §1). */}
+      {metrics ? (
+        <section>
+          <h2 className="font-display text-xl font-bold">{copy.admin.metrics.title}</h2>
+          <p className="mt-1 text-[15px] text-tinta-60">{copy.admin.metrics.help}</p>
+          <dl className="mt-3 grid grid-cols-2 gap-3">
+            <Metric label={copy.admin.metrics.created} value={String(metrics.plansCreated)} />
+            <Metric label={copy.admin.metrics.filled} value={String(metrics.plansFilled)} />
+            <Metric
+              label={copy.admin.metrics.medianFill}
+              value={
+                metrics.medianHoursToFill === null
+                  ? copy.admin.metrics.none
+                  : copy.admin.metrics.hours(metrics.medianHoursToFill)
+              }
+            />
+            <Metric
+              label={copy.admin.metrics.medianNotice}
+              value={
+                metrics.medianHoursOfNotice === null
+                  ? copy.admin.metrics.none
+                  : copy.admin.metrics.hours(metrics.medianHoursOfNotice)
+              }
+            />
+          </dl>
+        </section>
+      ) : null}
+
       <ModerationQueue
         reports={(reports ?? []).map((r) => ({
           id: r.id,
@@ -72,6 +106,17 @@ export default async function AdminPage() {
         }))}
         verifications={pending}
       />
+    </div>
+  );
+}
+
+function Metric({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="painted p-3">
+      <dt className="text-[15px] text-tinta-60">{label}</dt>
+      <dd className="font-display text-2xl font-bold" data-numeric>
+        {value}
+      </dd>
     </div>
   );
 }

@@ -38,6 +38,7 @@ export default async function EditPlanPage({ params }: { params: Promise<{ id: s
         minPlansRequired: plan.minPlansRequired,
         thirdHalf: plan.thirdHalf,
         audience: plan.audience,
+        repeatWeekly: plan.recurringRule === 'weekly',
         meetingNote: plan.meetingNote,
       }}
       venues={venues}

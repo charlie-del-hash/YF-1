@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { copy } from '@/lib/copy/es-ES';
 import { createClient } from '@/lib/supabase/server';
+import { announcePromotion } from '@/features/push/notify';
 import type { ReportReason } from '@/lib/database.types';
 
 const REASONS = ['acoso', 'peligro', 'no_aparecio', 'perfil_falso', 'spam', 'otro'] as const;
@@ -76,6 +77,9 @@ export async function leaveForSafety(planIds: string[]): Promise<SafetyResult> {
   for (const planId of planIds) {
     const { error } = await supabase.rpc('leave_plan_safety', { p_plan: planId });
     if (error) return { ok: false, error: copy.errors.save };
+    // Leaving frees a plaza here too, and whoever gets it should hear about it
+    // for the same reason. The claim is once-only in the database.
+    await announcePromotion(planId);
     revalidatePath(`/planes/${planId}`);
   }
   revalidatePath('/mis-planes');

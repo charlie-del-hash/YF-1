@@ -85,7 +85,12 @@ export type PlanRow = {
   min_plans_required: number;
   status: PlanStatus;
   cancelled_reason: string | null;
+  /** 'weekly' or null. Constrained to those two by migration 0008. */
   recurring_rule: string | null;
+  /** Occurrences of one weekly plan share this. Null for a one-off. */
+  series_id: string | null;
+  /** When it first reached capacity. Never rewritten — see migration 0008. */
+  filled_at: string | null;
   is_seed: boolean;
   created_at: string;
 }
@@ -160,6 +165,16 @@ export type ChatReadRow = {
   last_read_at: string;
 };
 
+export type PushSubscriptionRow = {
+  user_id: string;
+  /** The push service's URL for one browser on one device. Personal data. */
+  endpoint: string;
+  p256dh: string;
+  auth: string;
+  created_at: string;
+  last_ok_at: string | null;
+}
+
 export type BlockRow = {
   blocker_id: string;
   blocked_id: string;
@@ -188,6 +203,7 @@ export type Database = {
       reports: Table<ReportRow>;
       verifications: Table<VerificationRow>;
       safety_checks: Table<SafetyCheckRow>;
+      push_subscriptions: Table<PushSubscriptionRow>;
     };
     Views: {
       public_profiles: { Row: PublicProfileRow; Relationships: [] };
@@ -230,6 +246,51 @@ export type Database = {
       };
       export_my_data: { Args: Record<string, never>; Returns: Record<string, unknown> };
       delete_my_account: { Args: { p_reason?: string | null }; Returns: undefined };
+      fill_metrics: {
+        Args: Record<string, never>;
+        Returns: {
+          plans_created: number;
+          plans_filled: number;
+          median_hours_to_fill: number | null;
+          median_hours_of_notice: number | null;
+        }[];
+      };
+      materialise_my_recurring: { Args: Record<string, never>; Returns: number };
+      my_regulars: {
+        Args: Record<string, never>;
+        Returns: {
+          user_id: string; display_name: string; dorsal_number: number; attended: number;
+        }[];
+      };
+      plans_needing_people: { Args: { p_within_hours?: number }; Returns: string[] };
+      /** The only function `anon` may call. Migration 0009. */
+      public_plan_preview: {
+        Args: { p_plan: string };
+        Returns: {
+          id: string;
+          sport: SportKey;
+          starts_at: string;
+          duration_min: number;
+          distrito: string;
+          level_display: string;
+          capacity: number;
+          joined_count: number;
+          third_half: ThirdHalf;
+          venue_name: string | null;
+          host_name: string | null;
+        }[];
+      };
+      /** Migration 0011. Endpoints and keys are never returned to the browser. */
+      plan_audience: { Args: { p_plan: string }; Returns: string[] };
+      push_targets_for_plan: {
+        Args: { p_plan: string; p_users: string[] };
+        Returns: { user_id: string; endpoint: string; p256dh: string; auth: string }[];
+      };
+      notify_promotion: {
+        Args: { p_plan: string };
+        Returns: { user_id: string; endpoint: string; p256dh: string; auth: string }[];
+      };
+      forget_push_endpoint: { Args: { p_endpoint: string }; Returns: undefined };
       complete_onboarding: {
         Args: {
           p_display_name: string;

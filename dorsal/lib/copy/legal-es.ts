@@ -89,6 +89,14 @@ export const LEGAL_PAGES: Record<LegalPage['slug'], LegalPage> = {
         ],
       },
       {
+        heading: 'Los avisos, si los activas',
+        body: [
+          'Para mandarte un aviso al móvil hace falta pasar por el servicio de notificaciones de tu propio navegador: Google si usas Chrome o Android, Mozilla si usas Firefox, Apple si usas Safari. No lo elegimos nosotros, lo elige tu navegador.',
+          'Ese servicio recibe una dirección que apunta a tu navegador y unos bytes cifrados que no puede leer: el texto del aviso va cifrado con una clave que solo tiene tu dispositivo. No sabe quién eres, ni a qué plan te has apuntado, ni qué dice el mensaje.',
+          'Guardamos esa dirección y dos claves, nada más: ni el modelo del móvil, ni desde dónde te conectas. Si quitas los avisos, la borramos en el momento. Es tu decisión y está apagada por defecto.',
+        ],
+      },
+      {
         heading: 'Cuánto tiempo',
         body: [
           'Mientras tengas la cuenta. Si la borras, se borra tu perfil, tus deportes, tu historial de asistencia y tus reportes.',
@@ -122,8 +130,9 @@ export const LEGAL_PAGES: Record<LegalPage['slug'], LegalPage> = {
         heading: 'No te vamos a pedir permiso, y este es el motivo',
         body: [
           'Dorsal no usa cookies de publicidad, ni de analítica, ni de terceros. Por eso no verás un banner: no hay nada que consentir.',
-          'Lo único que guardamos en tu navegador es lo imprescindible para que funcione: la cookie de sesión que te mantiene dentro, y una preferencia tuya —si prefieres ver los planes en fichas o en lista— que solo se guarda porque tú la eliges.',
-          'Ambas están exentas de consentimiento por ser estrictamente necesarias o responder a una elección explícita tuya.',
+          'Lo que guardamos en tu navegador es lo imprescindible para que funcione: la cookie de sesión que te mantiene dentro; dos preferencias tuyas —si prefieres los planes en fichas o en lista, y si ya te hemos ofrecido instalar la app— que solo se guardan porque tú las eliges; y una copia del logo, de los tipos de letra y de la pantalla de «sin conexión», para que la aplicación abra en el metro.',
+          'Todo ello está exento de consentimiento: o es estrictamente necesario, o responde a una elección explícita tuya. Nada de eso se envía a ninguna parte ni sirve para seguirte.',
+          'Si activas los avisos, tu navegador guarda además la suscripción que los hace posibles. Se explica en la política de privacidad, y se borra en cuanto los desactivas.',
         ],
       },
       {

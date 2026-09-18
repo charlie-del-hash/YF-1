@@ -8,16 +8,11 @@ log — this file is orientation, not a second source of truth.
 
 - Repo `charlie-del-hash/YF-1`, work branch `claude/coding-session-0hb1m9`, open
   as [PR #1](https://github.com/charlie-del-hash/YF-1/pull/1).
-- **`dorsal` is the deploy branch.** Vercel tracks it. It is not where work
-  happens: it is fast-forwarded from the work branch when the owner wants a
-  deploy, so shipping is a decision rather than a side effect of every commit.
-
-  ```sh
-  git branch -f dorsal <work-branch-head> && git push origin dorsal
-  ```
-
-  Only ever fast-forward it, and only when asked. If it has diverged, something
-  has gone wrong — find out what before forcing anything.
+- **`dorsal` is the branch, and it is live.** Work happens directly on it and
+  **every push deploys to https://dorsal-chi.vercel.app**. That is the owner's
+  explicit choice, made after the first deploy. Treat a push as shipping:
+  the full suite passes before it, not after.
+  `claude/coding-session-0hb1m9` is the older session branch, kept for history.
 - **The app is in `dorsal/`.** The repository root is an unrelated Eleventy
   project that was already there and has not been touched. Every path in
   `CLAUDE.md`, the README and the commit messages is relative to `dorsal/`,
@@ -38,9 +33,13 @@ log — this file is orientation, not a second source of truth.
 
 ## What does not exist
 
-- **No deploy yet at the time of writing.** `docs/DEPLOY.md` is the procedure;
-  the Vercel project is created from the owner's side, pointed at this repo with
-  root directory `dorsal` and production branch `dorsal`.
+- **Nobody has walked the live site yet.** It builds and serves, but no one has
+  signed in, onboarded and joined a plan on the deployed thing. That is the
+  first thing to get done, and it cannot be done from this container.
+- **No moderator exists yet**, so `/admin` is a 404 for everybody. The SQL is in
+  `docs/DEPLOY.md`.
+- **The seed data is still in the live database.** Fine for showing someone,
+  wrong the moment a real person joins a plan nobody will turn up to.
 - **No web push.** Deferred to M6 by the owner's decision. It needs a
   network-touching dependency, which `CLAUDE.md` says nobody adds without
   asking.
@@ -82,9 +81,11 @@ owner has run it; all eight checks passed.
 
 - **This container cannot reach `supabase.co` or `vercel.com`.** An organisation network policy
   blocks both for curl, Node and Chromium alike, and credentials do not help.
-  Schema changes go through the Supabase MCP tools; anything needing Vercel goes
-  through the owner. Git is *not* blocked — pushing to this repo works fine, and
-  that is how deploys happen.
+  `*.vercel.app` is blocked too, so **the live site cannot be opened from here**
+  — not by curl and not by Playwright. Schema changes go through the Supabase
+  MCP tools; anything needing to *look* at production goes through the owner or
+  a browser-capable session. Git is *not* blocked, which is exactly why pushing
+  is the deploy mechanism.
 - **Playwright**: the bundled Chromium is a revision Playwright does not know.
   `playwright.config.ts` finds it under `PLAYWRIGHT_BROWSERS_PATH`; run e2e with
   that variable set. Never run `playwright install`.

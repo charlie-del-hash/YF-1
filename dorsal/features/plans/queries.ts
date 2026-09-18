@@ -32,6 +32,8 @@ export interface PlanCardData {
   isSeed: boolean;
   status: PlanStatus;
   cancelledReason: string | null;
+  /** 'weekly' while this is the occurrence that rolls forward, else null. */
+  recurringRule: string | null;
   /** True when the viewer's own level is outside the plan's band. */
   outOfBand?: boolean;
   venueId: string | null;
@@ -45,6 +47,7 @@ const SELECT = `
   id, sport, starts_at, duration_min, distrito, level_min, level_max, level_display,
   capacity, joined_count, third_half, third_half_venue_id, venue_id, audience,
   min_plans_required, meeting_note, status, cancelled_reason, host_id, is_seed,
+  recurring_rule,
   venue:venues!plans_venue_id_fkey ( id, name, distrito, lat, lng, verified ),
   third_half_venue:venues!plans_third_half_venue_id_fkey ( name ),
   host:public_profiles!plans_host_id_fkey ( id, display_name, dorsal_number, photo_url )
@@ -81,6 +84,7 @@ function toCard(row: Raw): PlanCardData | null {
     isSeed: row.is_seed,
     status: row.status,
     cancelledReason: row.cancelled_reason,
+    recurringRule: row.recurring_rule,
     venueId: row.venue_id,
     thirdHalfVenueId: row.third_half_venue_id,
     venue: row.venue,
@@ -342,4 +346,127 @@ export async function getLeaveCost(planId: string): Promise<'early_cancel' | 'la
   const supabase = await createClient();
   const { data } = await supabase.rpc('leave_cost', { p_plan: planId });
   return data === 'late_cancel' ? 'late_cancel' : 'early_cancel';
+}
+
+/**
+ * Plans that are close, short of people, and worth putting in front of you.
+ *
+ * The selection is `plans_needing_people` in migration 0008 — the only query in
+ * the product that reaches past a left swipe, and the reasoning for that is in
+ * the function's own comment. Nothing is re-decided here: this takes the ids it
+ * is given and loads the same card shape as the deck.
+ */
+export async function getPlansNeedingPeople(withinHours = 48): Promise<PlanCardData[]> {
+  const supabase = await createClient();
+  const { data: ids } = await supabase.rpc('plans_needing_people', {
+    p_within_hours: withinHours,
+  });
+  if (!ids || ids.length === 0) return [];
+
+  const { data } = await supabase.from('plans').select(SELECT).in('id', ids).order('starts_at');
+  return ((data ?? []) as unknown as Raw[])
+    .map(toCard)
+    .filter((plan): plan is PlanCardData => plan !== null);
+}
+
+export interface Regular {
+  userId: string;
+  displayName: string;
+  dorsalNumber: number;
+  attended: number;
+}
+
+/** Who keeps coming back to your plans. Yours only — see migration 0008. */
+export async function getMyRegulars(): Promise<Regular[]> {
+  const supabase = await createClient();
+  const { data } = await supabase.rpc('my_regulars');
+  return (data ?? []).map((row) => ({
+    userId: row.user_id,
+    displayName: row.display_name,
+    dorsalNumber: row.dorsal_number,
+    attended: row.attended,
+  }));
+}
+
+/**
+ * Rolls a host's weekly plans forward, and says how many it made.
+ *
+ * There is no scheduler in this project, so this runs when the host opens `Mis
+ * planes`, exactly like attendance settlement. It is idempotent: a series that
+ * already has a future occurrence gets nothing, so opening the screen twice
+ * does not create two plans.
+ */
+export async function rollForwardMyRecurring(): Promise<number> {
+  const supabase = await createClient();
+  const { data } = await supabase.rpc('materialise_my_recurring');
+  return typeof data === 'number' ? data : 0;
+}
+
+export interface FillMetrics {
+  plansCreated: number;
+  plansFilled: number;
+  medianHoursToFill: number | null;
+  medianHoursOfNotice: number | null;
+}
+
+/**
+ * 04-BUILD-PLAN's definition of done for M5: median time-to-fill is
+ * *measurable*. It is computed by the database from rows we already keep, so
+ * knowing whether the product works costs no third-party processor and no
+ * extra column of anybody's behaviour (05-RGPD §1). Moderators only.
+ */
+export async function getFillMetrics(): Promise<FillMetrics | null> {
+  const supabase = await createClient();
+  const { data } = await supabase.rpc('fill_metrics');
+  const row = data?.[0];
+  if (!row) return null;
+  return {
+    plansCreated: row.plans_created,
+    plansFilled: row.plans_filled,
+    medianHoursToFill: row.median_hours_to_fill,
+    medianHoursOfNotice: row.median_hours_of_notice,
+  };
+}
+
+export interface PublicPlan {
+  id: string;
+  sport: SportKey;
+  startsAt: string;
+  durationMin: number;
+  distrito: string;
+  levelDisplay: string;
+  capacity: number;
+  joinedCount: number;
+  thirdHalf: ThirdHalf;
+  venueName: string | null;
+  hostName: string | null;
+}
+
+/**
+ * What a share link shows someone who has no account.
+ *
+ * This is the one read in the product that does not go through RLS, so it goes
+ * through `public_plan_preview` instead — a security definer function that
+ * refuses solo_mujeres plans outright, returns no roster and no coordinates,
+ * and is the only function `anon` is allowed to execute at all (migration
+ * 0009). Nothing is filtered on this side; there is nothing here to filter.
+ */
+export async function getPublicPlan(id: string): Promise<PublicPlan | null> {
+  const supabase = await createClient();
+  const { data } = await supabase.rpc('public_plan_preview', { p_plan: id });
+  const row = data?.[0];
+  if (!row) return null;
+  return {
+    id: row.id,
+    sport: row.sport,
+    startsAt: row.starts_at,
+    durationMin: row.duration_min,
+    distrito: row.distrito,
+    levelDisplay: row.level_display,
+    capacity: row.capacity,
+    joinedCount: row.joined_count,
+    thirdHalf: row.third_half,
+    venueName: row.venue_name,
+    hostName: row.host_name,
+  };
 }

@@ -71,6 +71,8 @@ pnpm format           # prettier --check
 pnpm typecheck        # tsc --noEmit
 pnpm test             # vitest
 pnpm test:e2e         # playwright
+pnpm icons:gen        # regenerate the app icons from the design tokens
+pnpm push:keys        # print a VAPID keypair for notifications
 pnpm db:seed:gen      # seed-madrid.json -> supabase/seed.sql
 pnpm db:push          # apply migrations to the linked Supabase project
 pnpm db:reset         # local reset + migrate + seed
@@ -378,7 +380,253 @@ still deferred. The `dorsales` bucket and its policies exist, but nothing
 uploads to it — which means a reviewer comparing a selfie against a profile
 photo currently has nothing to compare it to, and verification only confirms
 that a real person took a selfie. This is the next thing worth doing, and it is
-not on the M5 list.
+not on the M5 list. **Resolved after M5 — see decision 51.**
+
+---
+
+## Decisions taken or changed while building M5
+
+**44. Time-to-fill is a stamped column, not a derived number.** It is
+reconstructable from the participant history right up until someone leaves the
+plan, and then it is gone. `plans.filled_at` is written by the counts trigger
+the first time a plan reaches capacity and is never rewritten — dropping below
+capacity again does not reset it, because the question is "how long did this
+take to fill", not "is it full now". `fill_metrics()` reads it, is
+moderator-only, and excludes seed plans.
+
+**45. Measuring the product needed no analytics vendor.** M5's definition of
+done is that median time-to-fill is *measurable*, and four numbers computed in
+Postgres from rows already kept answers it. Adding a third-party analytics SDK
+would have been a new processor receiving every user's behaviour (`05-RGPD` §1)
+to learn something the database already knows. If a vendor is ever proposed, it
+is a conversation before it is a commit.
+
+**46. Recurring means weekly, and nothing else.** `recurring_rule` existed from
+0001 and was unused. A full RRULE is more than any host here has asked for; the
+thing they have is a fixed weekly session. A check constraint refuses anything
+but `'weekly'`, and occurrences share a `series_id` so "the Sunday pachanga" is
+one thing with a history rather than forty unrelated rows.
+
+**47. The next occurrence is created lazily, when the host opens `Mis
+planes`.** Same reason as attendance settlement (decision 32): there is no
+scheduler in this project. `materialise_my_recurring()` is idempotent — a
+series that already has a future occurrence gets nothing — and catches up if
+the host has been away for weeks. Copying a plan never inherits the weekly
+flag, so a host who duplicates a fixed session gets one more occurrence rather
+than a second series rolling forward beside the first.
+
+**48. The rescue list is the only query that reaches past a left swipe.**
+01-PRD asks for exactly this, and the justification is narrow: passing on one
+Tuesday run is not a standing instruction about running, and the plan being
+short of people two days out is new information. It stays honest by never
+reaching past a *right* swipe or an existing membership, only returning people
+whose level actually fits, and never showing a `solo mujeres` plan to anyone
+who cannot see it. It appears in exactly one place — the end of the deck, where
+there is nothing else to show and the second look is earned.
+
+**49. A share link is the only page that renders without a session, and the
+database decides what it may say.** `public_plan_preview()` refuses
+`solo_mujeres` plans outright rather than filtering them, because a URL
+travels; and it returns no roster, no coordinates and no meeting note. The page
+does no filtering of its own — there is nothing left to filter. `/p/:id` is
+open in the middleware for the same reason: the gate would turn a shared plan
+into a sign-in wall, which is the opposite of what a share link is for.
+
+**50. `anon` could execute every function in the schema, and now executes
+one.** Postgres grants EXECUTE on a new function to PUBLIC, and Supabase's
+`anon` inherits PUBLIC — so every `grant execute … to authenticated` written in
+migrations 0001–0008 read like a decision and was not one. Most of it was noise
+rather than exposure (anything touching a person's own data opens by refusing a
+null `auth.uid()`), but three read-only helpers written for use inside RLS
+policies answered anyone who asked: `is_blocked()` exposed the block graph for
+any pair of ids, `completed_plan_count()` anyone's attendance count, and
+`has_verified_selfie()` whether a given id had sent us a photograph of their
+face. Migration 0009 revokes the lot, grants back deliberately, guards those
+three, and sets default privileges so the next function starts closed.
+`supabase/test/08-privileges.test.sql` pins the anon-executable set to exactly
+what it should be, by asking the catalogue rather than reading the grants —
+which is how this was found in the first place.
+
+**51. The profile photo exists now, and it is a path rather than a URL.** It
+was deferred twice (decisions 11 and 43) while the onboarding copy went on
+promising it — "puedes añadirla luego" under no control at all, which a
+walkthrough of the live deploy caught. `dorsales` stays private, so
+`profiles.photo_url` holds `<user id>/perfil` and every render mints a
+short-lived signed URL, batched per roster. The column keeps its misleading
+name; `features/profile/schema.ts` refuses anything that is not that exact
+shape, and a test says why — validating it as a URL would accept a link to
+somebody else's server and turn every profile render into a request to it.
+
+**52. Blocking now covers the photograph.** 0006 let any signed-in caller read
+any object in `dorsales`, and paths are `<user id>/perfil` with ids visible on
+every roster — so anyone who had seen an id could fetch the face of someone who
+had blocked them, while the app refused to return that profile at all. 0010
+narrows the read to objects owned by a profile that is neither suspended nor in
+a block with the viewer. Found while building decision 51: a bucket-wide read
+policy is fine right up until the path is predictable.
+
+---
+
+## Decisions taken or changed while building M6
+
+**53. Web push is written out, not pulled in.** M2 deferred it partly because
+`web-push` would be a new dependency, and the stack table says a dependency is
+a data-protection question before it is a bundle-size one — this one would sit
+in the path of every message the product sends. RFC 8291 over RFC 8188 is about
+sixty lines of `node:crypto`, and being ours means it is tested against **the
+RFC's own published vector** (`lib/push/encrypt.test.ts`) rather than trusted.
+That matters more than usual here: a mistake in this code produces a
+notification the browser silently drops, with no error anywhere.
+
+**54. Every notification is sent by the person who caused it.** There is no
+scheduler and no job runner (decision 32), so the send happens inside the
+server action that did the thing. That constraint turned out to be a feature:
+each notification goes out with the sender's own permissions, so the database's
+existing rules about who may see whom apply to notifications too, with no
+second set of checks to keep in step. `push_targets_for_plan()` cannot be
+pointed at a user id — only at a plan the caller is in — and a block stops a
+notification exactly as it stops everything else.
+
+**55. The one exception is the waitlist promotion, and it marks itself.**
+"Se ha caído alguien y tienes plaza" has existed as a string since M1 with
+nothing able to deliver it: promotion happens inside `leave_plan()` under a row
+lock and the promoted id comes back to nobody. A trigger stamps
+`promoted_at`, and `notify_promotion()` claims and clears it in one statement,
+so it is sent once however many people ask — normally by the person who left,
+one statement later. A trigger rather than an edit to `leave_plan()` and
+`leave_plan_safety()`, so it also covers whatever promotes somebody next.
+
+**56. Permission is asked by a tap, on `Mi cuenta`, never on arrival.** A
+browser-level notification block is permanent and cannot be undone from inside
+the app, so asking at the wrong moment does not cost one notification, it costs
+all of them. With no VAPID keys configured the panel does not render at all:
+the feature is absent rather than broken.
+
+**57. The service worker caches no page that has anybody's data on it.** Only
+the offline page and content-hashed build output. Every screen here is
+somebody's roster, chat or profile, and a worker that served a stale one — or
+served one person's page to the next person on the device — would be a worse
+bug than any amount of offline breakage. The e2e run asserts the cache list
+rather than trusting the comment.
+
+**58. `ALTER DEFAULT PRIVILEGES … REVOKE EXECUTE … FROM PUBLIC` does nothing,**
+and decision 50's claim that it would close future functions was wrong. In
+Postgres 16 it records no `pg_default_acl` row and has no effect; 0011 added
+five functions and `08-privileges.test.sql` found every one of them open to
+`anon`. What actually holds the line is an explicit revoke at the end of each
+migration that adds a function, and the test that fails when one is forgotten —
+which is the mechanism that caught this. The line stays in 0009, corrected in
+its comment, because deleting it would hide the lesson.
+
+**59. The cookies page changed, because what is stored changed.** Decision 37
+said the only client storage was the session cookie and one UI preference.
+There are now two preferences, a service-worker cache of the logo, the fonts
+and the offline page, and — if someone turns them on — a push subscription. All
+still exempt, none of it sent anywhere, and the page says so specifically
+rather than keeping a claim that had quietly stopped being true. The privacy
+policy gained a section naming the push service as a recipient and saying
+exactly what it can and cannot see.
+
+**61. `/kit` now renders every component the authed screens are made of.** A
+walkthrough of the live deploy reported React #418 — a hydration mismatch — on
+every load of `/planes` and `/mi-cuenta`, and it could not be reproduced here,
+because nothing was watching: the e2e suite asserted what was on the screen and
+ignored what the console said about it. Those two screens need a session and
+this container cannot reach Supabase, so the components they are made of were
+added to the reference instead — the deck, the install prompt, the
+notifications panel, the account panel, verification — and `e2e/consola.spec.ts`
+now fails the build on any console error, page error or failed request on every
+page reachable without signing in. All clean, which means the mismatch is
+somewhere those components are not: the authed shell, the session, or the
+reporting browser itself. Unreproduced, and not guessed at.
+
+**62. There is a favicon, because its absence was hiding things.** Every page
+load asked for `/favicon.ico` and got a 404 — in exactly the place a person
+looks for real errors. `app/favicon.ico` rather than `app/icon.png`: Next
+serves the latter through a `<link>` it injects with a script after parse, by
+which time the browser has already asked for `/favicon.ico` and been refused.
+Generated by the same script as the app icons, as an ICO wrapping a PNG.
+
+**63. Asking for notification permission can never trap the panel.** The
+walkthrough found `Activar avisos` stuck on "Activando…" for ever:
+`Notification.requestPermission()` had not settled, because the browser was
+suppressing the prompt. Exactly the failure decision 19 fixed for the sign-in
+form, in a new place. Now: a distinct `asking` state that says the browser is
+mid-question and offers a way out; a focus listener that reads the browser's
+own record of the answer, for when the promise never settles but the person did
+answer; and dismissing is no longer reported as blocking, which was both untrue
+and a dead end.
+
+**60. Still not done after M6.** No `screenshots` or `shortcuts` in the
+manifest — both want real screens rather than placeholders, and an install
+dialog with a broken thumbnail is worse than one without. No notification for a
+new plan matching your filters, which is the one people will ask for and which
+needs a scheduler or a trigger-driven fan-out that this project does not have.
+And push itself has been verified only as far as a container with no network
+can verify it: the crypto against the RFC vector, the shell against a real
+browser. The round trip through Google's or Apple's push service to a real
+phone has to be done by hand on the deploy.
+
+---
+
+## Decisions taken or changed while building M7
+
+**64. The reliability view was readable by anyone with the publishable key.**
+`user_reliability` aggregates `reliability_events` into per-person counts —
+attendances, commitments, faltas in the last thirty days, disputes — so that
+`public_palabra()` can reduce it to the three sanitised numbers decision 30
+allows. It was created without `security_invoker`, so it ran with its owner's
+rights and ignored the RLS on the tables underneath; Supabase's default grant
+of SELECT to `anon` did the rest. `GET /rest/v1/user_reliability` returned one
+row per account in the system. That is the raw material for exactly the rank,
+badge, colour and comparison decision 30 says the product cannot produce, plus
+the disputes column that 05-RGPD treats as a moderation record. 0012 makes the
+view `security_invoker` and revokes it from both API roles — nothing selects it
+directly except two security definer functions, and nothing should.
+
+Found by Supabase's own database advisors, which had never been run. The single
+`ERROR` in that report was this. Worth running after every schema change.
+
+**65. Views are now covered by the privileges test.** The rule that catches
+this class is structural rather than case-by-case: no view in `public` may
+exist without `security_invoker=on`. `08-privileges.test.sql` asserts it from
+the catalogue, the same way it asserts the anon-executable function set — which
+is twice now that a Supabase default grant has decided something nobody chose.
+
+**66. Example plans refuse to be joined, rather than being deleted.** The seed
+is shifted forward by whole weeks at apply time (decision 9), so it is
+permanently in the future and was permanently joinable — hosted by ten profiles
+that do not correspond to people. Everything else in this product is designed
+around a physical failure mode; a seed plan is the one case where standing
+alone in a park is guaranteed for everyone who joins. The card has said
+`Plan de ejemplo` since M0, and a label is not a control.
+
+Deleting the seed is what a launch checklist would normally say, and it is the
+wrong trade at three real accounts and one real plan: it leaves the next person
+to sign up looking at an empty app. So 0013 refuses the join in `join_plan()`,
+clears the memberships real people had already taken on example plans, and the
+deck and detail screen both say why rather than offering a button the database
+will reject. `docs/LAUNCH.md` has the deletion for when the city has plans of
+its own.
+
+**67. Rewriting a function from memory nearly removed two rules.** The first
+draft of 0013 reproduced `join_plan()` from memory with the seed check added,
+and silently dropped the two-falta cooldown (decision 34) and the `swipes` row
+that stops a joined plan reappearing in the deck. Neither would have failed a
+test that existed at the time. The migration now carries the live definition
+verbatim with four lines added, and says so at the top. When a change is one
+line inside sixty, fetch the sixty.
+
+**68. `cooldown` was never mapped to a message.** `joinErrorMessage()` had no
+case for it, so someone in a cooldown got the generic "something went wrong"
+instead of the sentence that had been written for them since M3. Found while
+adding `seed_plan` beside it.
+
+**69. There is a moderator.** `dorsal 1000`. Until now `/admin` was a 404 for
+everybody, which meant every report and every verification submitted since M4
+had no queue anyone could open. Nothing in the app grants the flag and nothing
+should — decision 41 — so it stays a deliberate statement in the SQL editor,
+recorded in `docs/LAUNCH.md`.
 
 ---
 
@@ -392,11 +640,18 @@ and anyone auditing this later should not have to wonder whether the difference
 was noticed.
 
 **Applied so far:** migrations `0001_init`, `0002_plan_lifecycle`, `0003_chat`,
-`0004_palabra`, `0005_safety`, `0006_storage` and `0007_data_rights`, and
+`0004_palabra`, `0005_safety`, `0006_storage`, `0007_data_rights`,
+`0008_fill_the_deck`, `0009_least_privilege`, `0010_photo_reads`,
+`0011_push`, `0012_reliability_view` and `0013_seed_is_not_joinable`, and
 `supabase/seed.sql`.
 
-**Making the first moderator.** Nothing in the app grants the flag, on purpose:
+**Moderators.** Nothing in the app grants the flag, on purpose:
 `update profiles set is_admin = true where id = '…';` in the SQL editor, once.
+`dorsal 1000` has it as of M7; before that `/admin` was a 404 for everybody and
+nothing submitted to it could be read.
+
+**Going live.** `docs/LAUNCH.md` is the checklist: what is done, what needs a
+card or a phone or a lawyer, and what to re-run after a schema change.
 
 **Realtime.** `messages` is added to the `supabase_realtime` publication by
 0003, guarded so it is a no-op where that publication does not exist. Supabase
@@ -421,9 +676,26 @@ session token to. `https://*.vercel.app/**` is therefore not an option, however
 convenient it looks for preview deploys — it names every site on the domain.
 Scope previews to the team slug or list production exactly.
 
-**Still not done:** the Vercel deploy. It needs the two `NEXT_PUBLIC_` variables
-and an Auth redirect allow-list entry for `<site>/auth/callback`; without the
-latter, magic links fail in a way that looks like an expired link.
+**Notifications need three environment variables**, and do nothing without
+them: `NEXT_PUBLIC_VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY` and `VAPID_SUBJECT`
+(a `mailto:` a push service can complain to). `pnpm push:keys` prints a pair.
+The private key is a signing key: server-side environment only, never in a
+`NEXT_PUBLIC_` variable. With none of them set the notifications panel does not
+render and `sendPush()` returns without touching the network, so an environment
+that has not been given keys behaves exactly as it did before push existed.
+
+**Live at `https://dorsal-chi.vercel.app`,** root directory `dorsal`,
+production branch `dorsal`, region `fra1`. Every push to `dorsal` deploys.
+
+**The domain is a liability before real sign-ups.** `*.vercel.app` subdomains
+are blocked outright by some corporate networks and stripped by some email
+security scanners, because they are commonly abused for phishing. That is a
+plausible cause of "the magic link never arrived" and "the link won't open"
+reports that has nothing to do with the redirect bug fixed in `0512af9`, and no
+amount of application code can diagnose it from the inside. A custom domain —
+set as the Vercel production domain, as the Supabase Site URL, and in the
+redirect allow-list — is worth having before anyone is asked to sign up for
+real.
 
 
 ---

@@ -15,12 +15,15 @@ export function JoinButton({
   minPlansRequired,
   initialStatus,
   isHost,
+  isSeed,
   remaining,
 }: {
   planId: string;
   minPlansRequired: number;
   initialStatus: string | null;
   isHost: boolean;
+  /** An example plan. join_plan() refuses these — migration 0013. */
+  isSeed: boolean;
   remaining: number;
 }) {
   const [status, setStatus] = useState(initialStatus);
@@ -29,6 +32,12 @@ export function JoinButton({
 
   if (isHost) {
     return <p className="text-tinta-60">{copy.errors.hostCannotJoin}</p>;
+  }
+
+  // The database refuses these, so the button does not offer it. A deck full
+  // of silent dead ends is worse than one that says so — decision 16.
+  if (isSeed) {
+    return <p className="text-tinta-60">{copy.errors.seedPlan}</p>;
   }
 
   if (status === 'joined' || status === 'attended') {

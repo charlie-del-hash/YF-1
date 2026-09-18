@@ -26,21 +26,34 @@ $$;
 -- Everything the later blocks need, resolved now, while this still runs as the
 -- table owner. Looking these up after `set role` returns nothing — RLS is doing
 -- its job — and the assertions would then pass vacuously against nulls.
+-- Two real plans for the join assertions. They cannot be seed plans: 0013
+-- makes join_plan() refuse those outright, which is the point of that
+-- migration. Created here, as the table owner, inside the transaction this
+-- file ends by rolling back — so nothing is left on the project it is pasted
+-- into, and the seed itself is never modified.
+insert into plans (id, host_id, sport, starts_at, distrito, level_min, level_max,
+                   level_display, capacity, venue_id, audience)
+select x.id, p.id, 'running', now() + interval '5 days', v.distrito,
+       x.lo, x.hi, x.label, 6, v.id, 'todos'
+  from (values
+          -- Hosted by Javi, so Marta (running 5) may join it.
+          ('00000000-0000-0000-0000-00000000c001'::uuid, 2, 4, 6, '8 km'),
+          -- Hosted by Marta, and too fast for Javi (running 4).
+          ('00000000-0000-0000-0000-00000000c002'::uuid, 1, 5, 6, '8 km rápido')
+       ) as x(id, host_dorsal, lo, hi, label)
+  join profiles p on p.dorsal_number = x.host_dorsal
+  cross join lateral (select id, distrito from venues order by name limit 1) v;
+
 create temporary table _fixtures on commit drop as
 select
   (select id from profiles where dorsal_number = 1) as mujer_id,     -- Marta, running 5
   (select id from profiles where dorsal_number = 2) as hombre_id,    -- Javi, running 4
   -- A plan the joiner does not host: join_plan() rejects the host of a plan
   -- before it ever looks at levels or capacity.
-  (select id from plans
-    where is_seed and sport = 'running' and audience = 'todos'
-      and 5 between level_min and level_max
-      and host_id <> (select id from profiles where dorsal_number = 1)
-    order by starts_at limit 1) as joinable_plan_id,
-  (select id from plans
-    where is_seed and sport = 'running' and audience = 'todos' and level_min > 4
-      and host_id <> (select id from profiles where dorsal_number = 2)
-    order by starts_at limit 1) as too_fast_plan_id;
+  '00000000-0000-0000-0000-00000000c001'::uuid as joinable_plan_id,
+  '00000000-0000-0000-0000-00000000c002'::uuid as too_fast_plan_id,
+  -- And one seed plan, to prove the refusal is live on this deployment.
+  (select id from plans where is_seed order by starts_at limit 1) as seed_plan_id;
 grant select on _fixtures to authenticated, anon;
 
 -- Steps 4 onwards run as anon/authenticated, so they need INSERT here as well
@@ -187,7 +200,24 @@ begin
   insert into _results values ('8. join_plan joins, and refuses an out-of-band level', 'ok');
 end $$;
 
--- Eight rows means eight checks passed. Fewer means the run stopped early, and
+-- ── 9. example plans refuse to be joined ────────────────────────────────────
+do $$
+declare f _fixtures%rowtype; r join_status;
+begin
+  select * into f from _fixtures;
+  if f.seed_plan_id is not null then
+    perform test_as(f.hombre_id);
+    begin
+      r := join_plan(f.seed_plan_id);
+      assert false, 'an example plan was joinable on this deployment';
+    exception when others then
+      assert sqlerrm = 'seed_plan', 'wrong error: ' || sqlerrm;
+    end;
+  end if;
+  insert into _results values ('9. example plans cannot be joined', 'ok');
+end $$;
+
+-- Nine rows means nine checks passed. Fewer means the run stopped early, and
 -- the error above says where.
 reset role;
 select step, outcome from _results order by step;

@@ -6,6 +6,13 @@ import { ChatClient } from '@/features/chat/chat-client';
 import { HostRoster, SelfCheck } from '@/features/reliability/attendance-prompts';
 import { SafetyMenu } from '@/features/safety/safety-menu';
 import { SafetyCheck } from '@/features/safety/safety-check';
+import { PhotoPicker } from '@/features/profile/photo-picker';
+import { DeckClient } from '@/features/deck/deck-client';
+import { InstallPrompt } from '@/features/pwa/install-prompt';
+import { PushPanel } from '@/features/push/push-panel';
+import { AccountPanel } from '@/features/account/account-panel';
+import { VerificationPanel } from '@/features/verification/verification-panel';
+import { Avatar } from '@/components/ui/avatar';
 import { Bib } from '@/components/ui/bib';
 import { Button } from '@/components/ui/button';
 import { PlanCard } from '@/components/plan-card';
@@ -16,7 +23,8 @@ const plan: PlanCardData = {
   distrito: 'Retiro', levelMin: 4, levelMax: 6, levelDisplay: '8 km · 5:30–6:00 min/km',
   capacity: 6, joinedCount: 4, thirdHalf: 'cafe', thirdHalfVenueName: 'Café en Malasaña',
   audience: 'todos', minPlansRequired: 0, meetingNote: null, isSeed: true,
-  status: 'open', cancelledReason: null, venueId: 'v', thirdHalfVenueId: null,
+  status: 'open',
+  recurringRule: null, cancelledReason: null, venueId: 'v', thirdHalfVenueId: null,
   venue: { id: 'v', name: 'Parque del Retiro — Puerta de Alcalá', distrito: 'Retiro', lat: 40.42, lng: -3.688, verified: false },
   host: { id: 'h', displayName: 'Marta', dorsalNumber: 1042, photoUrl: null },
 };
@@ -53,7 +61,8 @@ export default function Kit() {
         defaults={{
           sport: 'running', durationMin: 60, venueId: null, thirdHalfVenueId: null,
           levelMin: 4, levelMax: 7, capacity: 8, minPlansRequired: 0, thirdHalf: 'cafe',
-          audience: 'todos', meetingNote: null,
+          audience: 'todos',
+          repeatWeekly: false, meetingNote: null,
         }}
         venues={[
           { id: '11111111-1111-5111-8111-111111111111', name: 'Parque del Retiro — Puerta de Alcalá', kind: 'parque', distrito: 'Retiro', lat: 40.42, lng: -3.688, verified: false },
@@ -65,6 +74,19 @@ export default function Kit() {
         center={{ lat: 40.4168, lng: -3.7038 }}
         initialDate="2026-09-12"
       />
+      {/* No handlers: the kit has no session, and the point here is the resting
+          state — the control exists and says what it does. */}
+      <PhotoPicker path={null} />
+      {/* The deck is the product's main screen and was the one thing missing
+          from the reference. It is here so the card stack can be screenshotted
+          and, more usefully, so an automated pass can catch a hydration
+          mismatch on it without a session. */}
+      <DeckClient plans={[plan, plan2]} needPeople={[plan2]} />
+      <InstallPrompt />
+      <VerificationPanel initialStatus={null} />
+      <AccountPanel />
+      <Avatar url={null} size="lg" />
+      <PushPanel vapidPublicKey="BAFHUZ9CmqDOA2JhmZueBDMwdMM9MqVeDnKnDfEevmJnEHpHpqvXt1qy6Lrq1Ue5tScECSJF9OevfQLHdDQDWqs" />
       <SafetyCheck
         pending={[{ planId: 'p9', sport: 'running', startsAt: '2026-09-12T09:30:00+02:00' }]}
       />

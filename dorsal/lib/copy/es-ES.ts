@@ -81,6 +81,13 @@ export const copy = {
       photoLabel: 'Foto',
       photoAdd: 'Añadir foto',
       photoChange: 'Cambiar foto',
+      photoRemove: 'Quitar la foto',
+      photoUploading: 'Subiendo…',
+      photoAdded: 'Foto añadida.',
+      photoFailed: 'No hemos podido subir la foto. Inténtalo otra vez.',
+      photoTooBig: 'La foto pesa demasiado. Tiene que ser de menos de 5 MB.',
+      photoNotAnImage: 'Eso no es una imagen.',
+      photoPrivate: 'Solo la ve la gente que ha entrado en Dorsal. No sale en Google.',
       photoSkip: 'Puedes añadirla luego, pero mucha gente no se apunta a un plan sin ver quién va.',
       genderLabel: 'Género',
       genderHelp:
@@ -133,6 +140,10 @@ export const copy = {
       body: 'Vuelve mañana o amplía el radio desde tu perfil.',
       cta: 'Ampliar mi zona',
     },
+    needPeople: {
+      title: 'A estos les falta gente',
+      body: 'Son pronto y van cortos. Alguno lo habías pasado; te lo enseñamos otra vez porque ahora hay sitio.',
+    },
     filters: {
       title: 'Filtros',
       sport: 'Deporte',
@@ -175,13 +186,21 @@ export const copy = {
     leaveCancel: 'Me quedo',
     leaveConfirm: 'Salirme',
     left: 'Te has salido del plan.',
-    seedNotice: 'Plan de ejemplo mientras arrancamos en tu zona.',
+    seedNotice:
+      'Plan de ejemplo mientras arrancamos en tu zona. No te puedes apuntar: no hay nadie al otro lado.',
     cancelled: 'Plan cancelado',
     cancelledBecause: (reason: string) => `Cancelado: ${reason}`,
     leftWaitlist: 'Has dejado la lista de espera.',
     promoted: 'Se ha caído alguien y tienes plaza.',
     edit: 'Editar el plan',
+    duplicate: 'Repetir este plan',
     cancelPlan: 'Cancelar el plan',
+    share: 'Compartir',
+    shareCopied: 'Enlace copiado.',
+    shareFailed: 'No hemos podido copiar el enlace.',
+    shareHelp: 'Quien lo abra verá el día, el sitio y el nivel. La lista de quién va, no.',
+    shareWomenOnly: 'Los planes solo para mujeres no se comparten fuera de la app.',
+    repeatsWeekly: 'Se repite cada semana',
     cancelTitle: '¿Por qué se cancela?',
     cancelHelp: 'Lo verá la gente que se había apuntado. Sé concreto.',
     cancelReasonLabel: 'Motivo',
@@ -239,6 +258,11 @@ export const copy = {
       one: 'Con un plan a la espalda',
       two: 'Con dos planes a la espalda',
     },
+    repeatLabel: '¿Se repite?',
+    repeatHelp:
+      'Cada semana, el mismo día y a la misma hora. Creamos el siguiente cuando empiece este, y lo puedes parar cuando quieras.',
+    repeatOnce: 'Es un plan suelto',
+    repeatWeekly: 'Todas las semanas',
     thirdHalfLabel: '¿Y después?',
     thirdHalfVenueLabel: '¿Dónde quedáis después?',
     audienceLabel: 'Quién puede apuntarse',
@@ -251,6 +275,8 @@ export const copy = {
     save: 'Guardar los cambios',
     saving: 'Guardando…',
     created: 'Plan creado. Ya se puede apuntar la gente.',
+    duplicatedTitle: 'Repetir el plan',
+    duplicatedHelp: 'Mismo sitio, mismo nivel, misma gente invitada. Elige el día.',
     saved: 'Guardado.',
     errors: {
       sport: 'Elige un deporte.',
@@ -275,6 +301,13 @@ export const copy = {
     emptyUpcoming: 'No tienes ningún plan a la vista. Busca uno o crea el tuyo.',
     emptyPast: 'Aquí aparecerán los planes a los que hayas ido.',
     findPlans: 'Ver planes',
+    rolledForward: (n: number) =>
+      n === 1
+        ? 'Hemos creado la siguiente semana de tu plan fijo.'
+        : `Hemos creado la siguiente semana de ${n} planes fijos tuyos.`,
+    regulars: 'Los de siempre',
+    regularsHelp: 'Gente que ha venido a tus planes más de una vez.',
+    regularsAttended: (n: number) => (n === 1 ? '1 vez' : `${n} veces`),
   },
 
   profile: {
@@ -424,6 +457,16 @@ export const copy = {
     reportedBy: (name: string) => `Lo reporta ${name}`,
     about: 'Sobre',
     notAdmin: 'Esta parte no es para ti.',
+    metrics: {
+      title: 'Cómo se están llenando',
+      help: 'Solo planes reales; los de ejemplo no cuentan.',
+      created: 'Planes creados',
+      filled: 'Se han llenado',
+      medianFill: 'Mediana en llenarse',
+      medianNotice: 'Mediana de antelación',
+      hours: (h: number) => `${h} h`,
+      none: 'Todavía no',
+    },
   },
 
   legal: {
@@ -434,6 +477,89 @@ export const copy = {
     condiciones: 'Condiciones de uso',
     draftWarning:
       'Borrador. Antes de aceptar registros reales tiene que revisarlo un abogado o una consultora de protección de datos.',
+  },
+
+  /**
+   * Notifications and installing. The two questions of M6, and both of them
+   * are asked once and answerable with "no" — a permission prompt fired on
+   * arrival is how an app gets its notifications blocked at the browser level
+   * for ever.
+   */
+  push: {
+    title: 'Avisos',
+    help: 'Te avisamos si se cae alguien y tienes plaza, si se cancela un plan tuyo, y cuando escriben en el chat de un plan al que vas.',
+    enable: 'Activar avisos',
+    enabling: 'Activando…',
+    disable: 'Quitar los avisos',
+    on: 'Avisos activados en este dispositivo.',
+    off: 'No te avisamos de nada.',
+    asking: 'Te lo está preguntando el navegador',
+    askingHelp:
+      'Busca la pregunta arriba del todo, al lado de la dirección. Si no la ves, puede que este navegador no las enseñe.',
+    cancel: 'Dejarlo',
+    dismissed: 'No has contestado a la pregunta del navegador. Puedes volver a intentarlo.',
+    denied:
+      'Los has bloqueado en el navegador. Se cambia desde los ajustes del sitio, no desde aquí.',
+    unsupported: 'Este navegador no puede mandarte avisos.',
+    needsInstall:
+      'En iPhone hay que añadir Dorsal a la pantalla de inicio antes de poder activarlos.',
+    failed: 'No hemos podido activar los avisos. Inténtalo otra vez.',
+    privacy:
+      'Guardamos una dirección que apunta a este navegador. El aviso va cifrado: quien lo transporta no puede leerlo.',
+    test: 'Mandarme uno de prueba',
+    testSent: 'Mandado. Si no llega en unos segundos, algo falla.',
+    testFailed: 'No ha salido. Puede que este dispositivo ya no esté suscrito.',
+    testTitle: 'Funciona',
+    testBody: 'Así se verá un aviso de Dorsal.',
+    /** What the notifications themselves say. Short: this is a lock screen. */
+    promoted: {
+      title: 'Tienes plaza',
+      body: (sport: string) => `Se ha caído alguien en ${sport}. Estás dentro.`,
+    },
+    cancelled: {
+      title: 'Plan cancelado',
+      body: (sport: string, reason: string) => `${sport}: ${reason}`,
+    },
+    message: {
+      title: (name: string) => `${name} ha escrito`,
+      body: (text: string) => text,
+    },
+  },
+
+  install: {
+    title: 'Ponlo en tu pantalla de inicio',
+    help: 'Se abre como una app y va más rápido. No ocupa casi nada.',
+    action: 'Añadir a la pantalla de inicio',
+    later: 'Ahora no',
+    ios: 'Dale a Compartir y luego a "Añadir a pantalla de inicio".',
+    done: 'Ya lo tienes instalado.',
+  },
+
+  offline: {
+    title: 'Sin conexión',
+    body: 'No hemos podido cargar esto. Vuelve a intentarlo cuando tengas cobertura.',
+    retry: 'Reintentar',
+  },
+
+  /**
+   * The share page: the only screen someone without an account ever reads.
+   * It sells the plan, not the app — the plan is the reason they clicked.
+   */
+  publicPlan: {
+    kicker: 'Te han pasado este plan',
+    join: 'Apuntarme',
+    joinHelp: 'Necesitas una cuenta. Se tarda un minuto y no pedimos contraseña.',
+    whatIsThis: '¿Qué es Dorsal?',
+    pitch:
+      'Quedadas deportivas en Madrid. Buscas un plan que te encaje, te apuntas y luego os tomáis algo.',
+    rosterHidden: 'Quién va se ve al apuntarse.',
+    gone: {
+      title: 'Este plan ya no está.',
+      body: 'Puede que se haya cancelado, que ya haya pasado o que el enlace esté mal.',
+      cta: 'Ver los planes de esta semana',
+    },
+    remaining: (n: number) => (n === 1 ? 'Queda 1 plaza' : `Quedan ${n} plazas`),
+    full: 'Completo, pero hay lista de espera',
   },
 
   errors: {
@@ -448,6 +574,8 @@ export const copy = {
     planStarted: 'Este plan ya ha empezado.',
     blocked: 'No puedes apuntarte a este plan.',
     removedByHost: 'Quien organiza te ha sacado de este plan.',
+    seedPlan:
+      'Es un plan de ejemplo, para que veas cómo funciona. No hay nadie al otro lado, así que no te dejamos apuntarte.',
     cooldown:
       'Has faltado a dos planes este mes. Los que están casi llenos se te cierran unos días; el resto siguen abiertos.',
     suspended: 'Tu cuenta está suspendida. Escríbenos si crees que es un error.',
@@ -516,6 +644,8 @@ export function joinErrorMessage(code: string, minPlans = 0): string {
     case 'needs_more_plans':  return copy.errors.needsMorePlans(minPlans);
     case 'level_mismatch':    return copy.errors.levelMismatch;
     case 'host_cannot_join':  return copy.errors.hostCannotJoin;
+    case 'seed_plan':         return copy.errors.seedPlan;
+    case 'cooldown':          return copy.errors.cooldown;
     case 'plan_closed':       return copy.errors.planClosed;
     case 'plan_started':      return copy.errors.planStarted;
     case 'blocked':           return copy.errors.blocked;

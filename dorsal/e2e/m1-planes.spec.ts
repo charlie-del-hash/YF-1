@@ -16,8 +16,13 @@ test.describe('crear un plan', () => {
     for (const label of ['¿Qué deporte?', 'Día', 'Hora', 'Punto de encuentro', 'Desde', 'Hasta']) {
       await expect(page.getByText(label, { exact: true }).first()).toBeVisible();
     }
-    // No bio, no photo, no "sobre ti": a plan is not a profile.
-    await expect(page.getByText(/sobre ti/i)).toHaveCount(0);
+    // No bio, no photo, no "sobre ti": a plan is not a profile. Scoped to the
+    // form, because /kit is the whole component reference — it grew the
+    // account panel, which does ask about you, and a page-wide search made
+    // this read as a claim about the form when it was a claim about the page.
+    const form = page.locator('form').filter({ hasText: 'Crear un plan' });
+    await expect(form.getByText(/sobre ti/i)).toHaveCount(0);
+    await expect(form.getByText(/foto/i)).toHaveCount(0);
   });
 
   test('la fecha elegida se repite en español, porque el selector nativo no lo hace', async ({

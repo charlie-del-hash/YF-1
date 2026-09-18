@@ -12,6 +12,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
+    "icons:gen": "node scripts/generate-icons.mjs",
+    "push:keys": "node scripts/generate-vapid-keys.mjs",
     "db:seed:gen": "tsx scripts/generate-seed.ts",
     "db:push": "supabase db push",
     "db:reset": "supabase db reset",
