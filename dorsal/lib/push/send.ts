@@ -90,13 +90,16 @@ export async function sendPush(targets: PushTarget[], message: PushMessage): Pro
   const delivered = results.filter((r) => r.outcome === 'ok');
   const dead = results.filter((r) => r.outcome === 'gone');
 
+  // Both through security definer functions, because the sender is not the
+  // owner of these rows: a plain update here ran under push_own_update and
+  // matched nothing for anyone but the sender, so last_ok_at was only ever
+  // stamped by the test notification. Migrations 0011 and 0016.
   await Promise.all([
     ...dead.map((r) => supabase.rpc('forget_push_endpoint', { p_endpoint: r.target.endpoint })),
     delivered.length > 0
-      ? supabase
-          .from('push_subscriptions')
-          .update({ last_ok_at: new Date().toISOString() })
-          .in('endpoint', delivered.map((r) => r.target.endpoint))
+      ? supabase.rpc('touch_push_endpoints', {
+          p_endpoints: delivered.map((r) => r.target.endpoint),
+        })
       : Promise.resolve(),
   ]);
 

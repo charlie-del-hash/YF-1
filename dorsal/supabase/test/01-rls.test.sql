@@ -199,11 +199,15 @@ do $$
 declare n int;
 begin
   perform test_as('00000000-0000-0000-0000-0000000000b1');
-  update plan_participants set status = 'attended'
-   where plan_id = '00000000-0000-0000-0000-00000000e001'
-     and user_id = '00000000-0000-0000-0000-0000000000c1';
-  get diagnostics n = row_count;
-  assert n = 0, 'a participant marked someone else as attended';
+  -- Since 0014 the API role holds no UPDATE on the roster at all; before it,
+  -- RLS made the row invisible. Either way nothing changes.
+  begin
+    update plan_participants set status = 'attended'
+     where plan_id = '00000000-0000-0000-0000-00000000e001'
+       and user_id = '00000000-0000-0000-0000-0000000000c1';
+    get diagnostics n = row_count;
+    assert n = 0, 'a participant marked someone else as attended';
+  exception when insufficient_privilege then null; end;
 
   -- and no one can insert a membership directly; joining goes through join_plan
   begin

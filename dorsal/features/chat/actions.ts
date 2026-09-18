@@ -43,14 +43,26 @@ export async function sendMessage(planId: string, body: string): Promise<SendRes
   return { ok: true, id: data.id };
 }
 
+/**
+ * Deleting your own message. The policy allows it for five minutes and then
+ * simply matches nothing — no error — so the rows that came back are the
+ * verdict. Reporting success on an empty delete made the thread drop a message
+ * that everyone else could still see.
+ */
 export async function deleteMessage(
   planId: string,
   messageId: string,
-): Promise<{ ok: boolean }> {
+): Promise<{ ok: true } | { ok: false; error: string }> {
   const supabase = await createClient();
-  const { error } = await supabase.from('messages').delete().eq('id', messageId);
-  if (!error) revalidatePath(`/planes/${planId}/chat`);
-  return { ok: !error };
+  const { data, error } = await supabase
+    .from('messages')
+    .delete()
+    .eq('id', messageId)
+    .select('id');
+  if (error) return { ok: false, error: copy.errors.generic };
+  if (!data || data.length === 0) return { ok: false, error: copy.chat.deleteExpired };
+  revalidatePath(`/planes/${planId}/chat`);
+  return { ok: true };
 }
 
 export async function pinMessage(

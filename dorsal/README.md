@@ -74,7 +74,14 @@ and the seed, and then asserts the things the product promises:
 - `public_profiles` cannot leak gender, birth year or moderation state;
 - every gate in `join_plan()` refuses for the right reason;
 - twelve concurrent sessions cannot take three plazas more than three times;
-- the 18+ floor holds at the database, not just at the form.
+- the 18+ floor holds at the database, not just at the form;
+- the API can write only the columns the forms write: nobody can grant
+  themselves `is_admin`, lift their own suspension, mark themselves attended,
+  rewrite a plan's counters, confirm their own venue, pin or backdate their own
+  message, or file a report already resolved — and every column the app does
+  write is still open;
+- a rejected selfie can be sent again, a pending or approved one cannot, and a
+  delivered notification stamps the subscription it reached.
 
 Run it before any schema change lands.
 

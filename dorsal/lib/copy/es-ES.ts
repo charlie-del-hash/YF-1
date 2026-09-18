@@ -337,6 +337,7 @@ export const copy = {
     unpin: 'Quitar el fijado',
     pinned: 'Fijado',
     delete: 'Borrar',
+    deleteExpired: 'Ya no se puede borrar. Solo puedes hacerlo en los cinco minutos después de enviarlo.',
     you: 'Tú',
     deletedAuthor: 'Cuenta eliminada',
     unread: (n: number) => (n === 1 ? '1 mensaje sin leer' : `${n} mensajes sin leer`),

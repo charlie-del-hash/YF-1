@@ -630,6 +630,76 @@ recorded in `docs/LAUNCH.md`.
 
 ---
 
+## Decisions from the review after M7
+
+**70. A person may write only the columns the form writes.** Every own-row
+policy in the schema said *whose* row may be written and nothing about *which
+columns*, so `update profiles set is_admin = true where id = auth.uid()` was
+one REST call with the publishable key — and `is_suspended = false`, undoing a
+moderator. `participants_update_own` let a participant mark themselves
+`attended`, answer the roster for the host through `host_marked`, or move from
+`waitlist` to `joined` past the plaza held for a newcomer; a host could rewrite
+`joined_count`, `filled_at` and `created_at`, and cancel with no reason past
+`cancel_plan()`; anyone could insert a `verified` venue, pin their own message
+by inserting it pinned, backdate one, or file a report already `actioned` and
+`resolved_by` a moderator. Every one of those was reproduced against the shim.
+None is reachable from the app, which writes through functions or sends a
+fixed set of columns — but the app is not the API surface, PostgREST is.
+Migration 0014 revokes table-level INSERT and UPDATE from the API roles and
+grants back exactly the columns the app writes; a request naming any other
+column is refused before RLS is consulted. `10-column-privileges.test.sql`
+asserts both halves from the catalogue — nothing forbidden is open, nothing
+the app writes is closed — and then tries the writes anyway. Found by asking
+what the API *could* write rather than what the app *did* write: the third
+time, after decisions 50 and 64, that a default grant decided something nobody
+chose.
+
+**71. Tables only functions write are read-only to the API.**
+`plan_participants`, `reliability_events` and `moderation_actions` have no
+INSERT, UPDATE or DELETE for `authenticated` at all, and the two participant
+UPDATE policies are gone: they had no caller inside the app and, it turned
+out, one caller outside it. A policy nothing calls is a door kept open for
+whoever finds it.
+
+**72. The counts trigger runs as the owner.** Found while reproducing decision
+70: a participant's direct update fired `sync_plan_counts()`, which then
+updated `plans` under the *participant's* policies and changed nothing,
+silently. Four rows said joined; the card said three. Every write path that
+remains runs as the owner already, and 0014 makes the trigger `security
+definer` so its own write never again depends on who fired it.
+
+**73. A selfie is submitted by a function, and a rejected one can be sent
+again.** The verification panel upserted its row, and the retry after a
+rejection is an UPDATE that only the moderator's policy allowed — so `Probar
+otra vez` failed with an RLS error for everyone it was shown to, since M4.
+`submit_selfie()` (0015) is the one way in: once while a review is pending,
+never after an approval, and a resubmission clears the previous verdict and
+restarts the clock. The direct INSERT policy went with the upsert.
+
+**74. `last_ok_at` is stamped through a function.** `sendPush()` bumped it with
+a plain update as the sender, which `push_own_update` narrows to the sender's
+own rows: for every notification that went to somebody else it matched nothing
+and said nothing, so the column only ever recorded test notifications.
+`touch_push_endpoints()` (0016) has the same shape and the same justification
+as `forget_push_endpoint()`: the sender is the only code that learns the
+outcome and is not the owner of the row.
+
+**75. Two things the chat said that were not true.** A message arriving over
+Realtime was stamped with the moment the tab heard about it, because the
+handler read `createdAt` from a row that has `created_at`. And
+`deleteMessage()` reported success when the five-minute policy had matched
+nothing, so the thread dropped a message everyone else could still see — it
+now returns the deleted row or a sentence saying the window has passed.
+
+**76. The format check has never been green.** `pnpm format` fails on 54
+files because the source is written with hand-aligned tables and short
+multi-key lines that Prettier reflows. It is not in the definition of done and
+nothing here changes that; it is recorded so nobody spends an hour discovering
+it. Either reformat everything in one mechanical commit or drop the script —
+not this review's call.
+
+---
+
 ## Deployment notes
 
 **The project.** `qplddusqtxmkljoyxdhd`, region **`eu-west-1` (Ireland)**, not
@@ -644,6 +714,12 @@ was noticed.
 `0008_fill_the_deck`, `0009_least_privilege`, `0010_photo_reads`,
 `0011_push`, `0012_reliability_view` and `0013_seed_is_not_joinable`, and
 `supabase/seed.sql`.
+
+**Not yet applied:** `0014_column_privileges`, `0015_resubmit_selfie` and
+`0016_push_delivered` (decisions 70–74) are in the repository and not on the
+live project. Until 0014 is applied, any signed-in account can make itself a
+moderator with one REST call — see decision 70. `docs/LAUNCH.md` has the
+steps; re-run `03-remote-check.test.sql` and the advisors afterwards.
 
 **Moderators.** Nothing in the app grants the flag, on purpose:
 `update profiles set is_admin = true where id = '…';` in the SQL editor, once.

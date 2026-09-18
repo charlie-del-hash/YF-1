@@ -163,5 +163,36 @@ begin
   raise notice 'ok  a dead endpoint is retired by the sender, not by anyone';
 end $$;
 
+-- ── 6. a delivered notification stamps the subscription it reached ──────────
+-- sendPush() used to bump last_ok_at with a plain update as the sender, which
+-- push_own_update narrows to the sender's own rows: it matched nothing and
+-- said nothing, so the column was only ever stamped by the test notification.
+do $$
+declare v_ok timestamptz; n int;
+begin
+  -- The block above ends as the owner.
+  set role authenticated;
+  perform test_as('00000000-0000-0000-0000-000000000901');
+  update push_subscriptions set last_ok_at = now()
+   where endpoint = 'https://push.test.invalid/2';
+  get diagnostics n = row_count;
+  assert n = 0, 'a direct update reached somebody else''s subscription';
+
+  perform touch_push_endpoints(array['https://push.test.invalid/2']);
+  reset role;
+  select last_ok_at into v_ok from push_subscriptions
+   where endpoint = 'https://push.test.invalid/2';
+  assert v_ok is not null, 'a delivered notification left no mark on the subscription';
+  set role authenticated;
+
+  perform test_as(null);
+  perform touch_push_endpoints(array['https://push.test.invalid/3']);
+  reset role;
+  select last_ok_at into v_ok from push_subscriptions
+   where endpoint = 'https://push.test.invalid/3';
+  assert v_ok is null, 'a signed-out caller stamped a subscription';
+  raise notice 'ok  a delivered notification is stamped by the sender, and only by a sender';
+end $$;
+
 reset role;
 rollback;

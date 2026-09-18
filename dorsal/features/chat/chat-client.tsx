@@ -82,7 +82,16 @@ export function ChatClient({
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'messages', filter: `plan_id=eq.${planId}` },
         (payload) => {
-          const row = payload.new as ChatMessage & { user_id: string; is_pinned: boolean };
+          // The row as the database has it — snake_case, and stamped with the
+          // time the database assigned rather than the moment this tab heard
+          // about it.
+          const row = payload.new as {
+            id: string;
+            user_id: string;
+            body: string;
+            is_pinned: boolean;
+            created_at?: string;
+          };
           setMessages((prev) =>
             prev.some((m) => m.id === row.id)
               ? prev
@@ -93,7 +102,7 @@ export function ChatClient({
                     userId: row.user_id,
                     body: row.body,
                     isPinned: row.is_pinned,
-                    createdAt: row.createdAt ?? new Date().toISOString(),
+                    createdAt: row.created_at ?? new Date().toISOString(),
                     authorName: '',
                     authorDorsal: null,
                   },
@@ -253,8 +262,10 @@ export function ChatClient({
                       className="px-0 text-[13px]"
                       onClick={() =>
                         startTransition(async () => {
+                          setError(undefined);
                           const gone = await attempt(() => deleteMessage(planId, message.id));
                           if (gone.ok) setMessages((p) => p.filter((m) => m.id !== message.id));
+                          else setError(gone.error);
                         })
                       }
                     >
