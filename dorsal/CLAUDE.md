@@ -691,6 +691,13 @@ handler read `createdAt` from a row that has `created_at`. And
 nothing, so the thread dropped a message everyone else could still see — it
 now returns the deleted row or a sentence saying the window has passed.
 
+**76. The format check has never been green.** `pnpm format` fails on 54
+files because the source is written with hand-aligned tables and short
+multi-key lines that Prettier reflows. It is not in the definition of done and
+nothing here changes that; it is recorded so nobody spends an hour discovering
+it. Either reformat everything in one mechanical commit or drop the script —
+not this review's call.
+
 ---
 
 ## Deployment notes
@@ -707,6 +714,12 @@ was noticed.
 `0008_fill_the_deck`, `0009_least_privilege`, `0010_photo_reads`,
 `0011_push`, `0012_reliability_view` and `0013_seed_is_not_joinable`, and
 `supabase/seed.sql`.
+
+**Not yet applied:** `0014_column_privileges`, `0015_resubmit_selfie` and
+`0016_push_delivered` (decisions 70–74) are in the repository and not on the
+live project. Until 0014 is applied, any signed-in account can make itself a
+moderator with one REST call — see decision 70. `docs/LAUNCH.md` has the
+steps; re-run `03-remote-check.test.sql` and the advisors afterwards.
 
 **Moderators.** Nothing in the app grants the flag, on purpose:
 `update profiles set is_admin = true where id = '…';` in the SQL editor, once.

@@ -27,6 +27,18 @@ phone, an inbox or a lawyer.
 
 ## Before you tell anyone about it
 
+- [ ] **Apply migrations 0014, 0015 and 0016.** *(you)* They are in the
+      repository and not on the live project, whose migration list stops at
+      0013. The first is the one that matters today: until it is applied, any
+      signed-in account can run `update profiles set is_admin = true` through
+      the REST API with the publishable key and open `/admin` — decision 70.
+      `pnpm db:push` with the project linked, or paste the three files into
+      the SQL editor in order. Then re-run
+      `supabase/test/03-remote-check.test.sql` and look at the advisors.
+      After 0014 the API can no longer write `is_admin` at all, so the
+      moderator statement above keeps working only because the SQL editor
+      runs as the owner — which is the point.
+
 - [ ] **A custom domain.** *(you)* `*.vercel.app` is blocked outright by some
       corporate networks and stripped by some email security scanners, because
       it is heavily used for phishing. That looks exactly like "the magic link
