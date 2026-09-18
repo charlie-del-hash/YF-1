@@ -668,6 +668,14 @@ silently. Four rows said joined; the card said three. Every write path that
 remains runs as the owner already, and 0014 makes the trigger `security
 definer` so its own write never again depends on who fired it.
 
+**73. A selfie is submitted by a function, and a rejected one can be sent
+again.** The verification panel upserted its row, and the retry after a
+rejection is an UPDATE that only the moderator's policy allowed — so `Probar
+otra vez` failed with an RLS error for everyone it was shown to, since M4.
+`submit_selfie()` (0015) is the one way in: once while a review is pending,
+never after an approval, and a resubmission clears the previous verdict and
+restarts the clock. The direct INSERT policy went with the upsert.
+
 ---
 
 ## Deployment notes

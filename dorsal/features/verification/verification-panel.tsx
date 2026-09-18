@@ -39,12 +39,12 @@ export function VerificationPanel({ initialStatus }: { initialStatus: Verificati
       .upload(path, file, { upsert: true, contentType: file.type });
     if (uploadError) return setError(copy.verification.failed);
 
-    const { error: rowError } = await supabase
-      .from('verifications')
-      .upsert(
-        { user_id: auth.user.id, kind: 'selfie', status: 'pending', selfie_path: path },
-        { onConflict: 'user_id,kind' },
-      );
+    // A function rather than a row write. The first submission and a retry
+    // after a rejection are the same call, and the rules — once while a review
+    // is pending, never after approval, the old verdict cleared — live with it
+    // in migration 0015. The upsert this replaced could insert but never
+    // update, so `Probar otra vez` failed for everyone it was shown to.
+    const { error: rowError } = await supabase.rpc('submit_selfie', { p_path: path });
     if (rowError) return setError(copy.verification.failed);
 
     setStatus('pending');

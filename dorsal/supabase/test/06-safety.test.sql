@@ -148,9 +148,7 @@ do $$
 declare n int; v_path text; v_verified boolean;
 begin
   perform test_as('00000000-0000-0000-0000-000000000602');
-  insert into verifications (user_id, kind, selfie_path)
-  values ('00000000-0000-0000-0000-000000000602', 'selfie',
-          '00000000-0000-0000-0000-000000000602/selfie.jpg');
+  perform submit_selfie('00000000-0000-0000-0000-000000000602/selfie.jpg');
 
   perform test_as('00000000-0000-0000-0000-000000000604');
   select count(*) into n from verifications;
@@ -174,6 +172,60 @@ begin
    where id = '00000000-0000-0000-0000-000000000602';
   assert v_verified, 'the badge did not appear after approval';
   raise notice 'ok  verification is private, decided by a person, and leaves only a badge';
+end $$;
+
+-- ── 6b. a rejected selfie can be sent again ─────────────────────────────────
+-- The panel used to upsert the row, and the retry after a rejection is an
+-- UPDATE that only the moderator's policy allowed — so `Probar otra vez`
+-- failed for everyone it was shown to. Submitting is a function now (0015),
+-- with its rules inside it.
+do $$
+declare v_status verification_status; v_reason text; v_reviewed timestamptz;
+begin
+  perform test_as('00000000-0000-0000-0000-000000000605');
+  perform submit_selfie('00000000-0000-0000-0000-000000000605/selfie.jpg');
+  select status into v_status from verifications
+   where user_id = '00000000-0000-0000-0000-000000000605' and kind = 'selfie';
+  assert v_status = 'pending', 'a submission is not pending: ' || v_status;
+
+  begin
+    perform submit_selfie('00000000-0000-0000-0000-000000000605/selfie.jpg');
+    assert false, 'a selfie was replaced under a pending review';
+  exception when others then assert sqlerrm = 'already_pending', 'wrong error: ' || sqlerrm; end;
+
+  begin
+    perform submit_selfie('00000000-0000-0000-0000-000000000604/selfie.jpg');
+    assert false, 'a verification row was pointed at someone else''s object';
+  exception when others then assert sqlerrm = 'bad_path', 'wrong error: ' || sqlerrm; end;
+
+  perform test_as('00000000-0000-0000-0000-000000000606');
+  perform moderate('reject_selfie', 'No se ve la cara.', '00000000-0000-0000-0000-000000000605');
+
+  perform test_as('00000000-0000-0000-0000-000000000605');
+  perform submit_selfie('00000000-0000-0000-0000-000000000605/selfie.jpg');
+  select status, reject_reason, reviewed_at into v_status, v_reason, v_reviewed
+    from verifications
+   where user_id = '00000000-0000-0000-0000-000000000605' and kind = 'selfie';
+  assert v_status = 'pending', 'the retry did not go back to pending: ' || v_status;
+  assert v_reason is null and v_reviewed is null, 'the old verdict survived the retry';
+
+  -- The direct write the panel used to make is gone.
+  begin
+    insert into verifications (user_id, kind, selfie_path)
+    values ('00000000-0000-0000-0000-000000000605', 'selfie',
+            '00000000-0000-0000-0000-000000000605/selfie.jpg');
+    assert false, 'a verification row was written directly';
+  exception when insufficient_privilege then null; end;
+
+  perform test_as('00000000-0000-0000-0000-000000000606');
+  perform moderate('approve_selfie', 'Coincide con la foto del perfil.',
+                   '00000000-0000-0000-0000-000000000605');
+  perform test_as('00000000-0000-0000-0000-000000000605');
+  begin
+    perform submit_selfie('00000000-0000-0000-0000-000000000605/selfie.jpg');
+    assert false, 'a verified person resubmitted';
+  exception when others then assert sqlerrm = 'already_verified', 'wrong error: ' || sqlerrm; end;
+  raise notice 'ok  a rejected selfie can be sent again; a pending or approved one cannot';
 end $$;
 
 -- ── 7. a selfie is readable by its owner and the queue, and nobody else ─────
